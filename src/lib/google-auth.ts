@@ -84,11 +84,15 @@ export function clearGoogleToken() {
 }
 
 export async function loadGoogleIdentityScript(): Promise<boolean> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (
-    (window as any).google?.accounts?.id ||
-    (window as any).google?.accounts?.oauth2
-  ) {
+  const win = window as unknown as {
+    google?: {
+      accounts?: {
+        id?: unknown;
+        oauth2?: unknown;
+      };
+    };
+  };
+  if (win.google?.accounts?.id || win.google?.accounts?.oauth2) {
     return true;
   }
 

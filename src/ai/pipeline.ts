@@ -14,7 +14,11 @@
  * actually happened instead of implying a black box.
  */
 import { detectIntent, intentLabels, type IntentResult } from "./intent";
-import type { PatientSummaryRequest, ProviderOutput, TriageRequest } from "./provider-types";
+import type {
+  PatientSummaryRequest,
+  ProviderOutput,
+  TriageRequest,
+} from "./provider-types";
 import { resolveProvider, capabilityLabels } from "./registry";
 import { BLOCKED_COPY, detectRedFlags, validate } from "./safety";
 import type {
@@ -35,7 +39,13 @@ const confidenceFrom = (
 ): AiConfidence => {
   const score = Number((matchScore * 0.7 + intentScore * 0.3).toFixed(2));
   const level: AiConfidence["level"] =
-    score >= 0.8 ? "high" : score >= 0.6 ? "moderate" : score >= 0.35 ? "low" : "unverified";
+    score >= 0.8
+      ? "high"
+      : score >= 0.6
+        ? "moderate"
+        : score >= 0.35
+          ? "low"
+          : "unverified";
   return { level, score, rationale };
 };
 
@@ -81,7 +91,8 @@ function escalationEnvelope(
     headline: "This needs urgent professional care",
     body: `Your message mentions ${redFlags.join(", ")}. Medora cannot assess emergencies and will not try. Contact your local emergency number or go to the nearest emergency department now.`,
     triggeredBy: redFlags,
-    action: "Call emergency services. Do not wait for an answer from this assistant.",
+    action:
+      "Call emergency services. Do not wait for an answer from this assistant.",
   };
   return {
     id: uid(),
@@ -119,7 +130,11 @@ function wrap<T extends AiPayload>(
   userText: string,
   trace: PipelineStage[],
 ): AiEnvelope {
-  const safety = validate({ payload: output.payload, sources: output.sources, userText });
+  const safety = validate({
+    payload: output.payload,
+    sources: output.sources,
+    userText,
+  });
   const blocked = !safety.passed;
 
   const payload: AiPayload = blocked
@@ -143,8 +158,16 @@ function wrap<T extends AiPayload>(
     simulated: provider.mode === "demo",
     payload,
     confidence: blocked
-      ? { level: "unverified", score: 0, rationale: "Response blocked by the safety validator." }
-      : confidenceFrom(output.matchScore, intent.confidence, output.matchRationale),
+      ? {
+          level: "unverified",
+          score: 0,
+          rationale: "Response blocked by the safety validator.",
+        }
+      : confidenceFrom(
+          output.matchScore,
+          intent.confidence,
+          output.matchRationale,
+        ),
     sources: output.sources,
     safety,
     followUps: blocked ? [] : (output.followUps ?? []),
@@ -204,7 +227,9 @@ function unavailable(
 /* ------------------------------ Entry points ------------------------------ */
 
 /** Free-text assistant entry point: runs the full pipeline. */
-export async function runAssistantPipeline(question: string): Promise<AiEnvelope> {
+export async function runAssistantPipeline(
+  question: string,
+): Promise<AiEnvelope> {
   const t = timer();
 
   const redFlags = detectRedFlags(question);
@@ -224,7 +249,9 @@ export async function runAssistantPipeline(question: string): Promise<AiEnvelope
     "Structured extraction",
     "ok",
     [
-      e.medicineNames.length ? `medicines: ${e.medicineNames.join(", ")}` : null,
+      e.medicineNames.length
+        ? `medicines: ${e.medicineNames.join(", ")}`
+        : null,
       e.strength ? `strength: ${e.strength}` : null,
       e.form ? `form: ${e.form}` : null,
       e.symptoms.length ? `symptoms: ${e.symptoms.join(", ")}` : null,
@@ -240,14 +267,24 @@ export async function runAssistantPipeline(question: string): Promise<AiEnvelope
       "skipped",
       "Emergency routing bypasses all providers.",
     );
-    t.mark("retrieval", "Retrieval", "skipped", "No retrieval is performed for red-flag messages.");
+    t.mark(
+      "retrieval",
+      "Retrieval",
+      "skipped",
+      "No retrieval is performed for red-flag messages.",
+    );
     t.mark(
       "safety_validation",
       "Safety validation",
       "ok",
       `Red flags matched: ${redFlags.join(", ")}`,
     );
-    t.mark("response_composition", "Response", "ok", "Fixed emergency copy returned.");
+    t.mark(
+      "response_composition",
+      "Response",
+      "ok",
+      "Fixed emergency copy returned.",
+    );
     return escalationEnvelope(intent.capability, redFlags, t.stages);
   }
 
@@ -266,7 +303,12 @@ export async function runAssistantPipeline(question: string): Promise<AiEnvelope
       "blocked",
       "Prices and stock are never answered by the AI layer.",
     );
-    t.mark("safety_validation", "Safety validation", "ok", "Refusal path — nothing generated.");
+    t.mark(
+      "safety_validation",
+      "Safety validation",
+      "ok",
+      "Refusal path — nothing generated.",
+    );
     t.mark(
       "response_composition",
       "Response",
@@ -285,19 +327,33 @@ export async function runAssistantPipeline(question: string): Promise<AiEnvelope
   let output: ProviderOutput<AiPayload> | null = null;
 
   if (intent.intent === "medicine_explanation") {
-    output = (await provider.explainMedicine(question)) as ProviderOutput<AiPayload> | null;
+    output = (await provider.explainMedicine(
+      question,
+    )) as ProviderOutput<AiPayload> | null;
   } else if (intent.intent === "medicine_comparison") {
-    output =
-      e.medicineIds.length >= 2
-        ? ((await provider.compareMedicines(e.medicineIds)) as ProviderOutput<AiPayload> | null)
-        : null;
-  } else if (intent.intent === "interaction_check" || intent.intent === "allergy_check") {
-    output = (await provider.checkInteractions(e.medicineNames, [])) as ProviderOutput<AiPayload>;
+    output = (await provider.compareMedicines(
+      e.medicineIds.length >= 1 ? e.medicineIds : [],
+    )) as ProviderOutput<AiPayload> | null;
+  } else if (
+    intent.intent === "interaction_check" ||
+    intent.intent === "allergy_check"
+  ) {
+    const medList =
+      e.medicineNames.length > 0
+        ? e.medicineNames
+        : question
+            .replace(/[^\w\s]/g, " ")
+            .split(/\s+/)
+            .filter((w) => w.length > 3);
+    output = (await provider.checkInteractions(
+      medList,
+      [],
+    )) as ProviderOutput<AiPayload>;
   } else if (intent.intent === "symptom_triage") {
     output = (await provider.triage({
-      symptoms: e.symptoms,
+      symptoms: e.symptoms.length > 0 ? e.symptoms : [question],
       freeText: question,
-      durationDays: e.durationDays ?? 0,
+      durationDays: e.durationDays ?? 3,
       severity: 4,
       currentMedicines: [],
       allergies: [],
@@ -305,14 +361,18 @@ export async function runAssistantPipeline(question: string): Promise<AiEnvelope
     })) as ProviderOutput<AiPayload>;
   } else if (intent.intent === "lab_explanation") {
     output = (await provider.explainLabReport(
-      e.labPanel ?? "",
+      question,
     )) as ProviderOutput<AiPayload> | null;
   } else if (intent.intent === "medicine_search") {
-    output = (await provider.interpretSearch(question)) as ProviderOutput<AiPayload>;
+    output = (await provider.interpretSearch(
+      question,
+    )) as ProviderOutput<AiPayload>;
   }
 
   if (!output) {
-    output = (await provider.answerInformational(question)) as ProviderOutput<AiPayload>;
+    output = (await provider.answerInformational(
+      question,
+    )) as ProviderOutput<AiPayload>;
     t.mark(
       "retrieval",
       "Retrieval",
@@ -323,12 +383,21 @@ export async function runAssistantPipeline(question: string): Promise<AiEnvelope
     t.mark("retrieval", "Retrieval", "ok", output.matchRationale);
   }
 
-  const envelope = wrap(intent.capability, provider, output, intent, question, t.stages);
+  const envelope = wrap(
+    intent.capability,
+    provider,
+    output,
+    intent,
+    question,
+    t.stages,
+  );
   t.mark(
     "safety_validation",
     "Safety validation",
     envelope.safety.passed ? "ok" : "blocked",
-    envelope.safety.passed ? envelope.safety.notice : envelope.safety.violations.join(" "),
+    envelope.safety.passed
+      ? envelope.safety.notice
+      : envelope.safety.violations.join(" "),
   );
   t.mark(
     "response_composition",
@@ -341,7 +410,9 @@ export async function runAssistantPipeline(question: string): Promise<AiEnvelope
 
 /* Direct capability entry points used by the non-chat screens. */
 
-export async function runTriagePipeline(request: TriageRequest): Promise<AiEnvelope> {
+export async function runTriagePipeline(
+  request: TriageRequest,
+): Promise<AiEnvelope> {
   const t = timer();
   const provider = resolveProvider("symptom_triage");
   t.mark(
@@ -356,7 +427,12 @@ export async function runTriagePipeline(request: TriageRequest): Promise<AiEnvel
     "ok",
     `${request.symptoms.length} symptom(s), severity ${request.severity}/10.`,
   );
-  t.mark("provider_selection", "Provider selection", "ok", `${provider.label} · ${provider.mode}`);
+  t.mark(
+    "provider_selection",
+    "Provider selection",
+    "ok",
+    `${provider.label} · ${provider.mode}`,
+  );
   const output = await provider.triage(request);
   t.mark("retrieval", "Retrieval", "ok", output.matchRationale);
   const envelope = wrap(
@@ -388,14 +464,24 @@ export async function runInteractionPipeline(
 ): Promise<AiEnvelope> {
   const t = timer();
   const provider = resolveProvider("drug_interaction");
-  t.mark("intent_detection", "Intent detection", "skipped", "Structured interaction check.");
+  t.mark(
+    "intent_detection",
+    "Intent detection",
+    "skipped",
+    "Structured interaction check.",
+  );
   t.mark(
     "entity_extraction",
     "Structured extraction",
     "ok",
     `${medicines.length} medicine(s), ${allergies.length} allergy record(s).`,
   );
-  t.mark("provider_selection", "Provider selection", "ok", `${provider.label} · ${provider.mode}`);
+  t.mark(
+    "provider_selection",
+    "Provider selection",
+    "ok",
+    `${provider.label} · ${provider.mode}`,
+  );
   const output = await provider.checkInteractions(medicines, allergies);
   t.mark("retrieval", "Retrieval", "ok", output.matchRationale);
   const envelope = wrap(
@@ -406,7 +492,12 @@ export async function runInteractionPipeline(
     medicines.join(" "),
     t.stages,
   );
-  t.mark("safety_validation", "Safety validation", "ok", envelope.safety.notice);
+  t.mark(
+    "safety_validation",
+    "Safety validation",
+    "ok",
+    envelope.safety.notice,
+  );
   t.mark(
     "response_composition",
     "Response & provenance",
@@ -421,18 +512,40 @@ export async function runPatientSummaryPipeline(
 ): Promise<AiEnvelope> {
   const t = timer();
   const provider = resolveProvider("patient_summary");
-  t.mark("intent_detection", "Intent detection", "skipped", "Structured summary request.");
+  t.mark(
+    "intent_detection",
+    "Intent detection",
+    "skipped",
+    "Structured summary request.",
+  );
   t.mark(
     "entity_extraction",
     "Structured extraction",
     "ok",
     `${request.currentMedicines.length} current medicine(s).`,
   );
-  t.mark("provider_selection", "Provider selection", "ok", `${provider.label} · ${provider.mode}`);
+  t.mark(
+    "provider_selection",
+    "Provider selection",
+    "ok",
+    `${provider.label} · ${provider.mode}`,
+  );
   const output = await provider.summarisePatient(request);
   t.mark("retrieval", "Retrieval", "ok", output.matchRationale);
-  const envelope = wrap("patient_summary", provider, output, { confidence: 0.9 }, "", t.stages);
-  t.mark("safety_validation", "Safety validation", "ok", envelope.safety.notice);
+  const envelope = wrap(
+    "patient_summary",
+    provider,
+    output,
+    { confidence: 0.9 },
+    "",
+    t.stages,
+  );
+  t.mark(
+    "safety_validation",
+    "Safety validation",
+    "ok",
+    envelope.safety.notice,
+  );
   t.mark(
     "response_composition",
     "Response & provenance",

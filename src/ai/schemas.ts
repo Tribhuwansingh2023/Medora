@@ -104,8 +104,19 @@ export interface InteractionReport {
   kind: "interaction_report";
   medicines: string[];
   findings: {
-    type: "duplicate_ingredient" | "allergy_match" | "not_assessed";
-    severity: "review" | "information";
+    type:
+      | "duplicate_ingredient"
+      | "allergy_match"
+      | "interaction"
+      | "safe"
+      | "not_assessed";
+    severity:
+      | "severe"
+      | "moderate"
+      | "minor"
+      | "review"
+      | "information"
+      | "safe";
     title: string;
     detail: string;
     items: string[];

@@ -8,6 +8,13 @@ import {
   type ReactNode,
 } from "react";
 import { demoLabReport, demoPrescriptions } from "@/data/demo-catalog";
+import {
+  syncOrderToPostgres,
+  syncReminderToPostgres,
+  syncPrescriptionToPostgres,
+  syncLabReportToPostgres,
+  syncProfileToPostgres,
+} from "@/services/db-sync";
 import type {
   AppRole,
   ComparisonRecord,
@@ -391,55 +398,67 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           ],
         };
         setState((p) => ({ ...p, orders: [order, ...p.orders], cart: [] }));
+        void syncOrderToPostgres(order);
         return order;
       },
       advanceOrder: (orderId, status, note) =>
-        setState((p) => ({
-          ...p,
-          orders: p.orders.map((o) =>
-            o.id === orderId
-              ? {
-                  ...o,
-                  status,
-                  timeline: [
-                    ...o.timeline,
-                    { state: status, at: nowIso(), note },
-                  ],
-                }
-              : o,
-          ),
-        })),
-      savePrescription: (rx) =>
+        setState((p) => {
+          const updatedOrders = p.orders.map((o) => {
+            if (o.id !== orderId) return o;
+            const updated = {
+              ...o,
+              status,
+              timeline: [
+                ...o.timeline,
+                { state: status, at: nowIso(), note },
+              ],
+            };
+            void syncOrderToPostgres(updated);
+            return updated;
+          });
+          return { ...p, orders: updatedOrders };
+        }),
+      savePrescription: (rx) => {
         setState((p) => ({
           ...p,
           prescriptions: [rx, ...p.prescriptions.filter((x) => x.id !== rx.id)],
-        })),
-      addReminder: (r) =>
-        setState((p) => ({ ...p, reminders: [r, ...p.reminders] })),
-      updateReminder: (id, patch) =>
-        setState((p) => ({
-          ...p,
-          reminders: p.reminders.map((r) =>
-            r.id === id ? { ...r, ...patch } : r,
-          ),
-        })),
-      logDose: (id, time, doseState) =>
-        setState((p) => ({
-          ...p,
-          reminders: p.reminders.map((r) =>
-            r.id === id
-              ? {
-                  ...r,
-                  log: [
-                    { date: today(), time, state: doseState },
-                    ...r.log.filter(
-                      (l) => !(l.date === today() && l.time === time),
-                    ),
-                  ],
-                }
-              : r,
-          ),
-        })),
+        }));
+        void syncPrescriptionToPostgres(rx);
+      },
+      addReminder: (r) => {
+        setState((p) => ({ ...p, reminders: [r, ...p.reminders] }));
+        void syncReminderToPostgres(r);
+      },
+      updateReminder: (id, patch) => {
+        setState((p) => {
+          const updatedReminders = p.reminders.map((r) => {
+            if (r.id !== id) return r;
+            const updated = { ...r, ...patch };
+            void syncReminderToPostgres(updated);
+            return updated;
+          });
+          return { ...p, reminders: updatedReminders };
+        });
+      },
+      logDose: (id, time, doseState) => {
+        setState((p) => {
+          const updatedReminders = p.reminders.map((r) => {
+            if (r.id !== id) return r;
+            const updated = {
+              ...r,
+              log: [
+                { date: today(), time, state: doseState },
+                ...r.log.filter(
+                  (l) => !(l.date === today() && l.time === time),
+                ),
+              ],
+            };
+            void syncReminderToPostgres(updated);
+            return updated;
+          });
+          return { ...p, reminders: updatedReminders };
+        });
+      },
       saveComparison: (record) =>
         setState((p) => ({
           ...p,
@@ -475,8 +494,10 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
             ...p.notifications,
           ],
         })),
-      addLabReport: (r) =>
-        setState((p) => ({ ...p, labReports: [r, ...p.labReports] })),
+      addLabReport: (r) => {
+        setState((p) => ({ ...p, labReports: [r, ...p.labReports] }));
+        void syncLabReportToPostgres(r);
+      },
       resetDemo: () => setState(initialState),
     };
   }, [state, update]);

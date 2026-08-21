@@ -82,32 +82,110 @@ const LAB_PANELS = [
 const signalGroups: { intent: Intent; terms: string[] }[] = [
   {
     intent: "interaction_check",
-    terms: ["interact", "together with", "with my", "mix", "combine", "same time as"],
+    terms: [
+      "interact",
+      "interaction",
+      "together with",
+      "safe with",
+      "take with",
+      "with my",
+      " with ",
+      "mix",
+      "combine",
+      "combined with",
+      "same time as",
+      "along with",
+      "blood thinners",
+    ],
   },
-  { intent: "allergy_check", terms: ["allergy", "allergic", "penicillin allergy", "reaction to"] },
+  {
+    intent: "allergy_check",
+    terms: [
+      "allergy",
+      "allergic",
+      "penicillin allergy",
+      "reaction to",
+      "hypersensitivity",
+    ],
+  },
   {
     intent: "medicine_comparison",
-    terms: ["compare", "difference between", "versus", " vs ", "alternative to", "equivalent"],
+    terms: [
+      "compare",
+      "comparison",
+      "difference between",
+      "versus",
+      " vs ",
+      "alternative to",
+      "equivalent",
+      "generic alternative",
+      "substitute",
+      "better between",
+    ],
   },
   {
     intent: "price_or_stock",
-    terms: ["price", "cheapest", "cost", "in stock", "available at", "discount"],
+    terms: [
+      "price",
+      "cheapest",
+      "cost",
+      "in stock",
+      "available at",
+      "discount",
+      "lowest cost",
+      "how much does",
+    ],
   },
   {
     intent: "lab_explanation",
-    terms: ["lab", "blood test", "report says", "test result", "reference range"],
+    terms: [
+      "lab",
+      "blood test",
+      "report says",
+      "test result",
+      "reference range",
+      "hba1c",
+      "blood glucose",
+      "fasting glucose",
+      "lipid",
+      "cholesterol",
+      "cbc",
+      "platelet",
+      "creatinine",
+      "lft",
+      "kft",
+      "hemoglobin",
+    ],
   },
   {
     intent: "prescription_help",
-    terms: ["prescription", "my rx", "doctor wrote", "handwriting", "scan"],
+    terms: ["prescription", "my rx", "doctor wrote", "handwriting", "scan", "ocr"],
   },
   {
     intent: "symptom_triage",
-    terms: ["i feel", "i have been", "symptom", "should i see", "hurts", "pain for"],
+    terms: [
+      "i feel",
+      "i have been",
+      "symptom",
+      "should i see",
+      "hurts",
+      "pain for",
+      "headache",
+      "fever",
+      "cough",
+      "dizziness",
+      "vomiting",
+    ],
   },
   {
     intent: "medicine_search",
-    terms: ["find a", "looking for", "search for", "which medicines contain"],
+    terms: [
+      "find a",
+      "looking for",
+      "search for",
+      "which medicines contain",
+      "list all",
+    ],
   },
 ];
 
@@ -134,7 +212,9 @@ export function extractEntities(text: string): ExtractedEntities {
   for (const m of demoMedicines) {
     const brand = m.brandName.toLowerCase();
     const generic = m.genericName.toLowerCase();
-    const ingredientHit = m.activeIngredients.find((a) => q.includes(a.name.toLowerCase()));
+    const ingredientHit = m.activeIngredients.find((a) =>
+      q.includes(a.name.toLowerCase()),
+    );
     if (q.includes(brand) || q.includes(generic) || ingredientHit) {
       if (!medicineIds.includes(m.id)) {
         medicineIds.push(m.id);
@@ -183,14 +263,17 @@ export function detectIntent(text: string): IntentResult {
   for (const group of signalGroups) {
     const hits = group.terms.filter((t) => q.includes(t));
     if (hits.length) {
-      matchedSignals.push(...hits.map((h) => `"${h.trim()}" → ${group.intent}`));
+      matchedSignals.push(
+        ...hits.map((h) => `"${h.trim()}" → ${group.intent}`),
+      );
       intent = group.intent;
       score = 0.72;
       break;
     }
   }
 
-  if (intent === "interaction_check" && entities.medicineIds.length >= 2) score = 0.86;
+  if (intent === "interaction_check" && entities.medicineIds.length >= 2)
+    score = 0.86;
   if (intent === "general_information" && entities.medicineIds.length === 1) {
     intent = "medicine_explanation";
     matchedSignals.push(`catalogue match → ${entities.medicineNames[0]}`);
@@ -206,7 +289,8 @@ export function detectIntent(text: string): IntentResult {
     matchedSignals.push(`symptom terms → ${entities.symptoms.join(", ")}`);
     score = 0.66;
   }
-  if (intent === "medicine_comparison" && entities.medicineIds.length < 2) score = 0.55;
+  if (intent === "medicine_comparison" && entities.medicineIds.length < 2)
+    score = 0.55;
 
   return {
     intent,

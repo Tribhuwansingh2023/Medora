@@ -17,7 +17,14 @@ export interface Provenance {
 }
 
 export type DosageForm =
-  "Tablet" | "Capsule" | "Syrup" | "Suspension" | "Injection" | "Cream" | "Drops" | "Inhaler";
+  | "Tablet"
+  | "Capsule"
+  | "Syrup"
+  | "Suspension"
+  | "Injection"
+  | "Cream"
+  | "Drops"
+  | "Inhaler";
 
 export interface ActiveIngredient {
   name: string;
@@ -219,7 +226,11 @@ export interface AuditEvent {
   id: string;
   at: string;
   actor: string;
+  role?: AppRole | "system";
+  category?: "clinical" | "security" | "catalog" | "prescription" | "pharmacy" | "compliance";
   action: string;
   target: string;
   ip: string;
+  status?: "success" | "warning" | "flagged" | "rejected";
+  details?: string;
 }

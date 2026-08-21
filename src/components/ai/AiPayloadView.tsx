@@ -34,7 +34,10 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
             ]}
           />
           <BulletList title="Warnings" items={payload.warnings} />
-          <BulletList title="Common side effects" items={payload.commonSideEffects} />
+          <BulletList
+            title="Common side effects"
+            items={payload.commonSideEffects}
+          />
           {payload.storage && (
             <p className="text-sm text-muted-foreground">
               <span className="font-medium text-foreground">Storage: </span>
@@ -48,33 +51,80 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
         <>
           <FieldGrid
             items={[
-              { label: "Routing", value: payload.escalation.level.replace("_", " ") },
-              { label: "Symptoms read", value: payload.symptoms.join(", ") || "—" },
+              {
+                label: "Routing",
+                value: payload.escalation.level.replace("_", " "),
+              },
+              {
+                label: "Symptoms read",
+                value: payload.symptoms.join(", ") || "—",
+              },
             ]}
           />
           <BulletList title="Red flags matched" items={payload.redFlags} />
-          <BulletList title="What Medora will not do" items={payload.possibleExplanations} />
-          <BulletList title="Questions worth answering" items={payload.followUpQuestions} />
+          <BulletList
+            title="What Medora will not do"
+            items={payload.possibleExplanations}
+          />
+          <BulletList
+            title="Questions worth answering"
+            items={payload.followUpQuestions}
+          />
           {payload.monitoringPlan.map((block) => (
-            <BulletList key={block.window} title={block.window} items={block.items} />
+            <BulletList
+              key={block.window}
+              title={block.window}
+              items={block.items}
+            />
           ))}
         </>
       )}
 
       {payload.kind === "interaction_report" && (
         <div className="space-y-3">
-          {payload.findings.map((finding) => (
-            <div key={finding.title} className="rounded-lg border border-border bg-muted/30 p-3">
-              <p className="text-sm font-medium text-foreground">{finding.title}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{finding.detail}</p>
-              {finding.items.length > 0 && (
-                <p className="mt-1.5 text-[11px] uppercase tracking-wide text-muted-foreground">
-                  {finding.items.join(" · ")}
+          {payload.findings.map((finding) => {
+            const isSevere = finding.severity === "severe";
+            const isModerate = finding.severity === "moderate";
+            const isSafe =
+              finding.severity === "safe" || finding.type === "safe";
+
+            const badgeColor = isSevere
+              ? "border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400"
+              : isModerate
+                ? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                : isSafe
+                  ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                  : "border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400";
+
+            return (
+              <div
+                key={finding.title}
+                className="rounded-lg border border-border bg-muted/30 p-3.5 space-y-2"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm font-semibold text-foreground">
+                    {finding.title}
+                  </p>
+                  <span
+                    className={`rounded-full border px-2.5 py-0.5 text-[11px] font-medium uppercase tracking-wider ${badgeColor}`}
+                  >
+                    {finding.severity}
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {finding.detail}
                 </p>
-              )}
-            </div>
-          ))}
-          <p className="text-xs text-muted-foreground">Assessed by: {payload.assessedBy}</p>
+                {finding.items.length > 0 && (
+                  <p className="text-[11px] uppercase tracking-wide text-muted-foreground font-medium">
+                    Evaluated items: {finding.items.join(" · ")}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+          <p className="text-xs text-muted-foreground">
+            Assessed by: {payload.assessedBy}
+          </p>
         </div>
       )}
 
@@ -83,7 +133,9 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
           title="Name-level matches"
           items={
             payload.matches.length
-              ? payload.matches.map((m) => `${m.allergy} ↔ ${m.medicine} — ${m.basis}`)
+              ? payload.matches.map(
+                  (m) => `${m.allergy} ↔ ${m.medicine} — ${m.basis}`,
+                )
               : ["No name-level matches. This is not a clearance."]
           }
         />
@@ -104,16 +156,26 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
             <tbody>
               {payload.rows.map((row) => (
                 <tr key={row.medicine} className="border-t border-border">
-                  <td className="py-2 pr-4 font-medium text-foreground">{row.medicine}</td>
-                  <td className="py-2 pr-4 text-muted-foreground">{row.activeIngredient}</td>
-                  <td className="py-2 pr-4 text-muted-foreground">{row.strength}</td>
-                  <td className="py-2 pr-4 text-muted-foreground">{row.form}</td>
+                  <td className="py-2 pr-4 font-medium text-foreground">
+                    {row.medicine}
+                  </td>
+                  <td className="py-2 pr-4 text-muted-foreground">
+                    {row.activeIngredient}
+                  </td>
+                  <td className="py-2 pr-4 text-muted-foreground">
+                    {row.strength}
+                  </td>
+                  <td className="py-2 pr-4 text-muted-foreground">
+                    {row.form}
+                  </td>
                   <td className="py-2 text-muted-foreground">{row.supply}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <p className="mt-3 text-sm text-muted-foreground">{payload.equivalence}</p>
+          <p className="mt-3 text-sm text-muted-foreground">
+            {payload.equivalence}
+          </p>
         </div>
       )}
 
@@ -121,8 +183,14 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
         <>
           <FieldGrid
             items={[
-              { label: "Ingredient read", value: payload.interpretedAs.ingredient ?? "—" },
-              { label: "Strength read", value: payload.interpretedAs.strength ?? "—" },
+              {
+                label: "Ingredient read",
+                value: payload.interpretedAs.ingredient ?? "—",
+              },
+              {
+                label: "Strength read",
+                value: payload.interpretedAs.strength ?? "—",
+              },
               { label: "Form read", value: payload.interpretedAs.form ?? "—" },
               {
                 label: "Supply read",
@@ -148,7 +216,10 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
 
       {payload.kind === "patient_summary" && (
         <>
-          <BulletList title="Current medicines" items={payload.currentMedicines} />
+          <BulletList
+            title="Current medicines"
+            items={payload.currentMedicines}
+          />
           <BulletList title="Open items" items={payload.openItems} />
           <BulletList
             title="Questions for your clinician"
@@ -158,7 +229,57 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
       )}
 
       {payload.kind === "lab_explanation" && (
-        <p className="text-sm text-muted-foreground">{payload.whatThisIsNot}</p>
+        <div className="space-y-3">
+          {payload.analytes.length > 0 ? (
+            <div className="space-y-3">
+              {payload.analytes.map((analyte) => {
+                const flagColor =
+                  analyte.flag === "high"
+                    ? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                    : analyte.flag === "low"
+                      ? "border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                      : "border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400";
+
+                return (
+                  <div
+                    key={analyte.name}
+                    className="rounded-lg border border-border bg-muted/30 p-3.5 space-y-2"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">
+                          {analyte.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Reference range: {analyte.referenceRange}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-sm font-bold text-foreground">
+                          {analyte.value}
+                        </span>
+                        <div className="mt-0.5">
+                          <span
+                            className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${flagColor}`}
+                          >
+                            {analyte.flag}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {analyte.plainLanguage}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              {payload.whatThisIsNot}
+            </p>
+          )}
+        </div>
       )}
 
       {payload.kind === "ocr_extraction" && (
@@ -172,12 +293,19 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
       )}
 
       {payload.kind === "informational_answer" && (
-        <FieldGrid items={payload.bullets.map((b) => ({ label: b.label, value: b.value }))} />
+        <FieldGrid
+          items={payload.bullets.map((b) => ({
+            label: b.label,
+            value: b.value,
+          }))}
+        />
       )}
 
       {payload.kind === "unavailable" && (
         <p className="text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">What a connected provider would do: </span>
+          <span className="font-medium text-foreground">
+            What a connected provider would do:{" "}
+          </span>
           {payload.whatALiveProviderWouldDo}
         </p>
       )}

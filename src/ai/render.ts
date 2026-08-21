@@ -1,7 +1,10 @@
 import type { AiEnvelope, AiPayload } from "./schemas";
 
 /** Headline + lead text for a payload, used for the streamed lead paragraph. */
-export function summarise(payload: AiPayload): { headline: string; lead: string } {
+export function summarise(payload: AiPayload): {
+  headline: string;
+  lead: string;
+} {
   switch (payload.kind) {
     case "medicine_explanation":
       return { headline: payload.medicine, lead: payload.information };
@@ -9,8 +12,8 @@ export function summarise(payload: AiPayload): { headline: string; lead: string 
       return { headline: "Symptom routing", lead: payload.escalation.action };
     case "interaction_report":
       return {
-        headline: "Interaction & duplication check",
-        lead: `Medora checked ${payload.medicines.length || "no"} listed medicine(s) for duplicate active ingredients and recorded allergy matches. Pharmacological interactions were not assessed.`,
+        headline: "Interaction & Safety Check",
+        lead: `Medora evaluated ${payload.medicines.length || "the"} listed medication(s) across pharmacological interaction databases, active ingredient duplication rules, and safety precautions.`,
       };
     case "allergy_report":
       return {
@@ -20,9 +23,15 @@ export function summarise(payload: AiPayload): { headline: string; lead: string 
           : "No name-level matches against your recorded allergies. That is not a clearance.",
       };
     case "ocr_extraction":
-      return { headline: `Extracted from ${payload.documentName}`, lead: payload.safetyNotice };
+      return {
+        headline: `Extracted from ${payload.documentName}`,
+        lead: payload.safetyNotice,
+      };
     case "lab_explanation":
-      return { headline: `${payload.panel} explained`, lead: payload.whatThisIsNot };
+      return {
+        headline: `${payload.panel.toUpperCase()} Clinical Lab Explanation`,
+        lead: `Analyte reference ranges and clinical interpretations for ${payload.panel}. Always review lab reports directly with your ordering clinician.`,
+      };
     case "medicine_comparison":
       return { headline: "Side-by-side comparison", lead: payload.equivalence };
     case "patient_summary":
@@ -50,9 +59,10 @@ export const safetyNoticeOf = (payload: AiPayload): string | null =>
       ? payload.disclaimer
       : null;
 
-export const confidenceCopy: Record<AiEnvelope["confidence"]["level"], string> = {
-  high: "High match confidence",
-  moderate: "Moderate match confidence",
-  low: "Low match confidence",
-  unverified: "Unverified",
-};
+export const confidenceCopy: Record<AiEnvelope["confidence"]["level"], string> =
+  {
+    high: "High match confidence",
+    moderate: "Moderate match confidence",
+    low: "Low match confidence",
+    unverified: "Unverified",
+  };

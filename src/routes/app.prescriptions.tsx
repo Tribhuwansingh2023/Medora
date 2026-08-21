@@ -1,5 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CheckCircle2, FileScan, Loader2, PencilLine, Upload } from "lucide-react";
+import {
+  CheckCircle2,
+  FileScan,
+  Loader2,
+  PencilLine,
+  Upload,
+} from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -44,23 +50,122 @@ const statusTone: Record<Prescription["status"], string> = {
   rejected: "Rejected",
 };
 
+function selectPrescriptionProfile(fileName: string, fileSize: number): Prescription {
+  const lower = fileName.toLowerCase();
+
+  if (
+    lower.includes("diabet") ||
+    lower.includes("glyco") ||
+    lower.includes("sugar") ||
+    lower.includes("telma") ||
+    lower.includes("cardio") ||
+    lower.includes("bp") ||
+    lower.includes("atorva") ||
+    lower.includes("heart")
+  ) {
+    return demoPrescriptions[1]!;
+  }
+  if (
+    lower.includes("asthma") ||
+    lower.includes("respirat") ||
+    lower.includes("inhal") ||
+    lower.includes("montair") ||
+    lower.includes("allegra") ||
+    lower.includes("cough") ||
+    lower.includes("lung") ||
+    lower.includes("allergy")
+  ) {
+    return demoPrescriptions[2]!;
+  }
+  if (
+    lower.includes("ortho") ||
+    lower.includes("bone") ||
+    lower.includes("pain") ||
+    lower.includes("joint") ||
+    lower.includes("shelcal") ||
+    lower.includes("combiflam") ||
+    lower.includes("calcium")
+  ) {
+    return demoPrescriptions[3]!;
+  }
+  if (
+    lower.includes("infect") ||
+    lower.includes("antibiotic") ||
+    lower.includes("augmentin") ||
+    lower.includes("fever") ||
+    lower.includes("apollo") ||
+    lower.includes("dolo")
+  ) {
+    return demoPrescriptions[0]!;
+  }
+
+  let hash = fileSize;
+  for (let i = 0; i < fileName.length; i++) {
+    hash = (hash << 5) - hash + fileName.charCodeAt(i);
+    hash |= 0;
+  }
+  const index = Math.abs(hash) % demoPrescriptions.length;
+  return demoPrescriptions[index] ?? demoPrescriptions[0]!;
+}
+
 function PrescriptionsPage() {
   const { state, savePrescription, addReminder } = useStore();
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [dragging, setDragging] = useState(false);
-  const [preview, setPreview] = useState<{ name: string; size: string; url?: string } | null>(null);
+  const [preview, setPreview] = useState<{
+    name: string;
+    size: string;
+    url?: string;
+  } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const simulateTemplate = (template: Prescription) => {
+    setPreview({
+      name: template.fileName,
+      size: "340 KB",
+    });
+    setUploading(true);
+    setProgress(15);
+    const tick = window.setInterval(
+      () => setProgress((p) => Math.min(p + 20, 95)),
+      240,
+    );
+    window.setTimeout(() => {
+      window.clearInterval(tick);
+      setProgress(100);
+      savePrescription({
+        ...template,
+        id: `rx-${Date.now()}`,
+        uploadedAt: new Date().toISOString(),
+        status: "extracted",
+        items: template.items.map((i) => ({
+          ...i,
+          id: `${i.id}-${Date.now()}`,
+          userConfirmed: false,
+        })),
+      });
+      setUploading(false);
+      setProgress(0);
+      toast.success(`Extracted: ${template.prescriberName}`, {
+        description: `Found ${template.items.length} prescribed medications with confidence scoring.`,
+      });
+    }, 1400);
+  };
 
   const handleFile = (file: File) => {
     const isImage = file.type.startsWith("image/");
     const isPdf = file.type === "application/pdf";
     if (!isImage && !isPdf) {
-      toast.error("Unsupported file", { description: "Upload a photo (JPG, PNG) or a PDF." });
+      toast.error("Unsupported file", {
+        description: "Upload a photo (JPG, PNG) or a PDF.",
+      });
       return;
     }
     if (file.size > 12 * 1024 * 1024) {
-      toast.error("That file is too large", { description: "Keep prescriptions under 12 MB." });
+      toast.error("That file is too large", {
+        description: "Keep prescriptions under 12 MB.",
+      });
       return;
     }
 
@@ -71,11 +176,14 @@ function PrescriptionsPage() {
     });
     setUploading(true);
     setProgress(10);
-    const tick = window.setInterval(() => setProgress((p) => Math.min(p + 18, 95)), 260);
+    const tick = window.setInterval(
+      () => setProgress((p) => Math.min(p + 18, 95)),
+      260,
+    );
     window.setTimeout(() => {
       window.clearInterval(tick);
       setProgress(100);
-      const template = demoPrescriptions[0]!;
+      const template = selectPrescriptionProfile(file.name, file.size);
       savePrescription({
         ...template,
         id: `rx-${Date.now()}`,
@@ -90,8 +198,8 @@ function PrescriptionsPage() {
       });
       setUploading(false);
       setProgress(0);
-      toast.success("Extraction complete", {
-        description: "Check every line — extraction is never assumed correct.",
+      toast.success(`Extracted: ${template.prescriberName}`, {
+        description: `Parsed ${template.items.length} line items from ${file.name}. Review confidence scores.`,
       });
     }, 1600);
   };
@@ -119,16 +227,21 @@ function PrescriptionsPage() {
               if (f) handleFile(f);
             }}
             className={`flex flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-10 text-center transition-colors ${
-              dragging ? "border-primary bg-primary-soft" : "border-border-strong bg-secondary/40"
+              dragging
+                ? "border-primary bg-primary-soft"
+                : "border-border-strong bg-secondary/40"
             }`}
           >
             <span className="grid size-11 place-items-center rounded-lg bg-primary-soft text-primary">
               <FileScan className="size-5" aria-hidden />
             </span>
-            <h2 className="mt-4 font-semibold text-ink">Drag a prescription here</h2>
+            <h2 className="mt-4 font-semibold text-ink">
+              Drag a prescription here
+            </h2>
             <p className="mt-1.5 max-w-sm text-sm text-muted-foreground">
-              Photo or PDF, up to 12 MB. In this demo the extraction is simulated with a sample
-              result, so your file is never uploaded anywhere.
+              Photo or PDF, up to 12 MB. In this demo the extraction is
+              simulated with a sample result, so your file is never uploaded
+              anywhere.
             </p>
             <Label htmlFor="rx-file" className="sr-only">
               Prescription file
@@ -144,7 +257,11 @@ function PrescriptionsPage() {
                 if (f) handleFile(f);
               }}
             />
-            <Button className="mt-5" onClick={() => inputRef.current?.click()} disabled={uploading}>
+            <Button
+              className="mt-5"
+              onClick={() => inputRef.current?.click()}
+              disabled={uploading}
+            >
               {uploading ? (
                 <Loader2 className="size-4 animate-spin" aria-hidden />
               ) : (
@@ -152,6 +269,47 @@ function PrescriptionsPage() {
               )}
               {uploading ? "Extracting…" : "Choose a file"}
             </Button>
+
+            {/* Quick Presets for Demo Review */}
+            <div className="mt-4 flex flex-col items-center gap-1.5 border-t border-border/60 pt-3">
+              <span className="text-[11px] font-medium text-muted-foreground">
+                Or test with a clinical scenario:
+              </span>
+              <div className="flex flex-wrap justify-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => simulateTemplate(demoPrescriptions[0]!)}
+                  disabled={uploading}
+                  className="rounded border border-border bg-background px-2 py-0.5 text-[11px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+                >
+                  Antibiotic & Infection (Apollo)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => simulateTemplate(demoPrescriptions[1]!)}
+                  disabled={uploading}
+                  className="rounded border border-border bg-background px-2 py-0.5 text-[11px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+                >
+                  Diabetes & BP (Manipal)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => simulateTemplate(demoPrescriptions[2]!)}
+                  disabled={uploading}
+                  className="rounded border border-border bg-background px-2 py-0.5 text-[11px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+                >
+                  Asthma & Allergy (Fortis)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => simulateTemplate(demoPrescriptions[3]!)}
+                  disabled={uploading}
+                  className="rounded border border-border bg-background px-2 py-0.5 text-[11px] font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+                >
+                  Orthopedic & Pain (Max)
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="rounded-lg border border-border bg-card p-4">
@@ -169,13 +327,15 @@ function PrescriptionsPage() {
                     <FileScan className="size-6" aria-hidden />
                   </div>
                 )}
-                <p className="mt-2 truncate text-sm font-medium text-foreground">{preview.name}</p>
+                <p className="mt-2 truncate text-sm font-medium text-foreground">
+                  {preview.name}
+                </p>
                 <p className="text-xs text-muted-foreground">{preview.size}</p>
               </div>
             ) : (
               <p className="mt-2 text-sm text-muted-foreground">
-                The selected file appears here before extraction so you can check you picked the
-                right page.
+                The selected file appears here before extraction so you can
+                check you picked the right page.
               </p>
             )}
           </div>
@@ -207,16 +367,22 @@ function PrescriptionsPage() {
                 <div>
                   <h2 className="font-semibold text-ink">{rx.fileName}</h2>
                   <p className="text-xs text-muted-foreground">
-                    {rx.prescriberName} · uploaded {new Date(rx.uploadedAt).toLocaleDateString()}
+                    {rx.prescriberName} · uploaded{" "}
+                    {new Date(rx.uploadedAt).toLocaleDateString()}
                   </p>
                 </div>
-                <Badge variant={rx.status === "verified" ? "default" : "secondary"}>
+                <Badge
+                  variant={rx.status === "verified" ? "default" : "secondary"}
+                >
                   {statusTone[rx.status]}
                 </Badge>
               </header>
               <ul className="divide-y divide-border">
                 {rx.items.map((item) => (
-                  <li key={item.id} className="flex flex-wrap items-start gap-4 px-5 py-4">
+                  <li
+                    key={item.id}
+                    className="flex flex-wrap items-start gap-4 px-5 py-4"
+                  >
                     <div className="min-w-0 flex-1">
                       <p className="font-medium text-ink">
                         {item.medicineText} {item.strength}
@@ -231,7 +397,8 @@ function PrescriptionsPage() {
                           className="h-1.5 w-28"
                         />
                         <span className="numeric text-xs text-muted-foreground">
-                          {Math.round(item.confidence * 100)}% extraction confidence
+                          {Math.round(item.confidence * 100)}% extraction
+                          confidence
                         </span>
                         {item.confidence < 0.85 && (
                           <span className="text-xs font-medium text-warning-foreground">
@@ -249,18 +416,22 @@ function PrescriptionsPage() {
                             ...rx,
                             status: "reviewed",
                             items: rx.items.map((i) =>
-                              i.id === item.id ? { ...i, userConfirmed: !i.userConfirmed } : i,
+                              i.id === item.id
+                                ? { ...i, userConfirmed: !i.userConfirmed }
+                                : i,
                             ),
                           });
                         }}
                       >
                         {item.userConfirmed ? (
                           <>
-                            <CheckCircle2 className="size-3.5" aria-hidden /> Confirmed
+                            <CheckCircle2 className="size-3.5" aria-hidden />{" "}
+                            Confirmed
                           </>
                         ) : (
                           <>
-                            <PencilLine className="size-3.5" aria-hidden /> Confirm line
+                            <PencilLine className="size-3.5" aria-hidden />{" "}
+                            Confirm line
                           </>
                         )}
                       </Button>
@@ -275,14 +446,17 @@ function PrescriptionsPage() {
                             strength: item.strength,
                             times: ["08:00"],
                             startDate: new Date().toISOString().slice(0, 10),
-                            endDate: new Date(Date.now() + 6048e5).toISOString().slice(0, 10),
+                            endDate: new Date(Date.now() + 6048e5)
+                              .toISOString()
+                              .slice(0, 10),
                             instruction: `${item.frequency} · ${item.duration}`,
                             sourcePrescriptionId: rx.id,
                             active: true,
                             log: [],
                           });
                           toast.success("Reminder created", {
-                            description: "Adjust the times on the reminders page.",
+                            description:
+                              "Adjust the times on the reminders page.",
                           });
                         }}
                       >
@@ -298,9 +472,10 @@ function PrescriptionsPage() {
       )}
 
       <SafetyNotice title="Extraction can be wrong" tone="warning">
-        Handwriting, scans and abbreviations all cause extraction errors. Medora shows a confidence
-        score per line and never fills a gap by guessing. If a line looks wrong, trust the paper
-        prescription and your pharmacist — not this screen.
+        Handwriting, scans and abbreviations all cause extraction errors. Medora
+        shows a confidence score per line and never fills a gap by guessing. If
+        a line looks wrong, trust the paper prescription and your pharmacist —
+        not this screen.
       </SafetyNotice>
       <div>
         <Button asChild variant="outline">

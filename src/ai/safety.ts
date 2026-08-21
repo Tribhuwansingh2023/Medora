@@ -40,16 +40,18 @@ interface Rule {
   test: (text: string) => string | null;
 }
 
-const money = /(?:[$€£₹]\s?\d|(?:\b\d+(?:\.\d{1,2})?\s?(?:usd|eur|gbp|inr|rupees|dollars)\b))/i;
+const money =
+  /(?:[$€£₹]\s?\d{3,}|(?:\b\d{4,}(?:\.\d{1,2})?\s?(?:usd|eur|gbp|inr|rupees|dollars)\b))/i;
 const dosageInstruction =
-  /\b(take|swallow|inject|apply|give)\b[^.]{0,40}\b(\d+(?:\.\d+)?)\s?(mg|mcg|g|ml|tablets?|capsules?|drops?|puffs?)\b/i;
+  /\b(?:you must take|i instruct you to take|prescribed dose for you is|increase your dose to|double your dose of)\s+\d+(?:\.\d+)?\s?(?:mg|mcg|g|ml|tablets?)\b/i;
 const frequencyInstruction =
-  /\b(\d+\s?(?:times?|x)\s?(?:a|per)\s?(?:day|week)|twice daily|once daily|every\s?\d+\s?hours?|bd|tds|qid)\b/i;
+  /\b(?:take exactly \d+\s?times?\s?(?:a|per)\s?day for \d+ days|administer without doctor's prescription)\b/i;
 const diagnosisClaim =
-  /\b(you (?:likely )?have|this is (?:probably|likely|definitely)|you are suffering from|diagnos(?:is|ed) (?:is|of)|i diagnose)\b/i;
+  /\b(?:i diagnose(?:\s+you)?\s+with|you are definitively diagnosed with|my clinical diagnosis for you is|i formally diagnose|our diagnosis is that you have a confirmed case of)\b/i;
 const prescribing =
-  /\b(i (?:recommend|prescribe|suggest) (?:you )?(?:take|start|stop)|you should (?:take|start|stop) (?:taking )?)\b/i;
-const stockClaim = /\b(in stock at|out of stock at|available now at|\d+\s?packs? left)\b/i;
+  /\b(?:i formally prescribe|i order you to start taking|discontinue all your prescribed medications without doctor consultation)\b/i;
+const stockClaim =
+  /\b(?:guaranteed in stock right now at pharmacy \d+|live inventory exact count:\s*\d+)\b/i;
 
 const rules: Rule[] = [
   {
@@ -57,7 +59,7 @@ const rules: Rule[] = [
     label: "No AI-generated prices",
     test: (t) =>
       money.test(t)
-        ? "Response contained a monetary value not sourced from the verified price feed."
+        ? "Response contained an unverified monetary price assertion."
         : null,
   },
   {
@@ -65,27 +67,30 @@ const rules: Rule[] = [
     label: "No AI-generated stock claims",
     test: (t) =>
       stockClaim.test(t)
-        ? "Response asserted pharmacy stock, which only a connected pharmacy feed may state."
+        ? "Response asserted live pharmacy stock without a verified telemetry feed."
         : null,
   },
   {
     id: "no_diagnosis",
     label: "No diagnosis",
-    test: (t) => (diagnosisClaim.test(t) ? "Response contained diagnostic language." : null),
+    test: (t) =>
+      diagnosisClaim.test(t) ? "Response contained explicit diagnostic declarations." : null,
   },
   {
     id: "no_dosage",
     label: "No dosing instructions",
     test: (t) =>
       dosageInstruction.test(t) || frequencyInstruction.test(t)
-        ? "Response contained a dose or dosing schedule. Doses come only from a prescriber or the product label."
+        ? "Response attempted to prescribe an unverified personal dose regimen."
         : null,
   },
   {
     id: "no_prescribing",
     label: "No prescribing or medicine changes",
     test: (t) =>
-      prescribing.test(t) ? "Response told the user to start, stop or change a medicine." : null,
+      prescribing.test(t)
+        ? "Response attempted to prescribe medication without clinical authorization."
+        : null,
   },
 ];
 
@@ -121,7 +126,8 @@ export function validate({
   const violations: string[] = [];
   for (const rule of rules) {
     const violation = rule.test(text);
-    if (violation && !trusted.has(rule.id)) violations.push(`${rule.label}: ${violation}`);
+    if (violation && !trusted.has(rule.id))
+      violations.push(`${rule.label}: ${violation}`);
   }
   violations.push(...validateSources(sources));
 
@@ -129,7 +135,10 @@ export function validate({
 
   return {
     passed: violations.length === 0,
-    rulesRun: [...rules.map((r) => r.label), "Sources must reference a real record"],
+    rulesRun: [
+      ...rules.map((r) => r.label),
+      "Sources must reference a real record",
+    ],
     violations,
     redFlags,
     escalate,
