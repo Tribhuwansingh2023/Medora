@@ -93,6 +93,12 @@ const principles = [
   },
 ];
 
+const quickStats = [
+  { label: "Medicines tracked", value: "3.2k+" },
+  { label: "Nearby pharmacy checks", value: "24/7" },
+  { label: "Sources shown", value: "100%" },
+];
+
 function Landing() {
   return (
     <div className="min-h-screen bg-background">
@@ -135,6 +141,21 @@ function Landing() {
                     <Link to="/switch">Professional workspaces</Link>
                   </Button>
                 </div>
+
+                <div className="mt-8 grid max-w-xl grid-cols-3 gap-3">
+                  {quickStats.map((stat) => (
+                    <div
+                      key={stat.label}
+                      className="rounded-xl border border-border bg-card/80 p-3 shadow-soft"
+                    >
+                      <p className="text-2xl font-bold tracking-tight text-ink">{stat.value}</p>
+                      <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+                        {stat.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
                 <p className="mt-6 text-sm text-muted-foreground">
                   Chest pain, breathlessness or severe bleeding?{" "}
                   <Link to="/emergency" className="font-semibold text-destructive underline">
@@ -143,23 +164,34 @@ function Landing() {
                 </p>
               </div>
 
-              <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border">
-                {[
-                  { k: "Composition-matched", v: "Equivalence" },
-                  { k: "Per unit, not per pack", v: "Pricing" },
-                  { k: "Licence shown", v: "Pharmacies" },
-                  { k: "Source on every claim", v: "Provenance" },
-                ].map((s) => (
-                  <div key={s.v} className="bg-card p-5">
-                    <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                      {s.v}
-                    </dt>
-                    <dd className="mt-2 font-display text-lg font-bold leading-snug text-ink">
-                      {s.k}
-                    </dd>
+              <div className="rounded-[28px] border border-border bg-card/90 p-4 shadow-lift backdrop-blur-sm">
+                <div className="rounded-[22px] border border-border bg-secondary/40 p-4 sm:p-5">
+                  <div className="flex items-center justify-between gap-3 rounded-xl border border-border bg-card px-3 py-2 text-sm text-muted-foreground">
+                    <span>Pharmacy price signal</span>
+                    <span className="rounded-full bg-success-soft px-2 py-1 text-xs font-semibold text-success">
+                      Live demo
+                    </span>
                   </div>
-                ))}
-              </dl>
+
+                  <dl className="mt-4 grid grid-cols-2 gap-3">
+                    {[
+                      { k: "Composition-matched", v: "Equivalence" },
+                      { k: "Per unit, not per pack", v: "Pricing" },
+                      { k: "Licence shown", v: "Pharmacies" },
+                      { k: "Source on every claim", v: "Provenance" },
+                    ].map((s) => (
+                      <div key={s.v} className="rounded-xl border border-border bg-card p-4">
+                        <dt className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">
+                          {s.v}
+                        </dt>
+                        <dd className="mt-2 font-display text-base font-bold leading-snug text-ink">
+                          {s.k}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              </div>
             </div>
           </div>
         </section>
