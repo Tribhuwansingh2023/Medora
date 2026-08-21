@@ -207,8 +207,8 @@ export function PatientShell({ children }: { children: ReactNode }) {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" aria-label="Account menu">
-                    <span className="grid size-7 place-items-center rounded-full bg-primary-soft text-xs font-bold text-primary">
-                      {state.profile.fullName.slice(0, 1)}
+                    <span className="grid size-7 place-items-center rounded-full bg-primary-soft text-xs font-bold text-primary uppercase">
+                      {(profile?.full_name ?? state.profile.fullName).slice(0, 1)}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
