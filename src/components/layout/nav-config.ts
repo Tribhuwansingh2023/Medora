@@ -7,6 +7,7 @@ import {
   Building2,
   CalendarClock,
   ClipboardList,
+  Cloud,
   FileScan,
   FlaskConical,
   Gauge,
@@ -127,6 +128,13 @@ export const patientNav: NavItem[] = [
     description: "Medicines, documents, comparisons",
   },
   {
+    to: "/app/workspace",
+    label: "Google Workspace",
+    icon: Cloud,
+    group: "Integrations",
+    description: "Gmail, Calendar & Drive sync",
+  },
+  {
     to: "/app/notifications",
     label: "Notifications",
     icon: Bell,
@@ -148,30 +156,90 @@ export const patientBottomNav = patientNav.filter((n) =>
 
 export const pharmacyNav: NavItem[] = [
   { to: "/pharmacy", label: "Overview", icon: Gauge, group: "Workspace" },
-  { to: "/pharmacy/inventory", label: "Inventory", icon: Boxes, group: "Workspace" },
+  {
+    to: "/pharmacy/inventory",
+    label: "Inventory",
+    icon: Boxes,
+    group: "Workspace",
+  },
   {
     to: "/pharmacy/prescriptions",
     label: "Verification queue",
     icon: ClipboardList,
     group: "Workspace",
   },
-  { to: "/pharmacy/orders", label: "Orders", icon: Package, group: "Workspace" },
-  { to: "/pharmacy/customers", label: "Customers", icon: Users, group: "Relations" },
-  { to: "/pharmacy/suppliers", label: "Suppliers", icon: Handshake, group: "Relations" },
-  { to: "/pharmacy/analytics", label: "Analytics", icon: BarChart3, group: "Relations" },
+  {
+    to: "/pharmacy/orders",
+    label: "Orders",
+    icon: Package,
+    group: "Workspace",
+  },
+  {
+    to: "/pharmacy/customers",
+    label: "Customers",
+    icon: Users,
+    group: "Relations",
+  },
+  {
+    to: "/pharmacy/suppliers",
+    label: "Suppliers",
+    icon: Handshake,
+    group: "Relations",
+  },
+  {
+    to: "/pharmacy/analytics",
+    label: "Analytics",
+    icon: BarChart3,
+    group: "Relations",
+  },
 ];
 
 export const doctorNav: NavItem[] = [
   { to: "/doctor", label: "Patients", icon: Users, group: "Clinic" },
-  { to: "/doctor/prescriptions", label: "Prescription review", icon: Pill, group: "Clinic" },
-  { to: "/doctor/schedule", label: "Schedule", icon: CalendarClock, group: "Clinic" },
+  {
+    to: "/doctor/prescriptions",
+    label: "Prescription review",
+    icon: Pill,
+    group: "Clinic",
+  },
+  {
+    to: "/doctor/schedule",
+    label: "Schedule",
+    icon: CalendarClock,
+    group: "Clinic",
+  },
 ];
 
 export const adminNav: NavItem[] = [
-  { to: "/admin", label: "Platform metrics", icon: Activity, group: "Operations" },
+  {
+    to: "/admin",
+    label: "Platform metrics",
+    icon: Activity,
+    group: "Operations",
+  },
   { to: "/admin/users", label: "Users", icon: Users, group: "Operations" },
-  { to: "/admin/pharmacies", label: "Pharmacies & doctors", icon: Building2, group: "Operations" },
-  { to: "/admin/catalog", label: "Catalogue metadata", icon: Pill, group: "Governance" },
-  { to: "/admin/moderation", label: "Moderation", icon: ShieldAlert, group: "Governance" },
-  { to: "/admin/audit", label: "Audit log", icon: ClipboardList, group: "Governance" },
+  {
+    to: "/admin/pharmacies",
+    label: "Pharmacies & doctors",
+    icon: Building2,
+    group: "Operations",
+  },
+  {
+    to: "/admin/catalog",
+    label: "Catalogue metadata",
+    icon: Pill,
+    group: "Governance",
+  },
+  {
+    to: "/admin/moderation",
+    label: "Moderation",
+    icon: ShieldAlert,
+    group: "Governance",
+  },
+  {
+    to: "/admin/audit",
+    label: "Audit log",
+    icon: ClipboardList,
+    group: "Governance",
+  },
 ];

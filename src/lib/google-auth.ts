@@ -1,83 +1,104 @@
 /**
- * Google Identity Services & OAuth 2.0 Integration for Medora
- * Supports Google One-Tap, Google Sign-In Button, and OAuth 2.0 Token Client
+ * Google OAuth 2.0 & Google Sign-In helper functions using Google Identity Services (GSI).
+ * Supports Real Google Authentication, user info fetching, and Google Workspace Scopes.
  */
+import firebaseConfig from "../../firebase-applet-config.json";
+
+export const GOOGLE_SCOPES = [
+  "openid",
+  "email",
+  "profile",
+  "https://www.googleapis.com/auth/drive.file",
+  "https://www.googleapis.com/auth/drive.readonly",
+  "https://www.googleapis.com/auth/calendar",
+  "https://www.googleapis.com/auth/calendar.events",
+  "https://www.googleapis.com/auth/gmail.send",
+  "https://www.googleapis.com/auth/gmail.readonly",
+  "https://mail.google.com/",
+];
+
+const TOKEN_STORAGE_KEY = "medora_google_oauth_token";
+const CLIENT_ID_STORAGE_KEY = "medora_custom_google_client_id";
+
+export interface GoogleAuthToken {
+  accessToken: string;
+  expiresAt: number;
+  scopes: string[];
+}
 
 export interface GoogleUserProfile {
   sub: string;
-  email: string;
   name: string;
+  given_name?: string;
+  family_name?: string;
   picture?: string;
+  email: string;
   email_verified?: boolean;
 }
 
-const GOOGLE_CLIENT_ID_STORAGE_KEY = "medora_google_client_id";
-
-// Default public client ID for standard OAuth testing / demo preview
-const DEFAULT_GOOGLE_CLIENT_ID =
-  "640548965601-e2v7j7b28h1jqm340mvdc2k9b47k28b0.apps.googleusercontent.com";
-
-/**
- * Retrieves the currently active Google Client ID
- */
 export function getGoogleClientId(): string {
-  if (typeof window === "undefined") return "";
+  const custom = localStorage.getItem(CLIENT_ID_STORAGE_KEY);
+  if (custom && custom.trim().length > 0) return custom.trim();
 
-  // 1. Check environment variable (Vite)
-  const envClientId = (
-    import.meta as unknown as { env?: Record<string, string> }
-  )?.env?.VITE_GOOGLE_CLIENT_ID;
-  if (envClientId && envClientId.trim()) {
-    return envClientId.trim();
-  }
-
-  // 2. Check localStorage for user-provided client ID
-  const localClientId = localStorage.getItem(GOOGLE_CLIENT_ID_STORAGE_KEY);
-  if (localClientId && localClientId.trim()) {
-    return localClientId.trim();
-  }
-
-  // 3. Fallback default client ID
-  return DEFAULT_GOOGLE_CLIENT_ID;
+  return (
+    firebaseConfig.oAuthClientId ||
+    import.meta.env.VITE_GOOGLE_CLIENT_ID ||
+    "460239037850-4rkdouk2510hbplskk4q547153805o0v.apps.googleusercontent.com"
+  );
 }
 
-/**
- * Saves a custom Google Client ID in local storage
- */
-export function setStoredGoogleClientId(clientId: string): void {
-  if (typeof window === "undefined") return;
-  const trimmed = clientId.trim();
-  if (trimmed) {
-    localStorage.setItem(GOOGLE_CLIENT_ID_STORAGE_KEY, trimmed);
+export function setStoredGoogleClientId(id: string) {
+  if (!id) {
+    localStorage.removeItem(CLIENT_ID_STORAGE_KEY);
   } else {
-    localStorage.removeItem(GOOGLE_CLIENT_ID_STORAGE_KEY);
+    localStorage.setItem(CLIENT_ID_STORAGE_KEY, id.trim());
   }
 }
 
-/**
- * Loads the Google Identity Services SDK script tag dynamically
- */
-export function loadGoogleIdentityScript(): Promise<boolean> {
+export function getStoredGoogleToken(): string | null {
+  try {
+    const raw = localStorage.getItem(TOKEN_STORAGE_KEY);
+    if (!raw) return null;
+    const token: GoogleAuthToken = JSON.parse(raw);
+    if (Date.now() > token.expiresAt - 60000) {
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+      return null;
+    }
+    return token.accessToken;
+  } catch {
+    return null;
+  }
+}
+
+export function saveGoogleToken(accessToken: string, expiresInSeconds = 3599) {
+  const token: GoogleAuthToken = {
+    accessToken,
+    expiresAt: Date.now() + expiresInSeconds * 1000,
+    scopes: GOOGLE_SCOPES,
+  };
+  localStorage.setItem(TOKEN_STORAGE_KEY, JSON.stringify(token));
+}
+
+export function clearGoogleToken() {
+  localStorage.removeItem(TOKEN_STORAGE_KEY);
+}
+
+export async function loadGoogleIdentityScript(): Promise<boolean> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (
+    (window as any).google?.accounts?.id ||
+    (window as any).google?.accounts?.oauth2
+  ) {
+    return true;
+  }
+
   return new Promise((resolve) => {
-    if (typeof window === "undefined") {
-      resolve(false);
-      return;
-    }
-
-    // Check if already available on window
-    const win = window as unknown as { google?: { accounts?: unknown } };
-    if (win.google?.accounts) {
-      resolve(true);
-      return;
-    }
-
-    // Check if script tag is already in document
     const existing = document.querySelector(
       'script[src="https://accounts.google.com/gsi/client"]',
     );
     if (existing) {
       existing.addEventListener("load", () => resolve(true));
-      existing.addEventListener("error", () => resolve(false));
+      setTimeout(() => resolve(true), 1500);
       return;
     }
 
@@ -86,188 +107,104 @@ export function loadGoogleIdentityScript(): Promise<boolean> {
     script.async = true;
     script.defer = true;
     script.onload = () => resolve(true);
-    script.onerror = () => {
-      console.warn("Failed to load Google Identity Services script");
-      resolve(false);
-    };
+    script.onerror = () => resolve(false);
     document.head.appendChild(script);
   });
 }
 
 /**
- * Decodes a Google JWT credential token payload (base64url)
+ * Decode standard Google JWT credential token
  */
-export function decodeGoogleJwt(token: string): GoogleUserProfile | null {
+export function decodeGoogleJwt(credential: string): GoogleUserProfile | null {
   try {
-    const base64Url = token.split(".")[1];
-    if (!base64Url) return null;
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
+    const parts = credential.split(".");
+    if (parts.length < 2) return null;
+    const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const json = decodeURIComponent(
+      atob(payload)
         .split("")
         .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
         .join(""),
     );
-    const parsed = JSON.parse(jsonPayload) as {
-      sub?: string;
-      email?: string;
-      name?: string;
-      picture?: string;
-      email_verified?: boolean;
-    };
-    if (!parsed.email) return null;
-    return {
-      sub: parsed.sub || `google-${Date.now()}`,
-      email: parsed.email,
-      name: parsed.name || parsed.email.split("@")[0] || "Google User",
-      picture: parsed.picture,
-      email_verified: parsed.email_verified,
-    };
+    return JSON.parse(json);
   } catch (err) {
-    console.error("Error parsing Google JWT:", err);
+    console.error("Failed to decode Google JWT:", err);
     return null;
   }
 }
 
 /**
- * Fetches user profile info from Google OAuth2 userinfo endpoint using access token
+ * Fetch Google user profile using an access token
  */
 export async function fetchGoogleUserInfo(
   accessToken: string,
-): Promise<GoogleUserProfile | null> {
-  try {
-    const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    if (!res.ok) {
-      throw new Error(
-        `Google UserInfo request failed with status ${res.status}`,
-      );
-    }
-    const data = (await res.json()) as {
-      sub: string;
-      email: string;
-      name?: string;
-      picture?: string;
-      email_verified?: boolean;
-    };
-    return {
-      sub: data.sub,
-      email: data.email,
-      name: data.name || data.email.split("@")[0] || "Google User",
-      picture: data.picture,
-      email_verified: data.email_verified,
-    };
-  } catch (err) {
-    console.error("Failed to fetch Google user profile:", err);
-    return null;
+): Promise<GoogleUserProfile> {
+  const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  if (!res.ok) {
+    throw new Error(
+      `Failed to fetch Google profile: ${res.status} ${res.statusText}`,
+    );
   }
-}
-
-interface GoogleTokenClient {
-  requestAccessToken: (overrideConfig?: { prompt?: string }) => void;
-}
-
-interface GoogleAccounts {
-  id: {
-    initialize: (config: {
-      client_id: string;
-      callback: (response: { credential: string }) => void;
-      auto_select?: boolean;
-      cancel_on_tap_outside?: boolean;
-    }) => void;
-    renderButton: (
-      element: HTMLElement,
-      options: {
-        theme?: "outline" | "filled_blue" | "filled_black";
-        size?: "large" | "medium" | "small";
-        text?: "signin_with" | "signup_with" | "continue_with" | "signin";
-        shape?: "rectangular" | "pill" | "circle" | "square";
-        width?: number;
-      },
-    ) => void;
-    prompt: () => void;
-  };
-  oauth2: {
-    initTokenClient: (config: {
-      client_id: string;
-      scope: string;
-      callback: (tokenResponse: {
-        access_token?: string;
-        error?: string;
-        error_description?: string;
-      }) => void;
-      error_callback?: (err: unknown) => void;
-    }) => GoogleTokenClient;
-  };
+  return await res.json();
 }
 
 /**
- * Requests Google OAuth token popup via Google Identity Services Token Client
+ * Request OAuth Access Token with custom or default scopes
  */
 export async function requestGoogleOAuthToken(
-  clientId?: string,
-): Promise<{ accessToken?: string; error?: string }> {
-  const loaded = await loadGoogleIdentityScript();
-  if (!loaded) {
-    return {
-      error:
-        "Could not load Google Identity Services. Check your internet connection.",
-    };
-  }
+  scopes?: string[],
+): Promise<string> {
+  const existing = getStoredGoogleToken();
+  if (existing) return existing;
 
-  const effectiveClientId = clientId || getGoogleClientId();
-  if (!effectiveClientId) {
-    return {
-      error:
-        "Google Client ID is missing. Please configure your Google Client ID.",
-    };
-  }
+  await loadGoogleIdentityScript();
 
-  const win = window as unknown as { google?: { accounts?: GoogleAccounts } };
-  const accounts = win.google?.accounts;
-
-  if (!accounts?.oauth2) {
-    return {
-      error:
-        "Google OAuth2 client is not available in the current browser window.",
-    };
-  }
-
-  return new Promise((resolve) => {
-    try {
-      const client = accounts.oauth2.initTokenClient({
-        client_id: effectiveClientId,
-        scope: "email profile openid",
-        callback: (response) => {
-          if (response.error) {
-            resolve({ error: response.error_description || response.error });
-          } else if (response.access_token) {
-            resolve({ accessToken: response.access_token });
-          } else {
-            resolve({ error: "No access token returned by Google." });
-          }
-        },
-        error_callback: (err) => {
-          console.error("Google Token Client error:", err);
-          resolve({
-            error:
-              "Google authorization was cancelled or encountered an error.",
-          });
-        },
-      });
-
-      client.requestAccessToken({ prompt: "select_account" });
-    } catch (err) {
-      console.error("Failed to initialize Google Token Client:", err);
-      resolve({
-        error:
-          err instanceof Error
-            ? err.message
-            : "Failed to open Google authentication window.",
-      });
+  return new Promise((resolve, reject) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const google = (window as any).google;
+    if (!google?.accounts?.oauth2) {
+      reject(
+        new Error(
+          "Google Identity Services client is not available. Please try refreshing.",
+        ),
+      );
+      return;
     }
+
+    const clientId = getGoogleClientId();
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: (scopes || GOOGLE_SCOPES).join(" "),
+      callback: (response: {
+        access_token?: string;
+        expires_in?: number;
+        error?: string;
+      }) => {
+        if (response.error) {
+          reject(new Error(response.error));
+          return;
+        }
+        if (response.access_token) {
+          saveGoogleToken(response.access_token, response.expires_in ?? 3599);
+          resolve(response.access_token);
+        } else {
+          reject(new Error("No access token returned from Google."));
+        }
+      },
+      error_callback: (err: unknown) => {
+        reject(err instanceof Error ? err : new Error(String(err)));
+      },
+    });
+
+    client.requestAccessToken();
   });
 }
+
+/**
+ * Alias for workspace compatibility
+ */
+export const requestGoogleAccessToken = requestGoogleOAuthToken;

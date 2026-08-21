@@ -34,6 +34,7 @@ import {
 import type { Pharmacy } from "@/lib/domain";
 import { getPharmacies, isOpenNow } from "@/services/medicines";
 import { PharmacySearchGrounding } from "@/components/pharmacy/PharmacySearchGrounding";
+import { GooglePharmacyMap } from "@/components/pharmacy/GooglePharmacyMap";
 
 export const Route = createFileRoute("/app/pharmacies/")({
   head: () => ({
@@ -257,31 +258,9 @@ function PharmaciesPage() {
           </div>
 
           {view === "map" ? (
-            <section className="surface overflow-hidden">
-              <div className="grid-texture flex min-h-72 flex-col items-center justify-center gap-4 border-b border-border p-10 text-center">
-                <span className="grid size-12 place-items-center rounded-full border border-border bg-card text-muted-foreground">
-                  <MapIcon className="size-5" aria-hidden />
-                </span>
-                <div className="max-w-md">
-                  <p className="font-semibold text-ink">
-                    The map view needs a maps provider
-                  </p>
-                  <p className="mt-1.5 text-sm text-muted-foreground">
-                    Medora will not draw an invented map. Connect a maps
-                    provider and this panel becomes a live map with pins, travel
-                    time and turn-by-turn directions. Until then, the list view
-                    shows the same pharmacies with real distances from the demo
-                    directory.
-                  </p>
-                </div>
-                <Button variant="outline" onClick={() => setView("list")}>
-                  <List className="size-4" aria-hidden /> Use the list view
-                </Button>
-              </div>
-              <div className="p-5">
-                <IntegrationNotConnected integration="maps" />
-              </div>
-            </section>
+            <div className="space-y-4">
+              <GooglePharmacyMap pharmacies={list} />
+            </div>
           ) : (
             <>
               <IntegrationNotConnected integration="maps" />

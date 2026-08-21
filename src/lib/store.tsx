@@ -41,14 +41,14 @@ export interface AppState {
 const today = () => new Date().toISOString().slice(0, 10);
 
 const defaultProfile: HealthProfile = {
-  fullName: "Aria Mehta",
-  email: "aria.mehta@example.com",
+  fullName: "Tribhuwan",
+  email: "tribhuwan@example.com",
   ageBand: "30–39",
-  sex: "Prefer not to say",
-  city: "Eastwick",
+  sex: "Male",
+  city: "Bengaluru",
   allergies: ["Penicillin (self-reported)"],
   conditions: ["Type 2 diabetes (self-reported)"],
-  currentMedicines: ["Metformin hydrochloride 500 mg"],
+  currentMedicines: ["Glycomet 500 SR", "Pan-D Capsule"],
   pregnancyStatus: "Not applicable",
   consentInformationalUse: true,
   consentDataProcessing: true,
@@ -58,12 +58,12 @@ const defaultProfile: HealthProfile = {
 const defaultReminders: Reminder[] = [
   {
     id: "rem-1",
-    medicineName: "Metformin hydrochloride",
+    medicineName: "Glycomet 500 SR",
     strength: "500 mg",
     times: ["08:00", "20:00"],
     startDate: "2026-08-02",
     endDate: "2026-09-01",
-    instruction: "Take exactly as written on your prescription.",
+    instruction: "Take 1 tablet after meals (breakfast and dinner).",
     sourcePrescriptionId: "rx-1002",
     active: true,
     log: [
@@ -76,15 +76,16 @@ const defaultReminders: Reminder[] = [
   },
   {
     id: "rem-2",
-    medicineName: "Amoxicillin",
-    strength: "500 mg",
-    times: ["09:00", "15:00", "21:00"],
-    startDate: "2026-07-28",
-    endDate: "2026-08-04",
-    instruction: "Course completed. Kept for your medicine history.",
+    medicineName: "Pan-D Capsule",
+    strength: "40 mg / 30 mg",
+    times: ["07:30"],
+    startDate: "2026-08-05",
+    endDate: "2026-08-25",
+    instruction:
+      "Take 1 capsule 30 minutes before breakfast on an empty stomach.",
     sourcePrescriptionId: "rx-1001",
-    active: false,
-    log: [],
+    active: true,
+    log: [{ date: today(), time: "07:30", state: "taken" }],
   },
 ];
 
@@ -92,23 +93,23 @@ const defaultNotifications: NotificationItem[] = [
   {
     id: "nt-1",
     title: "Reminder due at 20:00",
-    body: "Metformin hydrochloride 500 mg — mark it taken or skipped when the time comes.",
-    at: "2026-08-13T18:30:00.000Z",
+    body: "Glycomet 500 SR — take after dinner and mark it taken or skipped.",
+    at: "2026-08-14T18:30:00.000Z",
     kind: "reminder",
     read: false,
   },
   {
     id: "nt-2",
-    title: "Price changed in a saved comparison",
-    body: "Paracetamol 500 mg tablets: the lowest demo listing moved from $1.75 to $1.60.",
-    at: "2026-08-13T09:12:00.000Z",
+    title: "Price comparison update",
+    body: "Paracetamol 650 mg: lowest listing is Pacimol 650 at ₹26.50 vs Dolo 650 at ₹34.00 (₹7.50 difference per pack).",
+    at: "2026-08-14T09:12:00.000Z",
     kind: "price",
     read: false,
   },
   {
     id: "nt-3",
     title: "Safety notice",
-    body: "You recorded a penicillin allergy. Show it to a pharmacist before any antibiotic is dispensed.",
+    body: "You recorded a penicillin allergy. Show it to your pharmacist before any antibiotic (like Augmentin) is dispensed.",
     at: "2026-08-11T14:00:00.000Z",
     kind: "safety",
     read: true,
@@ -116,8 +117,8 @@ const defaultNotifications: NotificationItem[] = [
   {
     id: "nt-4",
     title: "Reservation ready for pickup",
-    body: "Order MD-4821 at Riverside Community Pharmacy is marked ready in demo mode.",
-    at: "2026-08-10T16:45:00.000Z",
+    body: "Order MD-4821 at Apollo Pharmacy (24x7) is ready at the counter.",
+    at: "2026-08-13T16:45:00.000Z",
     kind: "order",
     read: true,
   },
@@ -127,61 +128,77 @@ const defaultOrders: Order[] = [
   {
     id: "MD-4821",
     pharmacyId: "ph-1",
-    pharmacyName: "Riverside Community Pharmacy",
-    placedAt: "2026-08-10T15:02:00.000Z",
+    pharmacyName: "Apollo Pharmacy (24x7)",
+    placedAt: "2026-08-13T15:02:00.000Z",
     items: [
       {
-        medicineId: "med-ceti-10-tab-a",
-        name: "Zyracet 10 · Tablet",
+        medicineId: "med-pan-d-cap-a",
+        name: "Pan-D · 15 Capsules",
         qty: 1,
-        price: 2.2,
-        prescriptionOnly: false,
+        price: 198.0,
+        prescriptionOnly: true,
       },
     ],
-    total: 2.2,
+    total: 198.0,
     fulfilment: "pickup",
     status: "ready",
     timeline: [
       {
         state: "accepted",
-        at: "2026-08-10T15:04:00.000Z",
-        note: "Pharmacy accepted the reservation.",
+        at: "2026-08-13T15:04:00.000Z",
+        note: "Pharmacy accepted the prescription order.",
       },
-      { state: "preparing", at: "2026-08-10T15:40:00.000Z", note: "Items picked from shelf." },
-      { state: "ready", at: "2026-08-10T16:45:00.000Z", note: "Ready at the collection counter." },
+      {
+        state: "preparing",
+        at: "2026-08-13T15:40:00.000Z",
+        note: "Verified by registered pharmacist and packed.",
+      },
+      {
+        state: "ready",
+        at: "2026-08-13T16:45:00.000Z",
+        note: "Ready at the express pickup counter.",
+      },
     ],
   },
   {
     id: "MD-4787",
     pharmacyId: "ph-3",
-    pharmacyName: "Northgate 24h Pharmacy",
-    placedAt: "2026-07-28T11:20:00.000Z",
+    pharmacyName: "Tata 1mg Health Store (24h)",
+    placedAt: "2026-08-10T11:20:00.000Z",
     items: [
       {
-        medicineId: "med-amox-500-cap-a",
-        name: "Amoxil-C 500 · Capsule",
-        qty: 1,
-        price: 8.9,
+        medicineId: "med-glyco-500-tab-a",
+        name: "Glycomet 500 SR · 20 Tablets",
+        qty: 2,
+        price: 90.0,
         prescriptionOnly: true,
       },
     ],
-    total: 8.9,
+    total: 90.0,
     fulfilment: "pickup",
-    prescriptionId: "rx-1001",
+    prescriptionId: "rx-1002",
     status: "completed",
     timeline: [
       {
         state: "verifying",
-        at: "2026-07-28T11:22:00.000Z",
+        at: "2026-08-10T11:22:00.000Z",
         note: "Prescription sent for pharmacist verification.",
       },
       {
         state: "accepted",
-        at: "2026-07-28T12:05:00.000Z",
-        note: "Pharmacist verified the prescription.",
+        at: "2026-08-10T12:05:00.000Z",
+        note: "Pharmacist verified the refill prescription.",
       },
-      { state: "ready", at: "2026-07-28T13:10:00.000Z", note: "Ready for collection." },
-      { state: "completed", at: "2026-07-28T17:30:00.000Z", note: "Collected in store." },
+      {
+        state: "ready",
+        at: "2026-08-10T13:10:00.000Z",
+        note: "Ready for pickup.",
+      },
+      {
+        state: "completed",
+        at: "2026-08-10T17:30:00.000Z",
+        note: "Dispensed and collected at store.",
+      },
     ],
   },
 ];
@@ -190,20 +207,29 @@ const defaultComparisons: ComparisonRecord[] = [
   {
     id: "cmp-1",
     createdAt: "2026-08-12T10:00:00.000Z",
-    compositionKey: "paracetamol|500 mg|Tablet",
-    label: "Paracetamol 500 mg · Tablet",
-    medicineIds: ["med-para-500-tab-a", "med-para-500-tab-b", "med-para-500-tab-c"],
-    lowest: 1.6,
-    highest: 3.85,
+    compositionKey: "paracetamol|650 mg|Tablet",
+    label: "Paracetamol 650 mg · Tablet",
+    medicineIds: [
+      "med-dolo-650-tab",
+      "med-calpol-650-tab",
+      "med-crocin-650-tab",
+      "med-pacimol-650-tab",
+    ],
+    lowest: 26.5,
+    highest: 35.5,
   },
   {
     id: "cmp-2",
     createdAt: "2026-08-06T18:20:00.000Z",
-    compositionKey: "cetirizine hydrochloride|10 mg|Tablet",
-    label: "Cetirizine 10 mg · Tablet",
-    medicineIds: ["med-ceti-10-tab-a", "med-ceti-10-tab-b"],
-    lowest: 1.7,
-    highest: 2.2,
+    compositionKey: "amoxicillin+clavulanate|625 mg|Tablet",
+    label: "Amoxicillin + Clavulanate 625 mg · Tablet",
+    medicineIds: [
+      "med-augm-625-tab-a",
+      "med-moxi-625-tab-b",
+      "med-clavam-625-tab-c",
+    ],
+    lowest: 172.0,
+    highest: 204.0,
   },
 ];
 
@@ -224,7 +250,9 @@ const initialState: AppState = {
 
 interface StoreValue {
   state: AppState;
-  update: (patch: Partial<AppState> | ((prev: AppState) => Partial<AppState>)) => void;
+  update: (
+    patch: Partial<AppState> | ((prev: AppState) => Partial<AppState>),
+  ) => void;
   signIn: (role?: AppRole) => void;
   signOut: () => void;
   toggleCompare: (medicineId: string) => void;
@@ -277,7 +305,10 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   }, [state, hydrated]);
 
   const update = useCallback<StoreValue["update"]>((patch) => {
-    setState((prev) => ({ ...prev, ...(typeof patch === "function" ? patch(prev) : patch) }));
+    setState((prev) => ({
+      ...prev,
+      ...(typeof patch === "function" ? patch(prev) : patch),
+    }));
   }, []);
 
   const value = useMemo<StoreValue>(() => {
@@ -292,7 +323,8 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           role,
           onboarded: p.onboarded || role !== "patient",
         })),
-      signOut: () => setState((p) => ({ ...p, signedIn: false, role: "patient", cart: [] })),
+      signOut: () =>
+        setState((p) => ({ ...p, signedIn: false, role: "patient", cart: [] })),
       toggleCompare: (id) =>
         setState((p) => ({
           ...p,
@@ -308,13 +340,18 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
             ...p,
             cart: existing
               ? p.cart.map((c) =>
-                  c.medicineId === item.medicineId ? { ...c, qty: c.qty + item.qty } : c,
+                  c.medicineId === item.medicineId
+                    ? { ...c, qty: c.qty + item.qty }
+                    : c,
                 )
               : [...p.cart, item],
           };
         }),
       removeFromCart: (medicineId) =>
-        setState((p) => ({ ...p, cart: p.cart.filter((c) => c.medicineId !== medicineId) })),
+        setState((p) => ({
+          ...p,
+          cart: p.cart.filter((c) => c.medicineId !== medicineId),
+        })),
       setCartQty: (medicineId, qty) =>
         setState((p) => ({
           ...p,
@@ -361,7 +398,14 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           ...p,
           orders: p.orders.map((o) =>
             o.id === orderId
-              ? { ...o, status, timeline: [...o.timeline, { state: status, at: nowIso(), note }] }
+              ? {
+                  ...o,
+                  status,
+                  timeline: [
+                    ...o.timeline,
+                    { state: status, at: nowIso(), note },
+                  ],
+                }
               : o,
           ),
         })),
@@ -370,11 +414,14 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           ...p,
           prescriptions: [rx, ...p.prescriptions.filter((x) => x.id !== rx.id)],
         })),
-      addReminder: (r) => setState((p) => ({ ...p, reminders: [r, ...p.reminders] })),
+      addReminder: (r) =>
+        setState((p) => ({ ...p, reminders: [r, ...p.reminders] })),
       updateReminder: (id, patch) =>
         setState((p) => ({
           ...p,
-          reminders: p.reminders.map((r) => (r.id === id ? { ...r, ...patch } : r)),
+          reminders: p.reminders.map((r) =>
+            r.id === id ? { ...r, ...patch } : r,
+          ),
         })),
       logDose: (id, time, doseState) =>
         setState((p) => ({
@@ -385,7 +432,9 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
                   ...r,
                   log: [
                     { date: today(), time, state: doseState },
-                    ...r.log.filter((l) => !(l.date === today() && l.time === time)),
+                    ...r.log.filter(
+                      (l) => !(l.date === today() && l.time === time),
+                    ),
                   ],
                 }
               : r,
@@ -396,13 +445,17 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           ...p,
           comparisons: [
             record,
-            ...p.comparisons.filter((c) => c.compositionKey !== record.compositionKey),
+            ...p.comparisons.filter(
+              (c) => c.compositionKey !== record.compositionKey,
+            ),
           ].slice(0, 8),
         })),
       markNotification: (id, read) =>
         setState((p) => ({
           ...p,
-          notifications: p.notifications.map((n) => (n.id === id ? { ...n, read } : n)),
+          notifications: p.notifications.map((n) =>
+            n.id === id ? { ...n, read } : n,
+          ),
         })),
       markAllNotificationsRead: () =>
         setState((p) => ({
@@ -413,16 +466,24 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
         setState((p) => ({
           ...p,
           notifications: [
-            { ...n, id: `nt-${Math.random().toString(36).slice(2, 8)}`, at: nowIso(), read: false },
+            {
+              ...n,
+              id: `nt-${Math.random().toString(36).slice(2, 8)}`,
+              at: nowIso(),
+              read: false,
+            },
             ...p.notifications,
           ],
         })),
-      addLabReport: (r) => setState((p) => ({ ...p, labReports: [r, ...p.labReports] })),
+      addLabReport: (r) =>
+        setState((p) => ({ ...p, labReports: [r, ...p.labReports] })),
       resetDemo: () => setState(initialState),
     };
   }, [state, update]);
 
-  return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
+  return (
+    <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
+  );
 }
 
 /** Returns the store if a provider is mounted above, otherwise null. */
@@ -439,5 +500,7 @@ export function useStore() {
 export const adherenceRate = (reminders: Reminder[]) => {
   const logs = reminders.flatMap((r) => r.log);
   if (!logs.length) return null;
-  return Math.round((logs.filter((l) => l.state === "taken").length / logs.length) * 100);
+  return Math.round(
+    (logs.filter((l) => l.state === "taken").length / logs.length) * 100,
+  );
 };
