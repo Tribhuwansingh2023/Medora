@@ -32,11 +32,11 @@ if (fs.existsSync(ssrDir)) {
             .map((s) => s.trim())
             .filter(Boolean);
           const filtered = importList.filter(
-            (i) => !i.includes("__exportAll") && !i.endsWith(" as n")
+            (i) => !i.includes("__exportAll") && !i.endsWith(" as n"),
           );
           if (filtered.length === 0) return "";
           return `import { ${filtered.join(", ")} } from "${specifier}";`;
-        }
+        },
       );
 
       if (!content.includes("var __exportAll =")) {
@@ -45,7 +45,10 @@ if (fs.existsSync(ssrDir)) {
     }
 
     if (content.includes("(void 0)(")) {
-      content = content.replace(/\(void 0\)\(/g, "(import_jsx_dev_runtime.jsxDEV || import_jsx_dev_runtime.jsx)(");
+      content = content.replace(
+        /\(void 0\)\(/g,
+        "(import_jsx_dev_runtime.jsxDEV || import_jsx_dev_runtime.jsx)(",
+      );
     }
 
     fs.writeFileSync(filePath, content);
@@ -58,7 +61,10 @@ if (fs.existsSync(libsDir)) {
     const filePath = path.join(libsDir, file);
     let content = fs.readFileSync(filePath, "utf8");
 
-    if (content.includes("require_react_jsx_dev_runtime_production") || content.includes("exports.jsxDEV = void 0")) {
+    if (
+      content.includes("require_react_jsx_dev_runtime_production") ||
+      content.includes("exports.jsxDEV = void 0")
+    ) {
       content = content.replace(
         /exports\.jsxDEV\s*=\s*void\s*0;?/g,
         () => `var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
@@ -82,7 +88,7 @@ if (fs.existsSync(libsDir)) {
   }
   exports.jsxDEV = jsxProd;
   exports.jsx = jsxProd;
-  exports.jsxs = jsxProd;`
+  exports.jsxs = jsxProd;`,
       );
       fs.writeFileSync(filePath, content);
     }

@@ -1,11 +1,12 @@
 {
-  "projectId": "gen-lang-client-0904992356",
-  "appId": "1:460239037850:web:5f9a2a8cec113870a38623",
-  "apiKey": "AIzaSyB7qDhL0vHcRZ-KPSPACd-Gn6svECNYsEA",
-  "authDomain": "gen-lang-client-0904992356.firebaseapp.com",
-  "storageBucket": "gen-lang-client-0904992356.firebasestorage.app",
-  "messagingSenderId": "460239037850",
+  "projectId": "hallowed-outpost-nlcf1",
+  "appId": "1:969488341546:web:d260a3327c552bc8058153",
+  "apiKey": "AIzaSyCk539-myvV7EDqPOijgCW1cg0SW9A_IOE",
+  "authDomain": "hallowed-outpost-nlcf1.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-medora-a0dc7311-bfd6-4d09-a050-dabe6f8b0bcb",
+  "storageBucket": "hallowed-outpost-nlcf1.firebasestorage.app",
+  "messagingSenderId": "969488341546",
   "measurementId": "",
-  "oAuthClientId": "460239037850-4rkdouk2510hbplskk4q547153805o0v.apps.googleusercontent.com",
+  "oAuthClientId": "969488341546-5oft0f59n06lv2dj91nlf18tchqg3323.apps.googleusercontent.com",
   "recaptchaSiteKey": ""
 }

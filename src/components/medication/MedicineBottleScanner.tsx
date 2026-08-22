@@ -127,7 +127,7 @@ export function MedicineBottleScanner({
       } else {
         setCameraError("Camera access not supported on this browser.");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.warn("Camera stream access restricted:", err);
       setCameraError(
         "Camera stream not active in this preview environment. You can upload an image or choose one of our sample bottle presets below.",

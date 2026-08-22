@@ -1756,9 +1756,20 @@ function AuthPage() {
                       Not receiving the email in your inbox?
                     </p>
                     <ul className="text-[11px] text-muted-foreground list-disc pl-4 space-y-1">
-                      <li>Check your <strong>Spam</strong> or <strong>Junk</strong> folder.</li>
-                      <li>In your Supabase Dashboard: go to <strong>Authentication → Providers → Email</strong> and turn off <em>&quot;Confirm email&quot;</em> for instant verification.</li>
-                      <li>Or configure custom SMTP in <strong>Project Settings → Auth</strong>.</li>
+                      <li>
+                        Check your <strong>Spam</strong> or{" "}
+                        <strong>Junk</strong> folder.
+                      </li>
+                      <li>
+                        In your Supabase Dashboard: go to{" "}
+                        <strong>Authentication → Providers → Email</strong> and
+                        turn off <em>&quot;Confirm email&quot;</em> for instant
+                        verification.
+                      </li>
+                      <li>
+                        Or configure custom SMTP in{" "}
+                        <strong>Project Settings → Auth</strong>.
+                      </li>
                     </ul>
                   </div>
 

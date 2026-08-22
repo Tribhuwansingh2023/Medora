@@ -15,6 +15,12 @@ import {
   syncLabReportToPostgres,
   syncProfileToPostgres,
 } from "@/services/db-sync";
+import {
+  syncOrderToFirestore,
+  syncReminderToFirestore,
+  syncPrescriptionToFirestore,
+  syncProfileToFirestore,
+} from "@/services/firebase-sync";
 import type {
   AppRole,
   ClinicalNote,
@@ -462,6 +468,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
         };
         setState((p) => ({ ...p, orders: [order, ...p.orders], cart: [] }));
         void syncOrderToPostgres(order);
+        void syncOrderToFirestore(order);
         return order;
       },
       advanceOrder: (orderId, status, note) =>
@@ -474,6 +481,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
               timeline: [...o.timeline, { state: status, at: nowIso(), note }],
             };
             void syncOrderToPostgres(updated);
+            void syncOrderToFirestore(updated);
             return updated;
           });
           return { ...p, orders: updatedOrders };
@@ -484,10 +492,12 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           prescriptions: [rx, ...p.prescriptions.filter((x) => x.id !== rx.id)],
         }));
         void syncPrescriptionToPostgres(rx);
+        void syncPrescriptionToFirestore(rx);
       },
       addReminder: (r) => {
         setState((p) => ({ ...p, reminders: [r, ...p.reminders] }));
         void syncReminderToPostgres(r);
+        void syncReminderToFirestore(r);
       },
       updateReminder: (id, patch) => {
         setState((p) => {
@@ -495,6 +505,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
             if (r.id !== id) return r;
             const updated = { ...r, ...patch };
             void syncReminderToPostgres(updated);
+            void syncReminderToFirestore(updated);
             return updated;
           });
           return { ...p, reminders: updatedReminders };
@@ -514,6 +525,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
               ],
             };
             void syncReminderToPostgres(updated);
+            void syncReminderToFirestore(updated);
             return updated;
           });
           return { ...p, reminders: updatedReminders };

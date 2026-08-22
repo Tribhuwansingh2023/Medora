@@ -11,6 +11,7 @@ import {
 
 import { isSupabaseConfigured, supabase } from "@/integrations/supabase/client";
 import type { AppRole } from "@/lib/domain";
+import { sendFirebasePasswordReset } from "@/lib/firebase";
 import { fetchGoogleUserInfo, requestGoogleOAuthToken } from "./google-auth";
 
 export type AccountRole = AppRole;
@@ -588,6 +589,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { error: error?.message ?? null };
       },
       requestPasswordReset: async (email) => {
+        // Trigger Firebase Auth Password Reset
+        try {
+          void sendFirebasePasswordReset(email);
+        } catch {
+          // ignore background trigger
+        }
+
         if (!isSupabaseConfigured) {
           return { error: null };
         }

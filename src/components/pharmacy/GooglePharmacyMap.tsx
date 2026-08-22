@@ -12,6 +12,7 @@ import {
   Store,
   ChevronRight,
   Navigation2,
+  Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
