@@ -76,7 +76,8 @@ function LabsPage() {
     addLabReport(parsed);
     setUploading(false);
     toast.success("Sample report parsed", {
-      description: "Demo parsing only — values come from Medora's sample report, not your file.",
+      description:
+        "Demo parsing only — values come from Medora's sample report, not your file.",
     });
   };
 
@@ -122,7 +123,8 @@ function LabsPage() {
             <div>
               <h2 className="text-lg font-semibold text-ink">{report.panel}</h2>
               <p className="text-sm text-muted-foreground">
-                {report.fileName} · uploaded {new Date(report.uploadedAt).toLocaleDateString()}
+                {report.fileName} · uploaded{" "}
+                {new Date(report.uploadedAt).toLocaleDateString()}
               </p>
             </div>
             <Badge variant="outline">{report.values.length} tests</Badge>
@@ -167,8 +169,9 @@ function LabsPage() {
       ))}
 
       <SafetyNotice tone="warning" title="Ranges differ between laboratories">
-        A value outside the printed range is not automatically a problem, and a value inside it does
-        not rule anything out. Only the clinician who ordered the test can interpret it.
+        A value outside the printed range is not automatically a problem, and a
+        value inside it does not rule anything out. Only the clinician who
+        ordered the test can interpret it.
       </SafetyNotice>
       <ClinicalDisclaimer />
     </div>

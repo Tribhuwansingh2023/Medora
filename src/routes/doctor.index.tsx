@@ -1,5 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarClock, ClipboardCheck, Stethoscope, Users } from "lucide-react";
+import {
+  CalendarClock,
+  ClipboardCheck,
+  Stethoscope,
+  Users,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -13,7 +18,12 @@ import {
   Timeline,
   WorkspaceSection,
 } from "@/components/workspace/parts";
-import { shortDate, shortDateTime, timeOnly, useWorkspaceData } from "@/services/workspace";
+import {
+  shortDate,
+  shortDateTime,
+  timeOnly,
+  useWorkspaceData,
+} from "@/services/workspace";
 import type { DoctorPatient } from "@/lib/domain";
 
 export const Route = createFileRoute("/doctor/")({
@@ -25,10 +35,14 @@ export const Route = createFileRoute("/doctor/")({
         content:
           "Clinician view of patient records, assistive summaries, allergies, current medicines and recorded clinical decisions.",
       },
-      { property: "og:title", content: "Patient overview — Medora clinician workspace" },
+      {
+        property: "og:title",
+        content: "Patient overview — Medora clinician workspace",
+      },
       {
         property: "og:description",
-        content: "Patient list, assistive summaries and clinician-recorded decisions in Medora.",
+        content:
+          "Patient list, assistive summaries and clinician-recorded decisions in Medora.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -58,7 +72,9 @@ function DoctorPatientsPage() {
   const history = useWorkspaceData("medicineHistory");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [decision, setDecision] = useState("");
-  const [recorded, setRecorded] = useState<{ id: string; at: string; text: string }[]>([]);
+  const [recorded, setRecorded] = useState<
+    { id: string; at: string; text: string }[]
+  >([]);
 
   const rows = patients.data ?? [];
   const selected = useMemo(
@@ -74,7 +90,9 @@ function DoctorPatientsPage() {
       render: (r) => (
         <div>
           <p className="font-medium text-ink">{r.name}</p>
-          <p className="text-xs text-muted-foreground">{r.ageBand} · sample record</p>
+          <p className="text-xs text-muted-foreground">
+            {r.ageBand} · sample record
+          </p>
         </div>
       ),
     },
@@ -96,13 +114,17 @@ function DoctorPatientsPage() {
       key: "status",
       header: "Status",
       sortValue: (r) => r.status,
-      render: (r) => <StatusPill label={statusLabel[r.status]} tone={statusTone[r.status]} />,
+      render: (r) => (
+        <StatusPill label={statusLabel[r.status]} tone={statusTone[r.status]} />
+      ),
     },
   ];
 
   const waiting = rows.filter((p) => p.status === "waiting").length;
   const inConsult = rows.filter((p) => p.status === "in_consult").length;
-  const todayAppointments = (appointments.data ?? []).filter((a) => a.at.startsWith("2026-08-16"));
+  const todayAppointments = (appointments.data ?? []).filter((a) =>
+    a.at.startsWith("2026-08-16"),
+  );
 
   return (
     <div className="space-y-6">
@@ -157,7 +179,9 @@ function DoctorPatientsPage() {
                 rows={data}
                 columns={columns}
                 getId={(r) => r.id}
-                searchText={(r) => `${r.name} ${r.reason} ${r.currentMedicines.join(" ")}`}
+                searchText={(r) =>
+                  `${r.name} ${r.reason} ${r.currentMedicines.join(" ")}`
+                }
                 searchPlaceholder="Search patients or reasons…"
                 pageSize={6}
                 initialSort={{ key: "name", direction: "asc" }}
@@ -166,15 +190,21 @@ function DoctorPatientsPage() {
                   {
                     key: "status",
                     label: "Status",
-                    options: Object.entries(statusLabel).map(([value, label]) => ({
-                      value,
-                      label,
-                    })),
+                    options: Object.entries(statusLabel).map(
+                      ([value, label]) => ({
+                        value,
+                        label,
+                      }),
+                    ),
                     predicate: (r, v) => r.status === v,
                   },
                 ]}
                 rowActions={(r) => (
-                  <Button variant="outline" size="sm" onClick={() => setSelectedId(r.id)}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedId(r.id)}
+                  >
                     Open record
                   </Button>
                 )}
@@ -214,7 +244,9 @@ function DoctorPatientsPage() {
                           ))}
                         </ul>
                       ) : (
-                        <span className="text-muted-foreground">None recorded by the patient.</span>
+                        <span className="text-muted-foreground">
+                          None recorded by the patient.
+                        </span>
                       )}
                     </dd>
                   </div>
@@ -225,12 +257,17 @@ function DoctorPatientsPage() {
                     <dd className="mt-1 space-y-1 text-sm">
                       {selected.currentMedicines.length ? (
                         selected.currentMedicines.map((m) => (
-                          <p key={m} className="rounded-md bg-secondary px-2 py-1">
+                          <p
+                            key={m}
+                            className="rounded-md bg-secondary px-2 py-1"
+                          >
                             {m}
                           </p>
                         ))
                       ) : (
-                        <span className="text-muted-foreground">None recorded.</span>
+                        <span className="text-muted-foreground">
+                          None recorded.
+                        </span>
                       )}
                     </dd>
                   </div>
@@ -253,7 +290,9 @@ function DoctorPatientsPage() {
                   skeletonRows={3}
                 >
                   {(data) => {
-                    const forPatient = data.filter((h) => h.patientId === selected.id);
+                    const forPatient = data.filter(
+                      (h) => h.patientId === selected.id,
+                    );
                     if (forPatient.length === 0)
                       return (
                         <p className="text-sm text-muted-foreground">
@@ -271,8 +310,12 @@ function DoctorPatientsPage() {
                               {h.medicine} {h.strength}
                             </span>
                             <StatusPill
-                              label={h.status === "current" ? "Current" : "Past"}
-                              tone={h.status === "current" ? "positive" : "neutral"}
+                              label={
+                                h.status === "current" ? "Current" : "Past"
+                              }
+                              tone={
+                                h.status === "current" ? "positive" : "neutral"
+                              }
                             />
                             <span className="ml-auto text-xs text-muted-foreground">
                               {shortDate(`${h.startedOn}T00:00:00.000Z`)}
@@ -293,7 +336,10 @@ function DoctorPatientsPage() {
                 title="Final clinical decision"
                 description="Only a clinician can record an outcome. Nothing is applied automatically."
               >
-                <label htmlFor="decision" className="text-sm font-medium text-ink">
+                <label
+                  htmlFor="decision"
+                  className="text-sm font-medium text-ink"
+                >
                   Decision note
                 </label>
                 <Textarea
@@ -306,13 +352,20 @@ function DoctorPatientsPage() {
                 />
                 <div className="mt-3 flex flex-wrap gap-2">
                   {(
-                    ["Continue current therapy", "Invite to consult", "Refer", "No action"] as const
+                    [
+                      "Continue current therapy",
+                      "Invite to consult",
+                      "Refer",
+                      "No action",
+                    ] as const
                   ).map((label) => (
                     <Button
                       key={label}
                       variant="outline"
                       size="sm"
-                      onClick={() => setDecision((prev) => (prev ? prev : `${label}: `))}
+                      onClick={() =>
+                        setDecision((prev) => (prev ? prev : `${label}: `))
+                      }
                     >
                       {label}
                     </Button>
@@ -374,7 +427,10 @@ function DoctorPatientsPage() {
                                     : "Patient activity",
                             body: n.summary,
                             meta: n.author,
-                            tone: n.kind === "ai_review" ? ("ai" as const) : ("default" as const),
+                            tone:
+                              n.kind === "ai_review"
+                                ? ("ai" as const)
+                                : ("default" as const),
                           })),
                       ]}
                     />
@@ -383,8 +439,13 @@ function DoctorPatientsPage() {
               </WorkspaceSection>
             </>
           ) : (
-            <WorkspaceSection title="Patient record" description="Select a patient from the list.">
-              <p className="text-sm text-muted-foreground">No patient selected.</p>
+            <WorkspaceSection
+              title="Patient record"
+              description="Select a patient from the list."
+            >
+              <p className="text-sm text-muted-foreground">
+                No patient selected.
+              </p>
             </WorkspaceSection>
           )}
 
@@ -410,11 +471,16 @@ function DoctorPatientsPage() {
                 return (
                   <ul className="divide-y divide-border">
                     {today.map((a) => (
-                      <li key={a.id} className="flex items-center gap-3 py-2.5 text-sm">
+                      <li
+                        key={a.id}
+                        className="flex items-center gap-3 py-2.5 text-sm"
+                      >
                         <span className="numeric w-14 font-semibold text-ink">
                           {timeOnly(a.at)}
                         </span>
-                        <span className="min-w-0 flex-1 truncate">{a.patientName}</span>
+                        <span className="min-w-0 flex-1 truncate">
+                          {a.patientName}
+                        </span>
                         <StatusPill
                           label={a.status.replace("_", " ")}
                           tone={

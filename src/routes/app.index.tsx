@@ -39,7 +39,8 @@ export const Route = createFileRoute("/app/")({
       { property: "og:title", content: "Your medicine dashboard — Medora" },
       {
         property: "og:description",
-        content: "Prescriptions, reminders, comparisons and nearby pharmacies in one place.",
+        content:
+          "Prescriptions, reminders, comparisons and nearby pharmacies in one place.",
       },
     ],
   }),
@@ -53,7 +54,10 @@ const quickActions = [
   { to: "/app/assistant", label: "Ask the assistant", icon: MessageSquareText },
 ];
 
-const rxStatusLabel: Record<"extracted" | "reviewed" | "verified" | "rejected", string> = {
+const rxStatusLabel: Record<
+  "extracted" | "reviewed" | "verified" | "rejected",
+  string
+> = {
   extracted: "Needs review",
   reviewed: "Reviewed by you",
   verified: "Verified by pharmacy",
@@ -64,7 +68,11 @@ function Dashboard() {
   const { state, logDose } = useStore();
   const { profile, user } = useAuth();
   // Greet the signed-in account, not the demo persona.
-  const firstName = (profile?.full_name ?? user?.user_metadata?.["full_name"] ?? "")
+  const firstName = (
+    profile?.full_name ??
+    user?.user_metadata?.["full_name"] ??
+    ""
+  )
     .toString()
     .trim()
     .split(" ")[0];
@@ -83,7 +91,10 @@ function Dashboard() {
       state: r.log.find((l) => l.date === today && l.time === t)?.state,
     })),
   );
-  const savings = state.comparisons.reduce((sum, c) => sum + (c.highest - c.lowest), 0);
+  const savings = state.comparisons.reduce(
+    (sum, c) => sum + (c.highest - c.lowest),
+    0,
+  );
   const unreadAlerts = state.notifications.filter((n) => !n.read);
   const safetyAlerts = state.notifications
     .filter((n) => n.kind === "safety" && !n.read)
@@ -99,10 +110,16 @@ function Dashboard() {
       .filter(
         (m) =>
           !activeReminders.some((r) =>
-            `${r.medicineName}`.toLowerCase().includes(m.toLowerCase().split(" ")[0] ?? m),
+            `${r.medicineName}`
+              .toLowerCase()
+              .includes(m.toLowerCase().split(" ")[0] ?? m),
           ),
       )
-      .map((m) => ({ name: m, detail: "No reminder scheduled", source: "Health profile" })),
+      .map((m) => ({
+        name: m,
+        detail: "No reminder scheduled",
+        source: "Health profile",
+      })),
   ];
 
   return (
@@ -157,7 +174,11 @@ function Dashboard() {
         <StatTile
           label="Adherence (logged)"
           value={adherence == null ? "—" : `${adherence}%`}
-          hint={adherence == null ? "No doses logged yet" : "Across all logged doses"}
+          hint={
+            adherence == null
+              ? "No doses logged yet"
+              : "Across all logged doses"
+          }
           icon={CalendarClock}
           tone={adherence != null && adherence >= 80 ? "positive" : "default"}
         />
@@ -202,12 +223,16 @@ function Dashboard() {
                   key={`${reminder.id}-${time}`}
                   className="flex flex-wrap items-center gap-3 rounded-md border border-border bg-secondary/40 px-4 py-3"
                 >
-                  <span className="numeric w-14 text-sm font-semibold">{time}</span>
+                  <span className="numeric w-14 text-sm font-semibold">
+                    {time}
+                  </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-ink">
                       {reminder.medicineName} {reminder.strength}
                     </p>
-                    <p className="truncate text-xs text-muted-foreground">{reminder.instruction}</p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {reminder.instruction}
+                    </p>
                   </div>
                   {doseState ? (
                     <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -215,7 +240,10 @@ function Dashboard() {
                     </span>
                   ) : (
                     <div className="flex gap-2">
-                      <Button size="sm" onClick={() => logDose(reminder.id, time, "taken")}>
+                      <Button
+                        size="sm"
+                        onClick={() => logDose(reminder.id, time, "taken")}
+                      >
                         Taken
                       </Button>
                       <Button
@@ -251,7 +279,9 @@ function Dashboard() {
           </div>
           <div className="mt-4 space-y-2">
             {isLoading &&
-              [0, 1, 2].map((i) => <Skeleton key={i} className="h-16 w-full rounded-md" />)}
+              [0, 1, 2].map((i) => (
+                <Skeleton key={i} className="h-16 w-full rounded-md" />
+              ))}
             {pharmacies?.slice(0, 3).map((p) => (
               <Link
                 key={p.id}
@@ -261,9 +291,12 @@ function Dashboard() {
               >
                 <MapPin className="mt-0.5 size-4 text-primary" aria-hidden />
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-ink">{p.name}</p>
+                  <p className="truncate text-sm font-medium text-ink">
+                    {p.name}
+                  </p>
                   <p className="text-xs text-muted-foreground">
-                    {p.distanceKm} km · {isOpenNow(p) ? "Open now" : `Opens ${p.opensAt}`}
+                    {p.distanceKm} km ·{" "}
+                    {isOpenNow(p) ? "Open now" : `Opens ${p.opensAt}`}
                   </p>
                 </div>
               </Link>
@@ -321,10 +354,17 @@ function Dashboard() {
           ) : (
             <ul className="mt-4 divide-y divide-border">
               {currentMedicines.map((m) => (
-                <li key={m.name} className="flex items-center justify-between gap-3 py-3">
+                <li
+                  key={m.name}
+                  className="flex items-center justify-between gap-3 py-3"
+                >
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-ink">{m.name}</p>
-                    <p className="truncate text-xs text-muted-foreground">{m.detail}</p>
+                    <p className="truncate text-sm font-medium text-ink">
+                      {m.name}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {m.detail}
+                    </p>
                   </div>
                   <span className="shrink-0 rounded-full border border-border bg-secondary px-2.5 py-0.5 text-xs text-muted-foreground">
                     {m.source}
@@ -356,20 +396,32 @@ function Dashboard() {
           ) : (
             <ul className="mt-4 space-y-3">
               {state.prescriptions.slice(0, 4).map((rx) => {
-                const confirmed = rx.items.filter((i) => i.userConfirmed).length;
+                const confirmed = rx.items.filter(
+                  (i) => i.userConfirmed,
+                ).length;
                 return (
-                  <li key={rx.id} className="rounded-md border border-border px-4 py-3">
+                  <li
+                    key={rx.id}
+                    className="rounded-md border border-border px-4 py-3"
+                  >
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
-                      <p className="truncate text-sm font-medium text-ink">{rx.fileName}</p>
+                      <p className="truncate text-sm font-medium text-ink">
+                        {rx.fileName}
+                      </p>
                       <span className="shrink-0 rounded-full border border-border bg-secondary px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
                         {rxStatusLabel[rx.status]}
                       </span>
                     </div>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {confirmed} of {rx.items.length} lines confirmed · {rx.prescriberName}
+                      {confirmed} of {rx.items.length} lines confirmed ·{" "}
+                      {rx.prescriberName}
                     </p>
                     <Progress
-                      value={rx.items.length ? (confirmed / rx.items.length) * 100 : 0}
+                      value={
+                        rx.items.length
+                          ? (confirmed / rx.items.length) * 100
+                          : 0
+                      }
                       className="mt-2 h-1.5"
                     />
                   </li>
@@ -396,8 +448,12 @@ function Dashboard() {
         ) : (
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {state.comparisons.map((c) => {
-              const listings = demoPrices.filter((p) => c.medicineIds.includes(p.medicineId));
-              const availability = listings.some((l) => l.availability === "in_stock")
+              const listings = demoPrices.filter((p) =>
+                c.medicineIds.includes(p.medicineId),
+              );
+              const availability = listings.some(
+                (l) => l.availability === "in_stock",
+              )
                 ? "in_stock"
                 : "low_stock";
               return (
@@ -407,12 +463,12 @@ function Dashboard() {
                     <AvailabilityPill value={availability} />
                   </div>
                   <p className="numeric mt-2 text-sm text-muted-foreground">
-                    {formatMoney(c.lowest)} – {formatMoney(c.highest)} across {c.medicineIds.length}{" "}
-                    products
+                    {formatMoney(c.lowest)} – {formatMoney(c.highest)} across{" "}
+                    {c.medicineIds.length} products
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Saved {new Date(c.createdAt).toLocaleDateString()} · same active ingredient,
-                    strength and form
+                    Saved {new Date(c.createdAt).toLocaleDateString()} · same
+                    active ingredient, strength and form
                   </p>
                 </li>
               );

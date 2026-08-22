@@ -1,0 +1,1 @@
+import{a as e,n as t}from"./jsx-dev-runtime-BsTk6-E6.js";import{G as n,St as r,at as i,it as a}from"./index-B_IBxdOs.js";var o=e(t(),1);function s(){let e=i(),t=r(),s=n(),{signOut:c}=a();return(0,o.useCallback)(async()=>{await e.cancelQueries(),e.clear(),c(),await s.signOut(),await t({to:`/auth`,search:{next:``},replace:!0})},[e,c,s,t])}export{s as t};

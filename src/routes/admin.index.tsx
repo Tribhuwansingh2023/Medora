@@ -1,5 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Activity, AlertTriangle, Building2, Pill, ShieldAlert, Users } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  Building2,
+  Pill,
+  ShieldAlert,
+  Users,
+} from "lucide-react";
 import { PageHeader, StatTile } from "@/components/common/primitives";
 import {
   ChartFrame,
@@ -7,7 +14,11 @@ import {
   MultiLineChart,
   SimpleBarChart,
 } from "@/components/workspace/charts";
-import { AsyncSection, StatusPill, WorkspaceSection } from "@/components/workspace/parts";
+import {
+  AsyncSection,
+  StatusPill,
+  WorkspaceSection,
+} from "@/components/workspace/parts";
 import { shortDate, useWorkspaceData } from "@/services/workspace";
 
 export const Route = createFileRoute("/admin/")({
@@ -19,10 +30,14 @@ export const Route = createFileRoute("/admin/")({
         content:
           "Platform-wide KPIs, growth trends and the queue of items that need administrator attention.",
       },
-      { property: "og:title", content: "Platform overview — Medora Admin workspace" },
+      {
+        property: "og:title",
+        content: "Platform overview — Medora Admin workspace",
+      },
       {
         property: "og:description",
-        content: "Administrator overview of users, organisations, catalogue and moderation queues.",
+        content:
+          "Administrator overview of users, organisations, catalogue and moderation queues.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -47,7 +62,9 @@ function PlatformOverviewPage() {
     acc[u.role] = (acc[u.role] ?? 0) + 1;
     return acc;
   }, {});
-  const verifiedOrgs = orgRows.filter((o) => o.verification === "verified").length;
+  const verifiedOrgs = orgRows.filter(
+    (o) => o.verification === "verified",
+  ).length;
   const openReports = moderationRows.filter(
     (r) => r.status === "open" || r.status === "investigating",
   ).length;
@@ -55,7 +72,9 @@ function PlatformOverviewPage() {
   const pendingOrgs = orgRows.filter(
     (o) => o.verification === "pending" || o.verification === "expired",
   );
-  const needsReviewCatalogue = catalogueRows.filter((c) => c.reviewState !== "published");
+  const needsReviewCatalogue = catalogueRows.filter(
+    (c) => c.reviewState !== "published",
+  );
 
   const roleBreakdown = Object.entries(roleCounts).map(([name, value]) => ({
     name: name.charAt(0).toUpperCase() + name.slice(1),
@@ -164,7 +183,12 @@ function PlatformOverviewPage() {
           >
             {() => (
               <ChartFrame title="Accounts by role" height={220}>
-                <SimpleBarChart data={roleBreakdown} xKey="name" yKey="value" label="Accounts" />
+                <SimpleBarChart
+                  data={roleBreakdown}
+                  xKey="name"
+                  yKey="value"
+                  label="Accounts"
+                />
               </ChartFrame>
             )}
           </AsyncSection>
@@ -179,7 +203,8 @@ function PlatformOverviewPage() {
           <li className="flex flex-wrap items-center gap-3 py-3">
             <AlertTriangle className="size-4 text-warning" aria-hidden />
             <span className="flex-1 text-sm">
-              <span className="font-medium text-ink">{pendingUsers}</span> user account
+              <span className="font-medium text-ink">{pendingUsers}</span> user
+              account
               {pendingUsers === 1 ? "" : "s"} awaiting approval
             </span>
             <StatusPill
@@ -196,8 +221,10 @@ function PlatformOverviewPage() {
           <li className="flex flex-wrap items-center gap-3 py-3">
             <Building2 className="size-4 text-warning" aria-hidden />
             <span className="flex-1 text-sm">
-              <span className="font-medium text-ink">{pendingOrgs.length}</span> organisation
-              {pendingOrgs.length === 1 ? "" : "s"} pending or with an expired licence
+              <span className="font-medium text-ink">{pendingOrgs.length}</span>{" "}
+              organisation
+              {pendingOrgs.length === 1 ? "" : "s"} pending or with an expired
+              licence
             </span>
             <StatusPill
               label={pendingOrgs.length > 0 ? "Action needed" : "Clear"}
@@ -213,11 +240,16 @@ function PlatformOverviewPage() {
           <li className="flex flex-wrap items-center gap-3 py-3">
             <Pill className="size-4 text-warning" aria-hidden />
             <span className="flex-1 text-sm">
-              <span className="font-medium text-ink">{needsReviewCatalogue.length}</span> catalogue
-              record{needsReviewCatalogue.length === 1 ? "" : "s"} flagged for review
+              <span className="font-medium text-ink">
+                {needsReviewCatalogue.length}
+              </span>{" "}
+              catalogue record{needsReviewCatalogue.length === 1 ? "" : "s"}{" "}
+              flagged for review
             </span>
             <StatusPill
-              label={needsReviewCatalogue.length > 0 ? "Action needed" : "Clear"}
+              label={
+                needsReviewCatalogue.length > 0 ? "Action needed" : "Clear"
+              }
               tone={needsReviewCatalogue.length > 0 ? "warning" : "positive"}
             />
             <Link
@@ -230,14 +262,17 @@ function PlatformOverviewPage() {
           <li className="flex flex-wrap items-center gap-3 py-3">
             <ShieldAlert className="size-4 text-destructive" aria-hidden />
             <span className="flex-1 text-sm">
-              <span className="font-medium text-ink">{openReports}</span> open moderation report
+              <span className="font-medium text-ink">{openReports}</span> open
+              moderation report
               {openReports === 1 ? "" : "s"}
             </span>
             <StatusPill
               label={openReports > 0 ? "Action needed" : "Clear"}
               tone={openReports > 0 ? "danger" : "positive"}
             />
-            <span className="text-xs text-muted-foreground">See moderation log</span>
+            <span className="text-xs text-muted-foreground">
+              See moderation log
+            </span>
           </li>
         </ul>
       </WorkspaceSection>

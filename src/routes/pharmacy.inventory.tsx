@@ -12,8 +12,17 @@ import {
 } from "@/components/ui/dialog";
 import { PageHeader, SafetyNotice } from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
-import { AsyncSection, StatusPill, WorkspaceSection } from "@/components/workspace/parts";
-import { daysUntil, money, shortDate, useWorkspaceData } from "@/services/workspace";
+import {
+  AsyncSection,
+  StatusPill,
+  WorkspaceSection,
+} from "@/components/workspace/parts";
+import {
+  daysUntil,
+  money,
+  shortDate,
+  useWorkspaceData,
+} from "@/services/workspace";
 import type { InventoryItem } from "@/lib/domain";
 
 export const Route = createFileRoute("/pharmacy/inventory")({
@@ -25,10 +34,14 @@ export const Route = createFileRoute("/pharmacy/inventory")({
         content:
           "Last-synced demo inventory levels, batches and expiry windows for the Medora pharmacy console.",
       },
-      { property: "og:title", content: "Inventory — Medora Pharmacy workspace" },
+      {
+        property: "og:title",
+        content: "Inventory — Medora Pharmacy workspace",
+      },
       {
         property: "og:description",
-        content: "Filter, sort and review demo stock lines, batches and expiry dates.",
+        content:
+          "Filter, sort and review demo stock lines, batches and expiry dates.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -46,12 +59,14 @@ function stockStatus(item: InventoryItem): StockStatus {
   return "ok";
 }
 
-const statusMeta: Record<StockStatus, { label: string; tone: "warning" | "danger" | "positive" }> =
-  {
-    low: { label: "Low stock", tone: "warning" },
-    expiring: { label: "Expiring soon", tone: "danger" },
-    ok: { label: "Adequate stock", tone: "positive" },
-  };
+const statusMeta: Record<
+  StockStatus,
+  { label: string; tone: "warning" | "danger" | "positive" }
+> = {
+  low: { label: "Low stock", tone: "warning" },
+  expiring: { label: "Expiring soon", tone: "danger" },
+  ok: { label: "Adequate stock", tone: "positive" },
+};
 
 function InventoryPage() {
   const inventory = useWorkspaceData("inventory");
@@ -65,7 +80,9 @@ function InventoryPage() {
       render: (r) => (
         <div>
           <p className="font-medium text-ink">{r.name}</p>
-          <p className="text-xs text-muted-foreground">Supplier: {r.supplier}</p>
+          <p className="text-xs text-muted-foreground">
+            Supplier: {r.supplier}
+          </p>
         </div>
       ),
     },
@@ -91,7 +108,9 @@ function InventoryPage() {
       render: (r) => (
         <span className="numeric font-medium text-ink">
           {r.stock}{" "}
-          <span className="text-xs text-muted-foreground">/ reorder {r.reorderLevel}</span>
+          <span className="text-xs text-muted-foreground">
+            / reorder {r.reorderLevel}
+          </span>
         </span>
       ),
     },
@@ -122,10 +141,13 @@ function InventoryPage() {
         description="Stock lines from the demo pharmacy provider, last synced for this session."
       />
 
-      <SafetyNotice tone="info" title="These are last-synced demo figures, not live inventory">
-        Quantities and prices below reflect the demo provider's last sync. Nothing here is a live
-        stock feed or a live price — connect a licensed inventory provider before using this in
-        production.
+      <SafetyNotice
+        tone="info"
+        title="These are last-synced demo figures, not live inventory"
+      >
+        Quantities and prices below reflect the demo provider's last sync.
+        Nothing here is a live stock feed or a live price — connect a licensed
+        inventory provider before using this in production.
       </SafetyNotice>
 
       <AsyncSection
@@ -153,8 +175,13 @@ function InventoryPage() {
                           className="flex flex-wrap items-center justify-between gap-3 py-2.5 text-sm"
                         >
                           <div className="flex items-center gap-2">
-                            <AlertTriangle className="size-4 text-warning" aria-hidden />
-                            <span className="font-medium text-ink">{item.name}</span>
+                            <AlertTriangle
+                              className="size-4 text-warning"
+                              aria-hidden
+                            />
+                            <span className="font-medium text-ink">
+                              {item.name}
+                            </span>
                             <span className="text-xs text-muted-foreground">
                               batch {item.batch} · expires{" "}
                               {shortDate(`${item.expiry}T00:00:00.000Z`)}
@@ -206,7 +233,11 @@ function InventoryPage() {
                     },
                   ]}
                   rowActions={(r) => (
-                    <Button variant="outline" size="sm" onClick={() => setViewing(r)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setViewing(r)}
+                    >
                       View
                     </Button>
                   )}
@@ -217,7 +248,10 @@ function InventoryPage() {
         }}
       </AsyncSection>
 
-      <Dialog open={Boolean(viewing)} onOpenChange={(open) => !open && setViewing(null)}>
+      <Dialog
+        open={Boolean(viewing)}
+        onOpenChange={(open) => !open && setViewing(null)}
+      >
         <DialogContent>
           {viewing && (
             <>
@@ -232,22 +266,30 @@ function InventoryPage() {
                   <dt className="text-xs uppercase tracking-wide text-muted-foreground">
                     On hand (last synced)
                   </dt>
-                  <dd className="numeric mt-1 font-medium text-ink">{viewing.stock}</dd>
+                  <dd className="numeric mt-1 font-medium text-ink">
+                    {viewing.stock}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs uppercase tracking-wide text-muted-foreground">
                     Reorder level
                   </dt>
-                  <dd className="numeric mt-1 font-medium text-ink">{viewing.reorderLevel}</dd>
+                  <dd className="numeric mt-1 font-medium text-ink">
+                    {viewing.reorderLevel}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs uppercase tracking-wide text-muted-foreground">
                     Demo price
                   </dt>
-                  <dd className="mt-1 font-medium text-ink">{money(viewing.price)}</dd>
+                  <dd className="mt-1 font-medium text-ink">
+                    {money(viewing.price)}
+                  </dd>
                 </div>
                 <div>
-                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">Expiry</dt>
+                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+                    Expiry
+                  </dt>
                   <dd className="mt-1 font-medium text-ink">
                     {shortDate(`${viewing.expiry}T00:00:00.000Z`)}
                   </dd>
@@ -260,7 +302,8 @@ function InventoryPage() {
                     toast("Reorder flagged for this session (demo)");
                   }}
                 >
-                  <PackageSearch className="size-4" aria-hidden /> Flag for reorder
+                  <PackageSearch className="size-4" aria-hidden /> Flag for
+                  reorder
                 </Button>
               </div>
             </>

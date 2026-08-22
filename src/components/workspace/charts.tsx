@@ -47,7 +47,9 @@ export function ChartFrame({
       <figcaption className="mb-4 flex flex-wrap items-start justify-between gap-2">
         <div>
           <h3 className="font-display text-sm font-bold text-ink">{title}</h3>
-          {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
+          {description && (
+            <p className="mt-1 text-xs text-muted-foreground">{description}</p>
+          )}
         </div>
         <DemoBadge label="Demo figures" />
       </figcaption>
@@ -79,10 +81,17 @@ export function TrendAreaChart({
           <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0.02} />
         </linearGradient>
       </defs>
-      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+      <CartesianGrid
+        strokeDasharray="3 3"
+        stroke="var(--border)"
+        vertical={false}
+      />
       <XAxis dataKey={xKey} {...axis} />
       <YAxis {...axis} width={54} />
-      <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [v, label]} />
+      <Tooltip
+        contentStyle={tooltipStyle}
+        formatter={(v: number) => [v, label]}
+      />
       <Area
         type="monotone"
         dataKey={yKey}
@@ -109,7 +118,11 @@ export function SimpleBarChart({
 }) {
   return (
     <BarChart data={data} margin={{ left: -18, right: 6, top: 6, bottom: 0 }}>
-      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+      <CartesianGrid
+        strokeDasharray="3 3"
+        stroke="var(--border)"
+        vertical={false}
+      />
       <XAxis dataKey={xKey} {...axis} interval={0} />
       <YAxis {...axis} width={54} allowDecimals={false} />
       <Tooltip
@@ -122,7 +135,8 @@ export function SimpleBarChart({
           <Cell
             key={i}
             fill={
-              (colorKey ? (row[colorKey] as string) : undefined) ?? `var(--chart-${(i % 5) + 1})`
+              (colorKey ? (row[colorKey] as string) : undefined) ??
+              `var(--chart-${(i % 5) + 1})`
             }
           />
         ))}
@@ -148,7 +162,10 @@ export function StatusDonutChart({
         paddingAngle={2}
       >
         {data.map((entry, i) => (
-          <Cell key={entry.name} fill={entry.color ?? `var(--chart-${(i % 5) + 1})`} />
+          <Cell
+            key={entry.name}
+            fill={entry.color ?? `var(--chart-${(i % 5) + 1})`}
+          />
         ))}
       </Pie>
     </PieChart>
@@ -166,7 +183,11 @@ export function MultiLineChart({
 }) {
   return (
     <LineChart data={data} margin={{ left: -18, right: 6, top: 6, bottom: 0 }}>
-      <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+      <CartesianGrid
+        strokeDasharray="3 3"
+        stroke="var(--border)"
+        vertical={false}
+      />
       <XAxis dataKey={xKey} {...axis} />
       <YAxis {...axis} width={54} />
       <Tooltip contentStyle={tooltipStyle} />
@@ -185,12 +206,20 @@ export function MultiLineChart({
   );
 }
 
-export function ChartLegend({ items }: { items: { label: string; color: string }[] }) {
+export function ChartLegend({
+  items,
+}: {
+  items: { label: string; color: string }[];
+}) {
   return (
     <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
       {items.map((item) => (
         <li key={item.label} className="flex items-center gap-1.5">
-          <span aria-hidden className="size-2.5 rounded-full" style={{ background: item.color }} />
+          <span
+            aria-hidden
+            className="size-2.5 rounded-full"
+            style={{ background: item.color }}
+          />
           {item.label}
         </li>
       ))}

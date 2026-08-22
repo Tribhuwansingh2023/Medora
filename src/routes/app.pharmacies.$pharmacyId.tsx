@@ -31,7 +31,10 @@ export const Route = createFileRoute("/app/pharmacies/$pharmacyId")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Pharmacy unavailable — Medora" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Pharmacy unavailable — Medora" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
     const title = `${loaderData.name} — Medora`;
@@ -113,20 +116,23 @@ function PharmacyDetail() {
       </Button>
 
       <header className="surface p-6">
-        <h1 className="font-display text-2xl font-bold tracking-tight">{pharmacy.name}</h1>
+        <h1 className="font-display text-2xl font-bold tracking-tight">
+          {pharmacy.name}
+        </h1>
         <p className="mt-1 text-muted-foreground">
           {pharmacy.address}, {pharmacy.city}
         </p>
         <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
-            <MapPin className="size-4" aria-hidden /> {pharmacy.distanceKm} km away
+            <MapPin className="size-4" aria-hidden /> {pharmacy.distanceKm} km
+            away
           </span>
           <span className="inline-flex items-center gap-1.5">
             <Clock className="size-4" aria-hidden />
             {pharmacy.open24h
               ? "Open 24 hours"
-              : `${pharmacy.opensAt} – ${pharmacy.closesAt}`} ·{" "}
-            {isOpenNow(pharmacy) ? "open now" : "closed"}
+              : `${pharmacy.opensAt} – ${pharmacy.closesAt}`}{" "}
+            · {isOpenNow(pharmacy) ? "open now" : "closed"}
           </span>
           <a
             href={`tel:${pharmacy.phone}`}
@@ -135,7 +141,8 @@ function PharmacyDetail() {
             <Phone className="size-4" aria-hidden /> {pharmacy.phone}
           </a>
           <span className="inline-flex items-center gap-1.5">
-            <ShieldCheck className="size-4 text-success" aria-hidden /> Licence {pharmacy.licenseId}
+            <ShieldCheck className="size-4 text-success" aria-hidden /> Licence{" "}
+            {pharmacy.licenseId}
           </span>
         </div>
         <div className="mt-4">
@@ -162,9 +169,15 @@ function PharmacyDetail() {
           title="Listed stock"
           description="Availability is reported by the pharmacy and can change before you arrive. Call ahead for prescription-only items."
         />
-        {isPending && [0, 1, 2].map((i) => <Skeleton key={i} className="h-16 w-full rounded-lg" />)}
+        {isPending &&
+          [0, 1, 2].map((i) => (
+            <Skeleton key={i} className="h-16 w-full rounded-lg" />
+          ))}
         {stock?.map((row) => (
-          <div key={row.listing.id} className="surface flex flex-wrap items-center gap-4 p-4">
+          <div
+            key={row.listing.id}
+            className="surface flex flex-wrap items-center gap-4 p-4"
+          >
             <div className="min-w-0 flex-1">
               <Link
                 to="/app/medicine/$medicineId"
@@ -178,7 +191,9 @@ function PharmacyDetail() {
               </p>
             </div>
             <AvailabilityPill value={row.listing.availability} />
-            <p className="numeric font-semibold">{formatMoney(row.listing.price)}</p>
+            <p className="numeric font-semibold">
+              {formatMoney(row.listing.price)}
+            </p>
           </div>
         ))}
         {stock?.length === 0 && (

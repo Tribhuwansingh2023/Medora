@@ -34,10 +34,14 @@ export const Route = createFileRoute("/doctor/prescriptions")({
         content:
           "Review prescription requests, read assistive flags and write prescriptions yourself — nothing is signed automatically.",
       },
-      { property: "og:title", content: "Prescription review — Medora clinician workspace" },
+      {
+        property: "og:title",
+        content: "Prescription review — Medora clinician workspace",
+      },
       {
         property: "og:description",
-        content: "Clinician-controlled prescription review and creation in Medora.",
+        content:
+          "Clinician-controlled prescription review and creation in Medora.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -57,7 +61,9 @@ function DoctorPrescriptionsPage() {
   const drafts = useWorkspaceData("prescriptionDrafts");
   const patients = useWorkspaceData("doctorPatients");
   const [openId, setOpenId] = useState<string | null>(null);
-  const [localState, setLocalState] = useState<Record<string, "signed" | "declined">>({});
+  const [localState, setLocalState] = useState<
+    Record<string, "signed" | "declined">
+  >({});
 
   const columns: DataColumn<DoctorPrescriptionDraft>[] = [
     {
@@ -119,10 +125,14 @@ function DoctorPrescriptionsPage() {
         description="Requests arrive here unsigned. Assistive flags are informational only — the clinician writes the medicine, strength and directions."
       />
 
-      <SafetyNotice tone="warning" title="Nothing is prescribed by the assistant">
-        Medora never produces a prescription, a dose or directions. Assistive flags surface what is
-        already on file (allergies, existing medicines, request origin) so a qualified prescriber
-        can check it faster. Every prescription must be written and signed by the clinician.
+      <SafetyNotice
+        tone="warning"
+        title="Nothing is prescribed by the assistant"
+      >
+        Medora never produces a prescription, a dose or directions. Assistive
+        flags surface what is already on file (allergies, existing medicines,
+        request origin) so a qualified prescriber can check it faster. Every
+        prescription must be written and signed by the clinician.
       </SafetyNotice>
 
       <Tabs defaultValue="review">
@@ -158,10 +168,12 @@ function DoctorPrescriptionsPage() {
                     {
                       key: "status",
                       label: "Status",
-                      options: Object.entries(draftStatus).map(([value, meta]) => ({
-                        value,
-                        label: meta.label,
-                      })),
+                      options: Object.entries(draftStatus).map(
+                        ([value, meta]) => ({
+                          value,
+                          label: meta.label,
+                        }),
+                      ),
                       predicate: (r, v) => (localState[r.id] ?? r.status) === v,
                     },
                     {
@@ -197,15 +209,24 @@ function DoctorPrescriptionsPage() {
                   key={draft.id}
                   title={`Request for ${draft.patientName}`}
                   description={`Received ${shortDateTime(draft.createdAt)} · ${draft.origin.replace("_", " ")}`}
-                  actions={<StatusPill {...draftStatus[localState[draft.id] ?? draft.status]} />}
+                  actions={
+                    <StatusPill
+                      {...draftStatus[localState[draft.id] ?? draft.status]}
+                    />
+                  }
                 >
                   <ul className="divide-y divide-border rounded-md border border-border">
                     {draft.items.map((item) => (
-                      <li key={`${draft.id}-${item.medicine}`} className="p-3 text-sm">
+                      <li
+                        key={`${draft.id}-${item.medicine}`}
+                        className="p-3 text-sm"
+                      >
                         <p className="font-medium text-ink">
                           {item.medicine} {item.strength} · {item.form}
                         </p>
-                        <p className="mt-1 text-muted-foreground">{item.directionsPlaceholder}</p>
+                        <p className="mt-1 text-muted-foreground">
+                          {item.directionsPlaceholder}
+                        </p>
                       </li>
                     ))}
                   </ul>
@@ -233,12 +254,16 @@ function DoctorPrescriptionsPage() {
                         toast.success("Recorded as signed by you (demo)");
                       }}
                     >
-                      <PenLine className="size-4" aria-hidden /> Sign as prescriber
+                      <PenLine className="size-4" aria-hidden /> Sign as
+                      prescriber
                     </Button>
                     <Button
                       variant="outline"
                       onClick={() => {
-                        setLocalState((p) => ({ ...p, [draft.id]: "declined" }));
+                        setLocalState((p) => ({
+                          ...p,
+                          [draft.id]: "declined",
+                        }));
                         toast("Recorded as declined (demo)");
                       }}
                     >
@@ -250,7 +275,9 @@ function DoctorPrescriptionsPage() {
         </TabsContent>
 
         <TabsContent value="create" className="mt-5">
-          <PrescriptionComposer patientNames={(patients.data ?? []).map((p) => p.name)} />
+          <PrescriptionComposer
+            patientNames={(patients.data ?? []).map((p) => p.name)}
+          />
         </TabsContent>
       </Tabs>
     </div>
@@ -264,7 +291,11 @@ function PrescriptionComposer({ patientNames }: { patientNames: string[] }) {
   const [form, setForm] = useState("");
   const [directions, setDirections] = useState("");
   const ready =
-    patient && medicine.trim() && strength.trim() && form.trim() && directions.trim().length > 4;
+    patient &&
+    medicine.trim() &&
+    strength.trim() &&
+    form.trim() &&
+    directions.trim().length > 4;
 
   return (
     <WorkspaceSection
@@ -340,8 +371,9 @@ function PrescriptionComposer({ patientNames }: { patientNames: string[] }) {
           <Pill className="size-4" aria-hidden /> Create and sign
         </Button>
         <p className="text-xs text-muted-foreground">
-          In this demo nothing is transmitted to a pharmacy. Production deployments require verified
-          prescriber credentials and an audited signing step.
+          In this demo nothing is transmitted to a pharmacy. Production
+          deployments require verified prescriber credentials and an audited
+          signing step.
         </p>
       </div>
     </WorkspaceSection>

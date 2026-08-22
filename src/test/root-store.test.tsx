@@ -41,7 +41,9 @@ describe("root route store wiring", () => {
 
     render(<RouterProvider router={buildRouter()} />);
 
-    await waitFor(() => expect(screen.getByTestId("probe")).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByTestId("probe")).toBeInTheDocument(),
+    );
 
     // The shell itself consumes the store (notifications, cart) and rendered fine.
     expect(screen.getAllByRole("navigation").length).toBeGreaterThan(0);
@@ -57,7 +59,9 @@ describe("root route store wiring", () => {
 
   it("throws a clear error when useStore is used without the provider", () => {
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    expect(() => render(<StoreProbe />)).toThrow(/useStore must be used inside/);
+    expect(() => render(<StoreProbe />)).toThrow(
+      /useStore must be used inside/,
+    );
     errorSpy.mockRestore();
   });
 });

@@ -23,7 +23,11 @@ import {
   demoSuppliers,
   demoVerificationQueue,
 } from "@/data/workspace-demo";
-import { demoAuditEvents, demoDoctorPatients, demoInventory } from "@/data/demo-catalog";
+import {
+  demoAuditEvents,
+  demoDoctorPatients,
+  demoInventory,
+} from "@/data/demo-catalog";
 import { settle } from "./provider";
 
 export const workspaceLoaders = {
@@ -55,19 +59,27 @@ export function useWorkspaceData<K extends WorkspaceResource>(resource: K) {
   return useQuery<Awaited<ReturnType<(typeof workspaceLoaders)[K]>>>({
     queryKey: ["workspace", resource],
     queryFn: () =>
-      workspaceLoaders[resource]() as Promise<Awaited<ReturnType<(typeof workspaceLoaders)[K]>>>,
+      workspaceLoaders[resource]() as Promise<
+        Awaited<ReturnType<(typeof workspaceLoaders)[K]>>
+      >,
     staleTime: 30_000,
     retry: 1,
   });
 }
 
 export const money = (value: number, currency = "USD") =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 2 }).format(
-    value,
-  );
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 2,
+  }).format(value);
 
 export const shortDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  new Date(iso).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 
 export const shortDateTime = (iso: string) =>
   new Date(iso).toLocaleString("en-GB", {
@@ -78,10 +90,14 @@ export const shortDateTime = (iso: string) =>
   });
 
 export const timeOnly = (iso: string) =>
-  new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  new Date(iso).toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
 export const daysUntil = (dateOnly: string) =>
   Math.round(
-    (new Date(`${dateOnly}T00:00:00.000Z`).getTime() - Date.parse("2026-08-16T00:00:00.000Z")) /
+    (new Date(`${dateOnly}T00:00:00.000Z`).getTime() -
+      Date.parse("2026-08-16T00:00:00.000Z")) /
       86_400_000,
   );

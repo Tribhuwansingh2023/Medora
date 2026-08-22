@@ -111,12 +111,7 @@ export interface InteractionReport {
       | "safe"
       | "not_assessed";
     severity:
-      | "severe"
-      | "moderate"
-      | "minor"
-      | "review"
-      | "information"
-      | "safe";
+      "severe" | "moderate" | "minor" | "review" | "information" | "safe";
     title: string;
     detail: string;
     items: string[];

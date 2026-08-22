@@ -14,10 +14,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DemoBadge, EmptyState, PageHeader, SafetyNotice } from "@/components/common/primitives";
+import {
+  DemoBadge,
+  EmptyState,
+  PageHeader,
+  SafetyNotice,
+} from "@/components/common/primitives";
 import { MedicineCard } from "@/components/medicine/MedicineCard";
 import { demoPrices } from "@/data/demo-catalog";
 import { searchMedicines } from "@/services/medicines";
+import { getProvider } from "@/services/medicine-provider";
 import { useStore } from "@/lib/store";
 
 const searchSchema = z.object({
@@ -47,7 +53,9 @@ export const Route = createFileRoute("/app/search")({
 });
 
 const lowestFor = (medicineId: string) => {
-  const prices = demoPrices.filter((p) => p.medicineId === medicineId).map((p) => p.price);
+  const prices = demoPrices
+    .filter((p) => p.medicineId === medicineId)
+    .map((p) => p.price);
   return prices.length ? Math.min(...prices) : undefined;
 };
 
@@ -64,7 +72,8 @@ function SearchPage() {
   const results = (data ?? []).filter(
     (m) =>
       (form === "all" || m.form === form) &&
-      (supply === "all" || (supply === "rx" ? m.prescriptionOnly : !m.prescriptionOnly)),
+      (supply === "all" ||
+        (supply === "rx" ? m.prescriptionOnly : !m.prescriptionOnly)),
   );
 
   const setParam = (key: "q" | "form" | "supply", value: string) =>
@@ -103,13 +112,19 @@ function SearchPage() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {["all", "Tablet", "Capsule", "Syrup", "Suspension", "Inhaler", "Injection"].map(
-                (f) => (
-                  <SelectItem key={f} value={f}>
-                    {f === "all" ? "All forms" : f}
-                  </SelectItem>
-                ),
-              )}
+              {[
+                "all",
+                "Tablet",
+                "Capsule",
+                "Syrup",
+                "Suspension",
+                "Inhaler",
+                "Injection",
+              ].map((f) => (
+                <SelectItem key={f} value={f}>
+                  {f === "all" ? "All forms" : f}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -132,8 +147,9 @@ function SearchPage() {
         <div className="flex flex-wrap items-center gap-3 rounded-lg border border-primary/35 bg-primary-soft px-4 py-3">
           <GitCompareArrows className="size-4 text-primary" aria-hidden />
           <p className="text-sm font-medium text-ink">
-            {state.compareSelection.length} product{state.compareSelection.length > 1 ? "s" : ""}{" "}
-            selected for comparison
+            {state.compareSelection.length} product
+            {state.compareSelection.length > 1 ? "s" : ""} selected for
+            comparison
           </p>
           <div className="ml-auto flex gap-2">
             <Button variant="ghost" size="sm" onClick={clearCompare}>
@@ -156,12 +172,15 @@ function SearchPage() {
         <EmptyState
           icon={SearchIcon}
           title="No products matched"
-          description="Try the generic name or active ingredient instead of the brand, or clear the filters. The demo catalogue is intentionally small."
+          description="Try the generic name or active ingredient instead of the brand, or clear the filters."
           action={
             <Button
               variant="outline"
               onClick={() =>
-                void navigate({ to: ".", search: { q: "", form: "all", supply: "all" } })
+                void navigate({
+                  to: ".",
+                  search: { q: "", form: "all", supply: "all" },
+                })
               }
             >
               Reset search
@@ -171,7 +190,8 @@ function SearchPage() {
       ) : (
         <>
           <p className="text-sm text-muted-foreground">
-            {results.length} product{results.length > 1 ? "s" : ""} in the demo catalogue
+            {results.length} product{results.length > 1 ? "s" : ""} in the
+            catalogue
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {results.map((m) => (
@@ -188,12 +208,17 @@ function SearchPage() {
       )}
 
       <SafetyNotice title="What Medora will not do">
-        Medora does not recommend which medicine you should take, and it does not imply that
-        products with the same composition are equal in quality, tolerability or suitability for
-        you. A pharmacist decides whether a substitution is appropriate.
+        Medora does not recommend which medicine you should take, and it does
+        not imply that products with the same composition are equal in quality,
+        tolerability or suitability for you. A pharmacist decides whether a
+        substitution is appropriate.
       </SafetyNotice>
       <div className="flex justify-end">
-        <DemoBadge label="Demo catalogue" />
+        {getProvider().isLive ? (
+          <DemoBadge label="Live catalogue" />
+        ) : (
+          <DemoBadge label="Demo catalogue" />
+        )}
       </div>
     </div>
   );

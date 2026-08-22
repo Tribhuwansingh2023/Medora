@@ -74,7 +74,9 @@ const rules: Rule[] = [
     id: "no_diagnosis",
     label: "No diagnosis",
     test: (t) =>
-      diagnosisClaim.test(t) ? "Response contained explicit diagnostic declarations." : null,
+      diagnosisClaim.test(t)
+        ? "Response contained explicit diagnostic declarations."
+        : null,
   },
   {
     id: "no_dosage",

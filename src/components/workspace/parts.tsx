@@ -18,14 +18,20 @@ export function AiAssistNotice({
 }) {
   return (
     <section
-      className={cn("rounded-lg border border-primary/30 bg-primary-soft/60 p-4", className)}
+      className={cn(
+        "rounded-lg border border-primary/30 bg-primary-soft/60 p-4",
+        className,
+      )}
       aria-label={title}
     >
-      <p className="text-xs font-semibold uppercase tracking-wide text-primary">{title}</p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+        {title}
+      </p>
       <div className="mt-2 text-sm text-foreground/90">{children}</div>
       <p className="mt-3 border-t border-primary/20 pt-2 text-xs text-muted-foreground">
-        Assistive output only. It is never a prescription, diagnosis or dose, and it is never
-        applied without a qualified professional recording the decision.
+        Assistive output only. It is never a prescription, diagnosis or dose,
+        and it is never applied without a qualified professional recording the
+        decision.
       </p>
     </section>
   );
@@ -33,7 +39,10 @@ export function AiAssistNotice({
 
 export function AiAssistTag({ className }: { className?: string }) {
   return (
-    <Badge variant="outline" className={cn("border-primary/40 text-primary", className)}>
+    <Badge
+      variant="outline"
+      className={cn("border-primary/40 text-primary", className)}
+    >
       AI-assisted — requires professional review
     </Badge>
   );
@@ -57,9 +66,13 @@ export function WorkspaceSection({
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="font-display text-base font-bold text-ink">{title}</h2>
-          {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
+          {description && (
+            <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+          )}
         </div>
-        {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+        {actions && (
+          <div className="flex flex-wrap items-center gap-2">{actions}</div>
+        )}
       </div>
       {children}
     </section>
@@ -105,7 +118,9 @@ export function Timeline({
   }[];
 }) {
   if (items.length === 0) {
-    return <p className="text-sm text-muted-foreground">Nothing recorded yet.</p>;
+    return (
+      <p className="text-sm text-muted-foreground">Nothing recorded yet.</p>
+    );
   }
   return (
     <ol className="relative space-y-5 border-l border-border pl-5">
@@ -122,7 +137,9 @@ export function Timeline({
             <p className="text-sm font-semibold text-ink">{item.title}</p>
             {item.tone === "ai" && <AiAssistTag />}
           </div>
-          {item.body && <p className="mt-1 text-sm text-muted-foreground">{item.body}</p>}
+          {item.body && (
+            <p className="mt-1 text-sm text-muted-foreground">{item.body}</p>
+          )}
           <p className="mt-1 text-xs text-muted-foreground">
             {item.at}
             {item.meta ? ` · ${item.meta}` : ""}
@@ -169,15 +186,24 @@ export function AsyncSection<T>({
 
   if (query.isError || !query.data) {
     return (
-      <div role="alert" className="rounded-lg border border-destructive/40 bg-destructive-soft p-5">
+      <div
+        role="alert"
+        className="rounded-lg border border-destructive/40 bg-destructive-soft p-5"
+      >
         <p className="flex items-center gap-2 font-semibold text-ink">
-          <AlertTriangle className="size-4 text-destructive" aria-hidden /> This view could not load
+          <AlertTriangle className="size-4 text-destructive" aria-hidden /> This
+          view could not load
         </p>
         <p className="mt-1.5 text-sm text-muted-foreground">
-          The workspace provider did not return data. Nothing has been changed, and no partial or
-          invented records are shown.
+          The workspace provider did not return data. Nothing has been changed,
+          and no partial or invented records are shown.
         </p>
-        <Button variant="outline" size="sm" className="mt-4" onClick={() => query.refetch()}>
+        <Button
+          variant="outline"
+          size="sm"
+          className="mt-4"
+          onClick={() => query.refetch()}
+        >
           <RefreshCw className="size-4" aria-hidden /> Try again
         </Button>
       </div>
@@ -185,7 +211,13 @@ export function AsyncSection<T>({
   }
 
   if (isEmpty?.(query.data)) {
-    return <EmptyState icon={emptyIcon} title={emptyTitle} description={emptyDescription} />;
+    return (
+      <EmptyState
+        icon={emptyIcon}
+        title={emptyTitle}
+        description={emptyDescription}
+      />
+    );
   }
 
   return <>{children(query.data)}</>;

@@ -238,8 +238,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setRoles(["patient"]);
       setProfile({
         id: userId,
-        full_name: "Aria Mehta",
-        email: "aria.mehta@example.com",
+        full_name: "Tribhuwan",
+        email: "tribhuwan@example.com",
         city: "Bengaluru",
       });
       return;
@@ -305,13 +305,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithDemoRole = useCallback(
     async (role: AccountRole, remember = true) => {
       const roleNames: Record<AccountRole, string> = {
-        patient: "Aria Mehta",
+        patient: "Tribhuwan",
         pharmacy: "Apex Central Pharmacy",
         doctor: "Dr. Kabir Rao",
         admin: "Medora Administrator",
       };
       const roleEmails: Record<AccountRole, string> = {
-        patient: "aria.mehta@example.com",
+        patient: "tribhuwan@example.com",
         pharmacy: "contact@apexpharmacy.demo",
         doctor: "dr.kabir@medora-clinic.demo",
         admin: "admin@medora.demo",

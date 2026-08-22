@@ -42,7 +42,8 @@ export const Route = createFileRoute("/app/cart")({
 });
 
 function CartPage() {
-  const { state, setCartQty, removeFromCart, placeOrder, pushNotification } = useStore();
+  const { state, setCartQty, removeFromCart, placeOrder, pushNotification } =
+    useStore();
   const navigate = useNavigate();
   const [pharmacyId, setPharmacyId] = useState(demoPharmacies[0]?.id ?? "");
   const [fulfilment, setFulfilment] = useState<"pickup" | "delivery">("pickup");
@@ -112,8 +113,10 @@ function CartPage() {
                     {item.name}
                   </Link>
                   <p className="text-xs text-muted-foreground">
-                    {item.prescriptionOnly ? "Prescription-only" : "Over the counter"} ·{" "}
-                    {formatMoney(item.price)} each (demo price)
+                    {item.prescriptionOnly
+                      ? "Prescription-only"
+                      : "Over the counter"}{" "}
+                    · {formatMoney(item.price)} each (demo price)
                   </p>
                 </div>
                 <div className="flex items-center gap-1 rounded-md border border-border">
@@ -126,7 +129,9 @@ function CartPage() {
                   >
                     <Minus className="size-3.5" aria-hidden />
                   </Button>
-                  <span className="numeric w-8 text-center text-sm font-medium">{item.qty}</span>
+                  <span className="numeric w-8 text-center text-sm font-medium">
+                    {item.qty}
+                  </span>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -159,8 +164,9 @@ function CartPage() {
                 tone="warning"
                 title="This basket contains a prescription-only medicine"
               >
-                A pharmacist must verify a valid prescription before these items can be dispensed.
-                Attach a prescription below, or the order will be held as “awaiting prescription”.
+                A pharmacist must verify a valid prescription before these items
+                can be dispensed. Attach a prescription below, or the order will
+                be held as “awaiting prescription”.
               </SafetyNotice>
             )}
           </section>
@@ -187,7 +193,9 @@ function CartPage() {
                 <Label htmlFor="fulfilment">Fulfilment</Label>
                 <Select
                   value={fulfilment}
-                  onValueChange={(v) => setFulfilment(v as "pickup" | "delivery")}
+                  onValueChange={(v) =>
+                    setFulfilment(v as "pickup" | "delivery")
+                  }
                 >
                   <SelectTrigger id="fulfilment">
                     <SelectValue />
@@ -200,12 +208,17 @@ function CartPage() {
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="rx">Attach prescription</Label>
-                <Select value={prescriptionId} onValueChange={setPrescriptionId}>
+                <Select
+                  value={prescriptionId}
+                  onValueChange={setPrescriptionId}
+                >
                   <SelectTrigger id="rx">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">No prescription attached</SelectItem>
+                    <SelectItem value="none">
+                      No prescription attached
+                    </SelectItem>
                     {verifiedRx.map((rx) => (
                       <SelectItem key={rx.id} value={rx.id}>
                         {rx.fileName} · {rx.status}
@@ -215,7 +228,10 @@ function CartPage() {
                 </Select>
                 <p className="text-xs text-muted-foreground">
                   Need to add one?{" "}
-                  <Link to="/app/prescriptions" className="text-primary underline">
+                  <Link
+                    to="/app/prescriptions"
+                    className="text-primary underline"
+                  >
                     Upload a prescription
                   </Link>
                   .
@@ -243,11 +259,13 @@ function CartPage() {
               </div>
 
               <Button className="w-full" onClick={submit}>
-                {blocked ? "Send for prescription verification" : "Reserve at pharmacy"}
+                {blocked
+                  ? "Send for prescription verification"
+                  : "Reserve at pharmacy"}
               </Button>
               <p className="text-xs text-muted-foreground">
-                Demo mode: this creates an order record inside Medora only. No pharmacy is contacted
-                and no payment is taken.
+                Demo mode: this creates an order record inside Medora only. No
+                pharmacy is contacted and no payment is taken.
               </p>
             </div>
 

@@ -1,5 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BarChart3, DollarSign, PackageCheck, ShoppingCart, TrendingUp } from "lucide-react";
+import {
+  BarChart3,
+  DollarSign,
+  PackageCheck,
+  ShoppingCart,
+  TrendingUp,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import {
   Select,
@@ -28,10 +34,14 @@ export const Route = createFileRoute("/pharmacy/analytics")({
         content:
           "Revenue, order volume, order status and inventory analytics derived from Medora pharmacy demo data.",
       },
-      { property: "og:title", content: "Analytics — Medora Pharmacy workspace" },
+      {
+        property: "og:title",
+        content: "Analytics — Medora Pharmacy workspace",
+      },
       {
         property: "og:description",
-        content: "Demo revenue and operations analytics for the Medora pharmacy console.",
+        content:
+          "Demo revenue and operations analytics for the Medora pharmacy console.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -95,7 +105,9 @@ function AnalyticsPage() {
   }));
 
   const inventoryRows = inventory.data ?? [];
-  const lowStockCount = inventoryRows.filter((i) => i.stock <= i.reorderLevel).length;
+  const lowStockCount = inventoryRows.filter(
+    (i) => i.stock <= i.reorderLevel,
+  ).length;
   const restockBar = inventoryRows
     .map((i) => ({
       name: i.name.split(" · ")[0] ?? i.name,
@@ -228,7 +240,12 @@ function AnalyticsPage() {
               title="Stock vs reorder level"
               description="Last-synced demo inventory figures, not live stock counts."
             >
-              <SimpleBarChart data={restockBar} xKey="name" yKey="stock" label="Units in stock" />
+              <SimpleBarChart
+                data={restockBar}
+                xKey="name"
+                yKey="stock"
+                label="Units in stock"
+              />
             </ChartFrame>
           )}
         </AsyncSection>
@@ -239,7 +256,10 @@ function AnalyticsPage() {
         description="Colours used in the status breakdown above."
       >
         <ChartLegend
-          items={donutData.map((d) => ({ label: d.name, color: d.color ?? "var(--chart-1)" }))}
+          items={donutData.map((d) => ({
+            label: d.name,
+            color: d.color ?? "var(--chart-1)",
+          }))}
         />
       </WorkspaceSection>
     </div>

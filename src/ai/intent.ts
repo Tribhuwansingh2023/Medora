@@ -159,7 +159,14 @@ const signalGroups: { intent: Intent; terms: string[] }[] = [
   },
   {
     intent: "prescription_help",
-    terms: ["prescription", "my rx", "doctor wrote", "handwriting", "scan", "ocr"],
+    terms: [
+      "prescription",
+      "my rx",
+      "doctor wrote",
+      "handwriting",
+      "scan",
+      "ocr",
+    ],
   },
   {
     intent: "symptom_triage",

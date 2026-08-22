@@ -3,7 +3,13 @@ import { useState } from "react";
 
 import { Logo } from "@/components/common/primitives";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth";
@@ -15,10 +21,14 @@ export const Route = createFileRoute("/reset-password")({
       { title: "Choose a new password — Medora" },
       {
         name: "description",
-        content: "Set a new password for your Medora account after requesting a reset link.",
+        content:
+          "Set a new password for your Medora account after requesting a reset link.",
       },
       { property: "og:title", content: "Choose a new password — Medora" },
-      { property: "og:description", content: "Set a new password for your Medora account." },
+      {
+        property: "og:description",
+        content: "Set a new password for your Medora account.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -44,7 +54,10 @@ function ResetPasswordPage() {
     setBusy(false);
     if (err) return setError(err);
     setDone(true);
-    setTimeout(() => void navigate({ to: "/auth", search: { next: "" }, replace: true }), 1200);
+    setTimeout(
+      () => void navigate({ to: "/auth", search: { next: "" }, replace: true }),
+      1200,
+    );
   }
 
   return (
@@ -59,8 +72,8 @@ function ResetPasswordPage() {
               Choose a new password
             </h1>
             <CardDescription>
-              Open this page from the reset link in your email so the change applies to your
-              account.
+              Open this page from the reset link in your email so the change
+              applies to your account.
             </CardDescription>
           </CardHeader>
           <CardContent>

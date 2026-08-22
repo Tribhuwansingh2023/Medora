@@ -81,7 +81,8 @@ const findMedicines = (text: string): Medicine[] => {
         (a) =>
           q.includes(a.name.toLowerCase()) ||
           a.name.toLowerCase().includes(q) ||
-          (q.includes("combiflam") && m.brandName.toLowerCase().includes("combiflam")) ||
+          (q.includes("combiflam") &&
+            m.brandName.toLowerCase().includes("combiflam")) ||
           (q.includes("dolo") && m.brandName.toLowerCase().includes("dolo")),
       ),
   );
@@ -141,10 +142,10 @@ export const demoAiProvider: MedoraAiProvider = {
       ? safetyProfile.commonSideEffects.map(
           (s) => `[${s.system}] ${s.effect} (${s.frequency})`,
         )
-      : medicine?.commonSideEffects ?? [
+      : (medicine?.commonSideEffects ?? [
           "Mild gastrointestinal discomfort",
           "Nausea or headache",
-        ];
+        ]);
 
     const warnings = [
       ...(medicine?.warnings ?? []),
@@ -658,10 +659,9 @@ export const demoAiProvider: MedoraAiProvider = {
       return {
         inputName: m,
         generic: match?.genericName.toLowerCase() ?? m.toLowerCase(),
-        ingredients:
-          match?.activeIngredients.map((a) => a.name.toLowerCase()) ?? [
-            m.toLowerCase(),
-          ],
+        ingredients: match?.activeIngredients.map((a) =>
+          a.name.toLowerCase(),
+        ) ?? [m.toLowerCase()],
       };
     });
 
@@ -834,7 +834,12 @@ export const demoAiProvider: MedoraAiProvider = {
           `${m.brandName} ${m.activeIngredients[0]?.strength ?? ""} ${m.form}`.trim(),
         medicine: m.brandName,
         strength: m.activeIngredients[0]?.strength ?? null,
-        frequency: ["Once daily after breakfast", "Twice daily after meals", "As needed"][i] ?? null,
+        frequency:
+          [
+            "Once daily after breakfast",
+            "Twice daily after meals",
+            "As needed",
+          ][i] ?? null,
         confidence: [0.96, 0.91, 0.88][i] ?? 0.85,
         needsReview: i > 1,
       })),
@@ -1276,7 +1281,8 @@ export const demoAiProvider: MedoraAiProvider = {
           {
             id: "user:profile",
             label: "Your Medora Digital Profile",
-            detail: "Active medicines, allergies, and dose administration logs.",
+            detail:
+              "Active medicines, allergies, and dose administration logs.",
             kind: "user_input",
             verified: true,
           },

@@ -9,9 +9,18 @@
  */
 
 const OUTSIDE_PROVIDER_PATTERNS = [
-  { re: /\.server\.[tj]sx?$/, why: "server-only modules never render inside the provider" },
-  { re: /\.functions\.[tj]sx?$/, why: "server functions never render inside the provider" },
-  { re: /[/\\]routes[/\\]api[/\\]/, why: "API route handlers never render inside the provider" },
+  {
+    re: /\.server\.[tj]sx?$/,
+    why: "server-only modules never render inside the provider",
+  },
+  {
+    re: /\.functions\.[tj]sx?$/,
+    why: "server functions never render inside the provider",
+  },
+  {
+    re: /[/\\]routes[/\\]api[/\\]/,
+    why: "API route handlers never render inside the provider",
+  },
   { re: /[/\\]lib[/\\]mcp[/\\]/, why: "MCP tools run outside the React tree" },
   {
     re: /[/\\]routes[/\\]__root\.tsx$/,
@@ -27,7 +36,8 @@ const rule = {
   meta: {
     type: "problem",
     docs: {
-      description: "Disallow useStore() where <AppStoreProvider> is not guaranteed above it",
+      description:
+        "Disallow useStore() where <AppStoreProvider> is not guaranteed above it",
     },
     schema: [],
     messages: {
@@ -39,7 +49,9 @@ const rule = {
   },
   create(context) {
     const filename = context.filename ?? context.getFilename();
-    const fileViolation = OUTSIDE_PROVIDER_PATTERNS.find((p) => p.re.test(filename));
+    const fileViolation = OUTSIDE_PROVIDER_PATTERNS.find((p) =>
+      p.re.test(filename),
+    );
 
     function enclosingFunctionName(node) {
       let scope = node;
@@ -51,9 +63,12 @@ const rule = {
         ) {
           if (scope.id?.name) return scope.id.name;
           const parent = scope.parent;
-          if (parent?.type === "VariableDeclarator" && parent.id?.name) return parent.id.name;
-          if (parent?.type === "Property" && parent.key?.name) return parent.key.name;
-          if (parent?.type === "MethodDefinition" && parent.key?.name) return parent.key.name;
+          if (parent?.type === "VariableDeclarator" && parent.id?.name)
+            return parent.id.name;
+          if (parent?.type === "Property" && parent.key?.name)
+            return parent.key.name;
+          if (parent?.type === "MethodDefinition" && parent.key?.name)
+            return parent.key.name;
           return "<anonymous function>";
         }
         scope = scope.parent;

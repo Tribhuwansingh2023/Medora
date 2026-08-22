@@ -37,7 +37,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
-import { AsyncSection, StatusPill, WorkspaceSection } from "@/components/workspace/parts";
+import {
+  AsyncSection,
+  StatusPill,
+  WorkspaceSection,
+} from "@/components/workspace/parts";
 import { shortDateTime, useWorkspaceData } from "@/services/workspace";
 import type { AuditEvent } from "@/lib/domain";
 
@@ -126,7 +130,18 @@ function AuditLogPage() {
       URL.revokeObjectURL(url);
       toast.success("Audit ledger exported to JSON");
     } else {
-      const headers = ["ID", "Timestamp", "Actor", "Role", "Category", "Action", "Target", "IP", "Status", "Details"];
+      const headers = [
+        "ID",
+        "Timestamp",
+        "Actor",
+        "Role",
+        "Category",
+        "Action",
+        "Target",
+        "IP",
+        "Status",
+        "Details",
+      ];
       const rows = filteredRows.map((r) => [
         r.id,
         r.at,
@@ -139,7 +154,10 @@ function AuditLogPage() {
         r.status || "success",
         `"${(r.details || "").replace(/"/g, '""')}"`,
       ]);
-      const csvContent = [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
+      const csvContent = [
+        headers.join(","),
+        ...rows.map((e) => e.join(",")),
+      ].join("\n");
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -161,7 +179,9 @@ function AuditLogPage() {
           <span className="font-mono text-xs font-medium text-foreground">
             {shortDateTime(r.at)}
           </span>
-          <span className="text-[10px] text-muted-foreground">UTC ISO-8601</span>
+          <span className="text-[10px] text-muted-foreground">
+            UTC ISO-8601
+          </span>
         </div>
       ),
     },
@@ -174,17 +194,21 @@ function AuditLogPage() {
         return (
           <div className="space-y-1">
             <div className="flex items-center gap-1.5 font-medium text-foreground">
-              {r.role === "admin" && <Shield className="size-3.5 text-primary" />}
-              {r.role === "doctor" && <UserCheck className="size-3.5 text-blue-600" />}
-              {r.role === "pharmacy" && <FileCheck className="size-3.5 text-amber-600" />}
-              {r.role === "system" && <Terminal className="size-3.5 text-emerald-600" />}
+              {r.role === "admin" && (
+                <Shield className="size-3.5 text-primary" />
+              )}
+              {r.role === "doctor" && (
+                <UserCheck className="size-3.5 text-blue-600" />
+              )}
+              {r.role === "pharmacy" && (
+                <FileCheck className="size-3.5 text-amber-600" />
+              )}
+              {r.role === "system" && (
+                <Terminal className="size-3.5 text-emerald-600" />
+              )}
               <span>{r.actor}</span>
             </div>
-            {role && (
-              <StatusPill tone={role.tone}>
-                {role.label}
-              </StatusPill>
-            )}
+            {role && <StatusPill tone={role.tone}>{role.label}</StatusPill>}
           </div>
         );
       },
@@ -229,9 +253,7 @@ function AuditLogPage() {
       header: "Network / Origin",
       sortValue: (r) => r.ip,
       render: (r) => (
-        <div className="font-mono text-xs text-muted-foreground">
-          {r.ip}
-        </div>
+        <div className="font-mono text-xs text-muted-foreground">{r.ip}</div>
       ),
     },
     {
@@ -246,10 +268,10 @@ function AuditLogPage() {
               status === "success"
                 ? "positive"
                 : status === "warning"
-                ? "warning"
-                : status === "flagged" || status === "rejected"
-                ? "danger"
-                : "neutral"
+                  ? "warning"
+                  : status === "flagged" || status === "rejected"
+                    ? "danger"
+                    : "neutral"
             }
           >
             {status.toUpperCase()}
@@ -287,7 +309,9 @@ function AuditLogPage() {
             <ShieldCheck className="size-5" />
           </div>
           <div>
-            <div className="text-2xl font-bold font-numeric">{rawRows.length}</div>
+            <div className="text-2xl font-bold font-numeric">
+              {rawRows.length}
+            </div>
             <div className="text-xs text-muted-foreground">Recorded Events</div>
           </div>
         </div>
@@ -300,7 +324,9 @@ function AuditLogPage() {
             <div className="text-2xl font-bold font-numeric">
               {rawRows.filter((r) => r.category === "prescription").length}
             </div>
-            <div className="text-xs text-muted-foreground">Prescription Verifications</div>
+            <div className="text-xs text-muted-foreground">
+              Prescription Verifications
+            </div>
           </div>
         </div>
 
@@ -310,9 +336,15 @@ function AuditLogPage() {
           </div>
           <div>
             <div className="text-2xl font-bold font-numeric">
-              {rawRows.filter((r) => r.status === "warning" || r.status === "flagged").length}
+              {
+                rawRows.filter(
+                  (r) => r.status === "warning" || r.status === "flagged",
+                ).length
+              }
             </div>
-            <div className="text-xs text-muted-foreground">Flagged & Clinical Alerts</div>
+            <div className="text-xs text-muted-foreground">
+              Flagged & Clinical Alerts
+            </div>
           </div>
         </div>
 
@@ -322,7 +354,9 @@ function AuditLogPage() {
           </div>
           <div>
             <div className="text-2xl font-bold font-numeric">100%</div>
-            <div className="text-xs text-muted-foreground">DPDP & RLS Compliance</div>
+            <div className="text-xs text-muted-foreground">
+              DPDP & RLS Compliance
+            </div>
           </div>
         </div>
       </div>
@@ -358,7 +392,10 @@ function AuditLogPage() {
               </SelectContent>
             </Select>
 
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <Select
+              value={selectedCategory}
+              onValueChange={setSelectedCategory}
+            >
               <SelectTrigger className="h-9 w-full text-xs sm:w-[145px]">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
@@ -422,7 +459,10 @@ function AuditLogPage() {
       </WorkspaceSection>
 
       {/* Event Details Dialog */}
-      <Dialog open={!!inspectEvent} onOpenChange={(open) => !open && setInspectEvent(null)}>
+      <Dialog
+        open={!!inspectEvent}
+        onOpenChange={(open) => !open && setInspectEvent(null)}
+      >
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-lg">
@@ -430,7 +470,8 @@ function AuditLogPage() {
               Audit Event Record #{inspectEvent?.id}
             </DialogTitle>
             <DialogDescription>
-              Detailed cryptographic verification and context for this audit entry.
+              Detailed cryptographic verification and context for this audit
+              entry.
             </DialogDescription>
           </DialogHeader>
 
@@ -439,24 +480,34 @@ function AuditLogPage() {
               <div className="grid grid-cols-2 gap-3 rounded-lg border border-border bg-card p-3">
                 <div>
                   <span className="text-muted-foreground">Timestamp:</span>
-                  <p className="font-mono font-medium text-foreground">{inspectEvent.at}</p>
+                  <p className="font-mono font-medium text-foreground">
+                    {inspectEvent.at}
+                  </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Origin IP:</span>
-                  <p className="font-mono font-medium text-foreground">{inspectEvent.ip}</p>
+                  <p className="font-mono font-medium text-foreground">
+                    {inspectEvent.ip}
+                  </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Actor:</span>
-                  <p className="font-medium text-foreground">{inspectEvent.actor}</p>
+                  <p className="font-medium text-foreground">
+                    {inspectEvent.actor}
+                  </p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Role:</span>
-                  <p className="font-medium text-foreground">{inspectEvent.role || "Unspecified"}</p>
+                  <p className="font-medium text-foreground">
+                    {inspectEvent.role || "Unspecified"}
+                  </p>
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <span className="font-medium text-muted-foreground">Action Summary:</span>
+                <span className="font-medium text-muted-foreground">
+                  Action Summary:
+                </span>
                 <p className="rounded border border-border/80 bg-background/50 p-2.5 font-medium text-foreground">
                   {inspectEvent.action}
                 </p>
@@ -464,7 +515,9 @@ function AuditLogPage() {
 
               {inspectEvent.details && (
                 <div className="space-y-1.5">
-                  <span className="font-medium text-muted-foreground">Operational Details & Context:</span>
+                  <span className="font-medium text-muted-foreground">
+                    Operational Details & Context:
+                  </span>
                   <p className="rounded border border-border/80 bg-muted/40 p-2.5 text-foreground leading-relaxed">
                     {inspectEvent.details}
                   </p>
@@ -472,14 +525,22 @@ function AuditLogPage() {
               )}
 
               <div className="space-y-1.5">
-                <span className="font-medium text-muted-foreground">Target Record ID:</span>
+                <span className="font-medium text-muted-foreground">
+                  Target Record ID:
+                </span>
                 <p className="font-mono text-primary">{inspectEvent.target}</p>
               </div>
 
               <div className="rounded-lg border border-dashed border-border bg-card p-3">
-                <span className="text-muted-foreground font-mono text-[11px]">Integrity Checksum:</span>
+                <span className="text-muted-foreground font-mono text-[11px]">
+                  Integrity Checksum:
+                </span>
                 <p className="font-mono text-[10px] text-muted-foreground break-all mt-0.5">
-                  SHA256:{btoa(inspectEvent.id + inspectEvent.at + inspectEvent.actor).slice(0, 32)}...
+                  SHA256:
+                  {btoa(
+                    inspectEvent.id + inspectEvent.at + inspectEvent.actor,
+                  ).slice(0, 32)}
+                  ...
                 </p>
               </div>
             </div>

@@ -12,7 +12,11 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuthHeaderAction } from "@/components/auth/AuthHeaderAction";
-import { ClinicalDisclaimer, DemoBadge, Logo } from "@/components/common/primitives";
+import {
+  ClinicalDisclaimer,
+  DemoBadge,
+  Logo,
+} from "@/components/common/primitives";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,7 +27,10 @@ export const Route = createFileRoute("/")({
         content:
           "Look up any medicine, compare verified pharmacy prices near you and make sense of prescriptions — informational only, never a diagnosis.",
       },
-      { property: "og:title", content: "Medora — Compare medicine prices & pharmacies nearby" },
+      {
+        property: "og:title",
+        content: "Medora — Compare medicine prices & pharmacies nearby",
+      },
       {
         property: "og:description",
         content:
@@ -123,18 +130,22 @@ function Landing() {
                 </p>
                 <h1 className="mt-5 max-w-[16ch] font-display text-[2.6rem] font-bold leading-[1.02] tracking-tight text-ink sm:text-6xl lg:text-[4.1rem]">
                   Understand your medicine.
-                  <span className="block text-primary">Compare verified options.</span>
+                  <span className="block text-primary">
+                    Compare verified options.
+                  </span>
                   <span className="block">Find care nearby.</span>
                 </h1>
                 <p className="mt-7 max-w-xl text-lg leading-relaxed text-muted-foreground">
-                  One calm workspace for the questions that come after a prescription: what is this,
-                  what does it cost elsewhere, where can I get it today, and when should I stop
-                  reading and see someone.
+                  One calm workspace for the questions that come after a
+                  prescription: what is this, what does it cost elsewhere, where
+                  can I get it today, and when should I stop reading and see
+                  someone.
                 </p>
                 <div className="mt-9 flex flex-wrap items-center gap-3">
                   <Button asChild size="lg">
                     <Link to="/auth" search={{ next: "/app" }}>
-                      Open the patient app <ArrowRight className="size-4" aria-hidden />
+                      Open the patient app{" "}
+                      <ArrowRight className="size-4" aria-hidden />
                     </Link>
                   </Button>
                   <Button asChild size="lg" variant="outline">
@@ -148,7 +159,9 @@ function Landing() {
                       key={stat.label}
                       className="rounded-xl border border-border bg-card/80 p-3 shadow-soft"
                     >
-                      <p className="text-2xl font-bold tracking-tight text-ink">{stat.value}</p>
+                      <p className="text-2xl font-bold tracking-tight text-ink">
+                        {stat.value}
+                      </p>
                       <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
                         {stat.label}
                       </p>
@@ -158,7 +171,10 @@ function Landing() {
 
                 <p className="mt-6 text-sm text-muted-foreground">
                   Chest pain, breathlessness or severe bleeding?{" "}
-                  <Link to="/emergency" className="font-semibold text-destructive underline">
+                  <Link
+                    to="/emergency"
+                    className="font-semibold text-destructive underline"
+                  >
                     Read the emergency guidance first
                   </Link>
                 </p>
@@ -180,7 +196,10 @@ function Landing() {
                       { k: "Licence shown", v: "Pharmacies" },
                       { k: "Source on every claim", v: "Provenance" },
                     ].map((s) => (
-                      <div key={s.v} className="rounded-xl border border-border bg-card p-4">
+                      <div
+                        key={s.v}
+                        className="rounded-xl border border-border bg-card p-4"
+                      >
                         <dt className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">
                           {s.v}
                         </dt>
@@ -203,8 +222,8 @@ function Landing() {
               Four ways in
             </h2>
             <p className="max-w-md text-sm text-muted-foreground">
-              Every path below is live in the demo environment and runs on clearly labelled sample
-              data.
+              Every path below is live in the demo environment and runs on
+              clearly labelled sample data.
             </p>
           </div>
 
@@ -223,8 +242,12 @@ function Landing() {
                     {p.eyebrow}
                   </span>
                 </div>
-                <h3 className="mt-5 font-display text-xl font-bold text-ink">{p.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+                <h3 className="mt-5 font-display text-xl font-bold text-ink">
+                  {p.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {p.body}
+                </p>
                 <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
                   Open
                   <ArrowRight
@@ -247,8 +270,12 @@ function Landing() {
               {principles.map((p) => (
                 <article key={p.title}>
                   <p.icon className="size-5 text-primary" aria-hidden />
-                  <h3 className="mt-4 text-base font-bold text-ink">{p.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+                  <h3 className="mt-4 text-base font-bold text-ink">
+                    {p.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {p.body}
+                  </p>
                 </article>
               ))}
             </div>
@@ -264,8 +291,8 @@ function Landing() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-8 text-sm text-muted-foreground sm:px-6">
           <Logo compact />
           <p className="max-w-lg">
-            Demo environment. Catalogue, pricing, OCR and clinical adapters are sample providers —
-            nothing here is live healthcare information.
+            Demo environment. Catalogue, pricing, OCR and clinical adapters are
+            sample providers — nothing here is live healthcare information.
           </p>
         </div>
       </footer>

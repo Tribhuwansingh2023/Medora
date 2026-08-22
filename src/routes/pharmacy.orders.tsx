@@ -19,7 +19,11 @@ import {
 } from "@/components/ui/select";
 import { PageHeader } from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
-import { AsyncSection, StatusPill, WorkspaceSection } from "@/components/workspace/parts";
+import {
+  AsyncSection,
+  StatusPill,
+  WorkspaceSection,
+} from "@/components/workspace/parts";
 import { money, shortDateTime, useWorkspaceData } from "@/services/workspace";
 import type { PharmacyOrderRow } from "@/data/workspace-demo";
 
@@ -49,7 +53,10 @@ type OrderStatus = PharmacyOrderRow["status"];
 
 const statusMeta: Record<
   OrderStatus,
-  { label: string; tone: "neutral" | "positive" | "warning" | "danger" | "info" }
+  {
+    label: string;
+    tone: "neutral" | "positive" | "warning" | "danger" | "info";
+  }
 > = {
   awaiting_prescription: { label: "Awaiting prescription", tone: "warning" },
   verifying: { label: "Verifying", tone: "info" },
@@ -68,10 +75,13 @@ const channelLabel = {
 
 function OrdersPage() {
   const orders = useWorkspaceData("pharmacyOrders");
-  const [localStatus, setLocalStatus] = useState<Record<string, OrderStatus>>({});
+  const [localStatus, setLocalStatus] = useState<Record<string, OrderStatus>>(
+    {},
+  );
   const [viewing, setViewing] = useState<PharmacyOrderRow | null>(null);
 
-  const effectiveStatus = (row: PharmacyOrderRow) => localStatus[row.id] ?? row.status;
+  const effectiveStatus = (row: PharmacyOrderRow) =>
+    localStatus[row.id] ?? row.status;
 
   const columns: DataColumn<PharmacyOrderRow>[] = useMemo(
     () => [
@@ -82,7 +92,9 @@ function OrdersPage() {
         render: (r) => (
           <div>
             <p className="font-medium text-ink">{r.id}</p>
-            <p className="text-xs text-muted-foreground">{channelLabel[r.channel]}</p>
+            <p className="text-xs text-muted-foreground">
+              {channelLabel[r.channel]}
+            </p>
           </div>
         ),
       },
@@ -105,7 +117,9 @@ function OrdersPage() {
         header: "Total",
         align: "right",
         sortValue: (r) => r.total,
-        render: (r) => <span className="numeric font-medium text-ink">{money(r.total)}</span>,
+        render: (r) => (
+          <span className="numeric font-medium text-ink">{money(r.total)}</span>
+        ),
       },
       {
         key: "status",
@@ -168,15 +182,21 @@ function OrdersPage() {
                 {
                   key: "channel",
                   label: "Fulfilment",
-                  options: Object.entries(channelLabel).map(([value, label]) => ({
-                    value,
-                    label,
-                  })),
+                  options: Object.entries(channelLabel).map(
+                    ([value, label]) => ({
+                      value,
+                      label,
+                    }),
+                  ),
                   predicate: (r, v) => r.channel === v,
                 },
               ]}
               rowActions={(r) => (
-                <Button variant="outline" size="sm" onClick={() => setViewing(r)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setViewing(r)}
+                >
                   View
                 </Button>
               )}
@@ -216,15 +236,18 @@ function OrdersPage() {
         )}
       </AsyncSection>
 
-      <Dialog open={Boolean(viewing)} onOpenChange={(open) => !open && setViewing(null)}>
+      <Dialog
+        open={Boolean(viewing)}
+        onOpenChange={(open) => !open && setViewing(null)}
+      >
         <DialogContent>
           {viewing && (
             <>
               <DialogHeader>
                 <DialogTitle>Order {viewing.id}</DialogTitle>
                 <DialogDescription>
-                  {viewing.customer} · placed {shortDateTime(viewing.placedAt)} ·{" "}
-                  {channelLabel[viewing.channel]}
+                  {viewing.customer} · placed {shortDateTime(viewing.placedAt)}{" "}
+                  · {channelLabel[viewing.channel]}
                 </DialogDescription>
               </DialogHeader>
 
@@ -237,35 +260,51 @@ function OrdersPage() {
 
               <dl className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">Items</dt>
-                  <dd className="numeric mt-1 font-medium text-ink">{viewing.items}</dd>
+                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+                    Items
+                  </dt>
+                  <dd className="numeric mt-1 font-medium text-ink">
+                    {viewing.items}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs uppercase tracking-wide text-muted-foreground">
                     Order total
                   </dt>
-                  <dd className="mt-1 font-medium text-ink">{money(viewing.total)}</dd>
+                  <dd className="mt-1 font-medium text-ink">
+                    {money(viewing.total)}
+                  </dd>
                 </div>
               </dl>
               <p className="text-xs text-muted-foreground">
-                This demo dataset records order totals and item counts only — a per-line breakdown
-                is not available in this sample provider.
+                This demo dataset records order totals and item counts only — a
+                per-line breakdown is not available in this sample provider.
               </p>
 
               <div className="flex flex-wrap justify-end gap-2 pt-2">
                 <Button
                   variant="outline"
                   onClick={() => {
-                    setLocalStatus((prev) => ({ ...prev, [viewing.id]: "preparing" }));
-                    toast.success(`Order ${viewing.id} recorded as preparing (demo session)`);
+                    setLocalStatus((prev) => ({
+                      ...prev,
+                      [viewing.id]: "preparing",
+                    }));
+                    toast.success(
+                      `Order ${viewing.id} recorded as preparing (demo session)`,
+                    );
                   }}
                 >
                   <Truck className="size-4" aria-hidden /> Mark preparing
                 </Button>
                 <Button
                   onClick={() => {
-                    setLocalStatus((prev) => ({ ...prev, [viewing.id]: "completed" }));
-                    toast.success(`Order ${viewing.id} recorded as completed (demo session)`);
+                    setLocalStatus((prev) => ({
+                      ...prev,
+                      [viewing.id]: "completed",
+                    }));
+                    toast.success(
+                      `Order ${viewing.id} recorded as completed (demo session)`,
+                    );
                   }}
                 >
                   Mark completed

@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ReviewerView } from "@/components/prescription/ReviewerView";
 import {
   CheckCircle2,
   FileScan,
@@ -23,6 +24,7 @@ import {
 import { useStore } from "@/lib/store";
 import type { Prescription } from "@/lib/domain";
 import { demoPrescriptions } from "@/data/demo-catalog";
+import { ocrProvider } from "@/lib/ocr/provider";
 
 export const Route = createFileRoute("/app/prescriptions")({
   head: () => ({
@@ -50,65 +52,24 @@ const statusTone: Record<Prescription["status"], string> = {
   rejected: "Rejected",
 };
 
-function selectPrescriptionProfile(fileName: string, fileSize: number): Prescription {
-  const lower = fileName.toLowerCase();
-
-  if (
-    lower.includes("diabet") ||
-    lower.includes("glyco") ||
-    lower.includes("sugar") ||
-    lower.includes("telma") ||
-    lower.includes("cardio") ||
-    lower.includes("bp") ||
-    lower.includes("atorva") ||
-    lower.includes("heart")
-  ) {
-    return demoPrescriptions[1]!;
-  }
-  if (
-    lower.includes("asthma") ||
-    lower.includes("respirat") ||
-    lower.includes("inhal") ||
-    lower.includes("montair") ||
-    lower.includes("allegra") ||
-    lower.includes("cough") ||
-    lower.includes("lung") ||
-    lower.includes("allergy")
-  ) {
-    return demoPrescriptions[2]!;
-  }
-  if (
-    lower.includes("ortho") ||
-    lower.includes("bone") ||
-    lower.includes("pain") ||
-    lower.includes("joint") ||
-    lower.includes("shelcal") ||
-    lower.includes("combiflam") ||
-    lower.includes("calcium")
-  ) {
-    return demoPrescriptions[3]!;
-  }
-  if (
-    lower.includes("infect") ||
-    lower.includes("antibiotic") ||
-    lower.includes("augmentin") ||
-    lower.includes("fever") ||
-    lower.includes("apollo") ||
-    lower.includes("dolo")
-  ) {
-    return demoPrescriptions[0]!;
-  }
-
-  let hash = fileSize;
-  for (let i = 0; i < fileName.length; i++) {
-    hash = (hash << 5) - hash + fileName.charCodeAt(i);
-    hash |= 0;
-  }
-  const index = Math.abs(hash) % demoPrescriptions.length;
-  return demoPrescriptions[index] ?? demoPrescriptions[0]!;
+interface ReviewState {
+  file: File | null;
+  url?: string;
+  template: Prescription;
+  step: number;
 }
 
+const OCR_STEPS = [
+  "Uploading document",
+  "Reading document",
+  "Extracting text",
+  "Identifying medicines",
+  "Extracting prescription instructions",
+  "Preparing review",
+];
+
 function PrescriptionsPage() {
+  const [reviewState, setReviewState] = useState<ReviewState | null>(null);
   const { state, savePrescription, addReminder } = useStore();
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -126,34 +87,39 @@ function PrescriptionsPage() {
       size: "340 KB",
     });
     setUploading(true);
-    setProgress(15);
-    const tick = window.setInterval(
-      () => setProgress((p) => Math.min(p + 20, 95)),
-      240,
-    );
+    setProgress(0);
+
+    // Simulate steps
+    const tick = window.setInterval(() => {
+      setProgress((p) => Math.min(p + 3, 95));
+    }, 50);
+
     window.setTimeout(() => {
       window.clearInterval(tick);
       setProgress(100);
-      savePrescription({
+      setUploading(false);
+
+      const hydratedTemplate = {
         ...template,
         id: `rx-${Date.now()}`,
         uploadedAt: new Date().toISOString(),
-        status: "extracted",
+        status: "extracted" as const,
         items: template.items.map((i) => ({
           ...i,
           id: `${i.id}-${Date.now()}`,
           userConfirmed: false,
         })),
+      };
+
+      setReviewState({
+        file: null,
+        template: hydratedTemplate,
+        step: OCR_STEPS.length,
       });
-      setUploading(false);
-      setProgress(0);
-      toast.success(`Extracted: ${template.prescriberName}`, {
-        description: `Found ${template.items.length} prescribed medications with confidence scoring.`,
-      });
-    }, 1400);
+    }, 1800);
   };
 
-  const handleFile = (file: File) => {
+  const handleFile = async (file: File) => {
     const isImage = file.type.startsWith("image/");
     const isPdf = file.type === "application/pdf";
     if (!isImage && !isPdf) {
@@ -177,35 +143,79 @@ function PrescriptionsPage() {
     setUploading(true);
     setProgress(10);
     const tick = window.setInterval(
-      () => setProgress((p) => Math.min(p + 18, 95)),
-      260,
+      () => setProgress((p) => Math.min(p + 3, 95)),
+      50,
     );
-    window.setTimeout(() => {
+
+    try {
+      const ocrResult = await ocrProvider.extractPrescription(file);
       window.clearInterval(tick);
       setProgress(100);
-      const template = selectPrescriptionProfile(file.name, file.size);
-      savePrescription({
-        ...template,
+
+      const hydratedTemplate: Prescription = {
         id: `rx-${Date.now()}`,
         fileName: file.name.slice(0, 80),
         uploadedAt: new Date().toISOString(),
-        status: "extracted",
-        items: template.items.map((i) => ({
+        status: "extracted" as const,
+        prescriberName: ocrResult.prescription.prescriberName,
+        patientName: ocrResult.prescription.patientName,
+        items: ocrResult.items.map((i, index) => ({
           ...i,
-          id: `${i.id}-${Date.now()}`,
+          id: `rx-item-${Date.now()}-${index}`,
           userConfirmed: false,
         })),
-      });
+      };
+
       setUploading(false);
       setProgress(0);
-      toast.success(`Extracted: ${template.prescriberName}`, {
-        description: `Parsed ${template.items.length} line items from ${file.name}. Review confidence scores.`,
+
+      setReviewState({
+        file,
+        url: isImage ? URL.createObjectURL(file) : undefined,
+        template: hydratedTemplate,
+        step: OCR_STEPS.length,
       });
-    }, 1600);
+    } catch (err) {
+      window.clearInterval(tick);
+      setUploading(false);
+      setProgress(0);
+      toast.error("OCR Processing Failed", {
+        description:
+          "We couldn't extract the prescription reliably. Please try again or review manually.",
+      });
+    }
   };
 
   return (
     <div className="space-y-6">
+      {reviewState ? (
+        <div className="fixed inset-0 z-50 bg-background">
+          <ReviewerView
+            prescription={reviewState.template}
+            fileUrl={reviewState.url}
+            fileType={reviewState.file?.type}
+            onSave={(finalPrescription) => {
+              savePrescription(finalPrescription);
+              setReviewState(null);
+              setPreview(null);
+              toast.success("Prescription saved", {
+                description: "You have verified the extracted information.",
+              });
+            }}
+            onCancel={() => {
+              if (
+                confirm(
+                  "Are you sure you want to cancel? Any unsaved review progress will be lost.",
+                )
+              ) {
+                setReviewState(null);
+                setPreview(null);
+              }
+            }}
+          />
+        </div>
+      ) : null}
+
       <PageHeader
         title="Prescriptions"
         demo
@@ -343,7 +353,17 @@ function PrescriptionsPage() {
         {uploading && (
           <div className="mt-5">
             <div className="mb-1.5 flex items-center justify-between text-xs text-muted-foreground">
-              <span>Reading the prescription…</span>
+              <span>
+                {
+                  OCR_STEPS[
+                    Math.min(
+                      Math.floor((progress / 100) * OCR_STEPS.length),
+                      OCR_STEPS.length - 1,
+                    )
+                  ]
+                }
+                …
+              </span>
               <span className="numeric">{progress}%</span>
             </div>
             <Progress value={progress} />

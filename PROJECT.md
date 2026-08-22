@@ -8,22 +8,22 @@ Last updated: 19 August 2026
 
 ## 1. Status at a glance
 
-| Layer | Status |
-| --- | --- |
-| Design system & tokens | Complete |
-| Domain models & typed data layer | Complete |
-| Public marketing site | Complete |
-| Authentication & role-based access | Complete |
-| Patient experience (20 areas) | Complete |
-| AI architecture & safety pipeline | Complete (demo provider) |
-| Doctor workspace | Complete |
-| Pharmacy workspace | Complete |
-| Admin workspace | Complete |
-| MCP / agent integration | Complete (read-only tools) |
-| Testing | Minimal — one integration test |
-| Live data providers | Not started — demo adapters only |
-| Payments / real ordering | Not started |
-| Accessibility & mobile audit | Partial |
+| Layer                              | Status                           |
+| ---------------------------------- | -------------------------------- |
+| Design system & tokens             | Complete                         |
+| Domain models & typed data layer   | Complete                         |
+| Public marketing site              | Complete                         |
+| Authentication & role-based access | Complete                         |
+| Patient experience (20 areas)      | Complete                         |
+| AI architecture & safety pipeline  | Complete (demo provider)         |
+| Doctor workspace                   | Complete                         |
+| Pharmacy workspace                 | Complete                         |
+| Admin workspace                    | Complete                         |
+| MCP / agent integration            | Complete (read-only tools)       |
+| Testing                            | Minimal — one integration test   |
+| Live data providers                | Not started — demo adapters only |
+| Payments / real ordering           | Not started                      |
+| Accessibility & mobile audit       | Partial                          |
 
 ---
 
@@ -79,18 +79,18 @@ Plus a global **command palette** (`⌘K`) and the `PatientShell` responsive nav
 
 ### 2.4 AI architecture
 
-| File | Role |
-| --- | --- |
-| `src/ai/schemas.ts` | Typed payloads, `AiEnvelope`, confidence, sources, safety verdict, pipeline trace |
-| `src/ai/intent.ts` | Stage 1 intent detection + Stage 2 entity extraction |
-| `src/ai/provider-types.ts` | The `MedoraAiProvider` adapter contract |
-| `src/ai/providers/demo.ts` | Demo adapter — honest provenance, declares its own capabilities |
-| `src/ai/registry.ts` | Provider registration and capability lookup |
-| `src/ai/pipeline.ts` | Six-stage orchestration with per-stage timing |
-| `src/ai/safety.ts` | Stage 6 validator: prices, stock, diagnosis, dosing, prescribing, fabricated sources, red flags |
-| `src/ai/render.ts` | Payload → renderable mapping |
-| `src/ai/useAiConversation.ts` | Conversation state machine: streaming, typing, retry, error, feedback, clear, persistence |
-| `src/components/ai/*` | Confidence badge, provenance chips, payload views |
+| File                          | Role                                                                                            |
+| ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| `src/ai/schemas.ts`           | Typed payloads, `AiEnvelope`, confidence, sources, safety verdict, pipeline trace               |
+| `src/ai/intent.ts`            | Stage 1 intent detection + Stage 2 entity extraction                                            |
+| `src/ai/provider-types.ts`    | The `MedoraAiProvider` adapter contract                                                         |
+| `src/ai/providers/demo.ts`    | Demo adapter — honest provenance, declares its own capabilities                                 |
+| `src/ai/registry.ts`          | Provider registration and capability lookup                                                     |
+| `src/ai/pipeline.ts`          | Six-stage orchestration with per-stage timing                                                   |
+| `src/ai/safety.ts`            | Stage 6 validator: prices, stock, diagnosis, dosing, prescribing, fabricated sources, red flags |
+| `src/ai/render.ts`            | Payload → renderable mapping                                                                    |
+| `src/ai/useAiConversation.ts` | Conversation state machine: streaming, typing, retry, error, feedback, clear, persistence       |
+| `src/components/ai/*`         | Confidence badge, provenance chips, payload views                                               |
 
 Capabilities defined: medicine intelligence, prescription OCR, symptom triage, medicine explanation, drug interaction, allergy check, lab explanation, medicine comparison, patient summary, natural-language search. Any capability the active provider does not declare returns an honest "unavailable" notice explaining what a live provider would do.
 
@@ -123,16 +123,16 @@ Capabilities defined: medicine intelligence, prescription OCR, symptom triage, m
 
 ## 3. Partially implemented
 
-| Item | What exists | What is missing |
-| --- | --- | --- |
-| **Testing** | One integration test (`src/test/root-store.test.tsx`) proving the store provider is reachable from `PatientShell` | Unit tests for the safety validator, pipeline stages, intent detection, composition-key equivalence; component tests for `DataTable` and forms; no E2E suite |
-| **Accessibility** | Semantic HTML, Radix primitives (so focus management and ARIA come mostly free), visible focus states | No full keyboard-navigation pass, no screen-reader audit, no contrast audit against WCAG AA on every token pairing, no skip-to-content link |
-| **Mobile / responsive** | Shells and most pages are responsive; tables scroll horizontally | No systematic breakpoint audit; dense workspace tables are cramped on small screens; the landing hero headline still wraps awkwardly and leaves an orphaned word |
-| **Prescription OCR** | Full extraction UI with per-line confidence and mandatory confirmation | The extraction itself is simulated — no real OCR service is connected |
-| **Map view** | List/map toggle on pharmacy discovery | The map is a static representation, not an interactive tiles-based map |
-| **Notifications** | In-app notification centre with typed kinds | No push, no email, no scheduled delivery — reminders do not actually fire |
-| **Orders** | Full status model and timeline UI | Nothing is transmitted to a pharmacy; status transitions are local |
-| **Analytics charts** | Recharts views over demo aggregates | No real time-series store, no date-range selection on every chart |
+| Item                    | What exists                                                                                                       | What is missing                                                                                                                                                  |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Testing**             | One integration test (`src/test/root-store.test.tsx`) proving the store provider is reachable from `PatientShell` | Unit tests for the safety validator, pipeline stages, intent detection, composition-key equivalence; component tests for `DataTable` and forms; no E2E suite     |
+| **Accessibility**       | Semantic HTML, Radix primitives (so focus management and ARIA come mostly free), visible focus states             | No full keyboard-navigation pass, no screen-reader audit, no contrast audit against WCAG AA on every token pairing, no skip-to-content link                      |
+| **Mobile / responsive** | Shells and most pages are responsive; tables scroll horizontally                                                  | No systematic breakpoint audit; dense workspace tables are cramped on small screens; the landing hero headline still wraps awkwardly and leaves an orphaned word |
+| **Prescription OCR**    | Full extraction UI with per-line confidence and mandatory confirmation                                            | The extraction itself is simulated — no real OCR service is connected                                                                                            |
+| **Map view**            | List/map toggle on pharmacy discovery                                                                             | The map is a static representation, not an interactive tiles-based map                                                                                           |
+| **Notifications**       | In-app notification centre with typed kinds                                                                       | No push, no email, no scheduled delivery — reminders do not actually fire                                                                                        |
+| **Orders**              | Full status model and timeline UI                                                                                 | Nothing is transmitted to a pharmacy; status transitions are local                                                                                               |
+| **Analytics charts**    | Recharts views over demo aggregates                                                                               | No real time-series store, no date-range selection on every chart                                                                                                |
 
 ---
 
@@ -199,6 +199,7 @@ Medora is currently an **informational product**. It has not been assessed again
 ## 6. Roadmap
 
 ### Next (hardening)
+
 - Unit tests for `safety.ts`, `pipeline.ts`, `intent.ts` and composition-key equivalence
 - Full keyboard-navigation and screen-reader pass
 - Responsive audit of every workspace table
@@ -206,12 +207,14 @@ Medora is currently an **informational product**. It has not been assessed again
 - CI: lint + typecheck + test + `check:store` on every PR
 
 ### Then (live data)
+
 - Register a live medicine catalogue adapter
 - Register a real OCR provider behind `extractPrescription`
 - Register a licensed interaction database behind `checkInteractions`
 - Register a live LLM provider behind `MedoraAiProvider`, with the safety validator unchanged and still authoritative
 
 ### Later (product)
+
 - Pharmacy partner API for real listings, stock and order acceptance
 - Payments and fulfilment
 - Notification delivery (push + email) so reminders actually fire
@@ -223,6 +226,7 @@ Medora is currently an **informational product**. It has not been assessed again
 ## 7. How to extend Medora
 
 **Add an AI capability**
+
 1. Add the payload type and capability name in `src/ai/schemas.ts`.
 2. Implement the method on `MedoraAiProvider` in `src/ai/provider-types.ts`.
 3. Implement it in the demo adapter (or a new adapter) and register it.

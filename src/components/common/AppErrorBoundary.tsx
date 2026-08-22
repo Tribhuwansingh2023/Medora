@@ -71,8 +71,8 @@ export class AppErrorBoundary extends Component<Props, State> {
             </a>
           </div>
           <p className="mt-4 text-xs text-muted-foreground">
-            If this keeps happening, medicine information here is demo data — always confirm
-            anything clinical with a pharmacist or doctor.
+            If this keeps happening, medicine information here is demo data —
+            always confirm anything clinical with a pharmacist or doctor.
           </p>
         </div>
       </div>

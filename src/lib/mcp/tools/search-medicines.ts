@@ -9,18 +9,28 @@ export default defineTool({
   description:
     "Search Medora's medicine catalogue by brand name, generic name or active ingredient. Returns demo catalogue data, never clinical advice.",
   inputSchema: {
-    query: z.string().describe("Brand, generic or ingredient text to search for."),
+    query: z
+      .string()
+      .describe("Brand, generic or ingredient text to search for."),
     prescriptionOnly: z
       .boolean()
       .optional()
-      .describe("Filter to prescription-only (true) or over-the-counter (false) products."),
+      .describe(
+        "Filter to prescription-only (true) or over-the-counter (false) products.",
+      ),
   },
-  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  annotations: {
+    readOnlyHint: true,
+    idempotentHint: true,
+    openWorldHint: false,
+  },
   handler: ({ query, prescriptionOnly }) => {
     const q = query.trim().toLowerCase();
     const results = demoMedicines
       .filter((m) =>
-        prescriptionOnly === undefined ? true : m.prescriptionOnly === prescriptionOnly,
+        prescriptionOnly === undefined
+          ? true
+          : m.prescriptionOnly === prescriptionOnly,
       )
       .filter(
         (m) =>

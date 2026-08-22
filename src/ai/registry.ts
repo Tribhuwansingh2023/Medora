@@ -21,7 +21,9 @@ export function registerAiProvider(provider: MedoraAiProvider) {
 /** Live providers win; the demo adapter is the always-present fallback. */
 export function resolveProvider(capability: AiCapability): MedoraAiProvider {
   return (
-    registry.find((p) => p.mode === "live" && p.capabilities.includes(capability)) ??
+    registry.find(
+      (p) => p.mode === "live" && p.capabilities.includes(capability),
+    ) ??
     registry.find((p) => p.capabilities.includes(capability)) ??
     demoAiProvider
   );

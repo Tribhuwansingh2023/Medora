@@ -2,7 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { History, Scale, ShoppingBag, Bell, FileText } from "lucide-react";
 import { useMemo } from "react";
 import type { LucideIcon } from "lucide-react";
-import { ClinicalDisclaimer, EmptyState, PageHeader } from "@/components/common/primitives";
+import {
+  ClinicalDisclaimer,
+  EmptyState,
+  PageHeader,
+} from "@/components/common/primitives";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -90,12 +94,16 @@ function HistoryPage() {
           kind: "dose",
           title: `${r.medicineName} ${r.strength}`,
           detail:
-            entry.state === "taken" ? `Marked taken at ${entry.time}` : `Skipped at ${entry.time}`,
+            entry.state === "taken"
+              ? `Marked taken at ${entry.time}`
+              : `Skipped at ${entry.time}`,
         }),
       ),
     );
 
-    return list.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
+    return list.sort(
+      (a, b) => new Date(b.at).getTime() - new Date(a.at).getTime(),
+    );
   }, [state.comparisons, state.orders, state.prescriptions, state.reminders]);
 
   const render = (list: Entry[]) =>
@@ -128,7 +136,10 @@ function HistoryPage() {
                   <Badge variant="outline">{kindMeta[e.kind].label}</Badge>
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">{e.detail}</p>
-                <p className="mt-1 text-xs text-muted-foreground/80" suppressHydrationWarning>
+                <p
+                  className="mt-1 text-xs text-muted-foreground/80"
+                  suppressHydrationWarning
+                >
                   {new Date(e.at).toLocaleString()}
                 </p>
               </div>
@@ -157,11 +168,13 @@ function HistoryPage() {
         <TabsContent value="all" className="mt-5">
           {render(entries)}
         </TabsContent>
-        {(["comparison", "order", "prescription", "dose"] as Kind[]).map((k) => (
-          <TabsContent key={k} value={k} className="mt-5">
-            {render(entries.filter((e) => e.kind === k))}
-          </TabsContent>
-        ))}
+        {(["comparison", "order", "prescription", "dose"] as Kind[]).map(
+          (k) => (
+            <TabsContent key={k} value={k} className="mt-5">
+              {render(entries.filter((e) => e.kind === k))}
+            </TabsContent>
+          ),
+        )}
       </Tabs>
 
       <ClinicalDisclaimer />

@@ -33,7 +33,12 @@ export interface DoctorPrescriptionDraft {
   createdAt: string;
   origin: "clinician" | "patient_request" | "repeat_request";
   status: "draft" | "awaiting_review" | "signed" | "declined";
-  items: { medicine: string; strength: string; form: string; directionsPlaceholder: string }[];
+  items: {
+    medicine: string;
+    strength: string;
+    form: string;
+    directionsPlaceholder: string;
+  }[];
   aiFlags: string[];
   clinicianNote?: string;
 }
@@ -127,7 +132,8 @@ export const demoConsultNotes: ConsultNote[] = [
     at: "2026-08-02T08:05:00.000Z",
     author: "Medora assistive layer",
     kind: "ai_review",
-    summary: "Assistive summary regenerated after a new prescription upload. Not reviewed yet.",
+    summary:
+      "Assistive summary regenerated after a new prescription upload. Not reviewed yet.",
   },
   {
     id: "cn-3",
@@ -153,7 +159,8 @@ export const demoConsultNotes: ConsultNote[] = [
     at: "2026-06-14T13:10:00.000Z",
     author: "Dr. L. Osei (sample)",
     kind: "consult",
-    summary: "Consult completed. Inhaler technique discussed and recorded in the clinic record.",
+    summary:
+      "Consult completed. Inhaler technique discussed and recorded in the clinic record.",
   },
   {
     id: "cn-6",
@@ -169,7 +176,8 @@ export const demoConsultNotes: ConsultNote[] = [
     at: "2026-07-19T16:30:00.000Z",
     author: "Dr. A. Whitfield (sample)",
     kind: "decision",
-    summary: "Post-discharge reconciliation recorded. Two medicines confirmed with the patient.",
+    summary:
+      "Post-discharge reconciliation recorded. Two medicines confirmed with the patient.",
   },
 ];
 
@@ -229,7 +237,8 @@ export const demoPrescriptionDrafts: DoctorPrescriptionDraft[] = [
       },
     ],
     aiFlags: [],
-    clinicianNote: "Signed after reconciliation consult on 9 August (sample record).",
+    clinicianNote:
+      "Signed after reconciliation consult on 9 August (sample record).",
   },
   {
     id: "dr-4",
@@ -239,9 +248,16 @@ export const demoPrescriptionDrafts: DoctorPrescriptionDraft[] = [
     origin: "patient_request",
     status: "declined",
     items: [
-      { medicine: "Amoxicillin", strength: "500 mg", form: "Capsule", directionsPlaceholder: "—" },
+      {
+        medicine: "Amoxicillin",
+        strength: "500 mg",
+        form: "Capsule",
+        directionsPlaceholder: "—",
+      },
     ],
-    aiFlags: ["Request originated from a symptom entry, not from an assessment."],
+    aiFlags: [
+      "Request originated from a symptom entry, not from an assessment.",
+    ],
     clinicianNote:
       "Declined: assessment required first. Patient invited to a consult (sample record).",
   },

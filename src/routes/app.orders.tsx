@@ -24,7 +24,10 @@ export const Route = createFileRoute("/app/orders")({
           "Track pharmacy reservations, prescription verification status and pickup readiness.",
       },
       { property: "og:title", content: "Orders & reservations — Medora" },
-      { property: "og:description", content: "Reservation and verification status in one place." },
+      {
+        property: "og:description",
+        content: "Reservation and verification status in one place.",
+      },
     ],
   }),
   component: OrdersPage,
@@ -39,11 +42,26 @@ const statusMeta: Record<OrderStatus, { label: string; cls: string }> = {
     label: "Pharmacist verifying",
     cls: "border-primary/30 bg-primary-soft text-primary",
   },
-  accepted: { label: "Accepted", cls: "border-primary/30 bg-primary-soft text-primary" },
-  preparing: { label: "Preparing", cls: "border-primary/30 bg-primary-soft text-primary" },
-  ready: { label: "Ready for pickup", cls: "border-success/35 bg-success-soft text-success" },
-  completed: { label: "Completed", cls: "border-border bg-secondary text-muted-foreground" },
-  cancelled: { label: "Cancelled", cls: "border-border bg-secondary text-muted-foreground" },
+  accepted: {
+    label: "Accepted",
+    cls: "border-primary/30 bg-primary-soft text-primary",
+  },
+  preparing: {
+    label: "Preparing",
+    cls: "border-primary/30 bg-primary-soft text-primary",
+  },
+  ready: {
+    label: "Ready for pickup",
+    cls: "border-success/35 bg-success-soft text-success",
+  },
+  completed: {
+    label: "Completed",
+    cls: "border-border bg-secondary text-muted-foreground",
+  },
+  cancelled: {
+    label: "Cancelled",
+    cls: "border-border bg-secondary text-muted-foreground",
+  },
 };
 
 const openStatuses: OrderStatus[] = [
@@ -54,14 +72,22 @@ const openStatuses: OrderStatus[] = [
   "ready",
 ];
 
-function OrderCard({ order, onCancel }: { order: Order; onCancel: (id: string) => void }) {
+function OrderCard({
+  order,
+  onCancel,
+}: {
+  order: Order;
+  onCancel: (id: string) => void;
+}) {
   const meta = statusMeta[order.status];
   const cancellable = openStatuses.includes(order.status);
   return (
     <article className="surface p-5">
       <header className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
         <div className="min-w-0">
-          <h3 className="truncate text-base font-semibold text-ink">{order.pharmacyName}</h3>
+          <h3 className="truncate text-base font-semibold text-ink">
+            {order.pharmacyName}
+          </h3>
           <p className="text-sm text-muted-foreground">
             {order.id} · {new Date(order.placedAt).toLocaleString()} ·{" "}
             {order.fulfilment === "pickup" ? "Pickup" : "Delivery"}
@@ -74,11 +100,16 @@ function OrderCard({ order, onCancel }: { order: Order; onCancel: (id: string) =
 
       <ul className="mt-4 space-y-2 border-t border-border pt-4">
         {order.items.map((i) => (
-          <li key={i.medicineId} className="flex items-center justify-between gap-3 text-sm">
+          <li
+            key={i.medicineId}
+            className="flex items-center justify-between gap-3 text-sm"
+          >
             <span className="min-w-0 truncate">
               {i.name} <span className="text-muted-foreground">× {i.qty}</span>
             </span>
-            <span className="numeric shrink-0">{formatMoney(i.price * i.qty)}</span>
+            <span className="numeric shrink-0">
+              {formatMoney(i.price * i.qty)}
+            </span>
           </li>
         ))}
       </ul>
@@ -91,11 +122,18 @@ function OrderCard({ order, onCancel }: { order: Order; onCancel: (id: string) =
       <ol className="mt-4 space-y-3 border-t border-border pt-4">
         {order.timeline.map((t, idx) => (
           <li key={`${t.state}-${idx}`} className="flex gap-3 text-sm">
-            <span aria-hidden className="mt-1.5 size-2 shrink-0 rounded-full bg-primary" />
+            <span
+              aria-hidden
+              className="mt-1.5 size-2 shrink-0 rounded-full bg-primary"
+            />
             <div>
-              <p className="font-medium text-foreground">{statusMeta[t.state].label}</p>
+              <p className="font-medium text-foreground">
+                {statusMeta[t.state].label}
+              </p>
               <p className="text-muted-foreground">{t.note}</p>
-              <p className="text-xs text-muted-foreground/80">{new Date(t.at).toLocaleString()}</p>
+              <p className="text-xs text-muted-foreground/80">
+                {new Date(t.at).toLocaleString()}
+              </p>
             </div>
           </li>
         ))}
@@ -103,7 +141,10 @@ function OrderCard({ order, onCancel }: { order: Order; onCancel: (id: string) =
 
       <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-4">
         <Button asChild variant="outline" size="sm">
-          <Link to="/app/pharmacies/$pharmacyId" params={{ pharmacyId: order.pharmacyId }}>
+          <Link
+            to="/app/pharmacies/$pharmacyId"
+            params={{ pharmacyId: order.pharmacyId }}
+          >
             View pharmacy
           </Link>
         </Button>
@@ -129,7 +170,11 @@ function OrdersPage() {
   const closed = orders.filter((o) => !openStatuses.includes(o.status));
 
   const cancel = (id: string) => {
-    advanceOrder(id, "cancelled", "Cancelled by you from the Medora app (demo mode).");
+    advanceOrder(
+      id,
+      "cancelled",
+      "Cancelled by you from the Medora app (demo mode).",
+    );
     toast.success("Reservation cancelled");
   };
 
@@ -170,7 +215,9 @@ function OrdersPage() {
                 description="All your reservations are complete or cancelled."
               />
             ) : (
-              open.map((o) => <OrderCard key={o.id} order={o} onCancel={cancel} />)
+              open.map((o) => (
+                <OrderCard key={o.id} order={o} onCancel={cancel} />
+              ))
             )}
           </TabsContent>
           <TabsContent value="closed" className="mt-5 space-y-4">
@@ -181,7 +228,9 @@ function OrdersPage() {
                 description="Completed and cancelled reservations will be listed here."
               />
             ) : (
-              closed.map((o) => <OrderCard key={o.id} order={o} onCancel={cancel} />)
+              closed.map((o) => (
+                <OrderCard key={o.id} order={o} onCancel={cancel} />
+              ))
             )}
           </TabsContent>
         </Tabs>

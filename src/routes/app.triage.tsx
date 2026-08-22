@@ -30,7 +30,10 @@ export const Route = createFileRoute("/app/triage")({
           "A routing tool that suggests where to seek care. Medora does not diagnose conditions or recommend medicines.",
       },
       { property: "og:title", content: "Symptom check — Medora" },
-      { property: "og:description", content: "Where to go, not what you have." },
+      {
+        property: "og:description",
+        content: "Where to go, not what you have.",
+      },
     ],
   }),
   component: TriagePage,
@@ -56,7 +59,10 @@ const redFlagOptions = [
   "Swollen tongue or lips",
 ];
 
-const urgencyTone: Record<TriageResult["urgency"], { label: string; cls: string }> = {
+const urgencyTone: Record<
+  TriageResult["urgency"],
+  { label: string; cls: string }
+> = {
   emergency: {
     label: "Emergency",
     cls: "border-destructive/40 bg-destructive-soft text-destructive",
@@ -65,8 +71,14 @@ const urgencyTone: Record<TriageResult["urgency"], { label: string; cls: string 
     label: "Same-day care",
     cls: "border-warning/40 bg-warning-soft text-warning-foreground",
   },
-  routine: { label: "Routine appointment", cls: "border-primary/30 bg-primary-soft text-primary" },
-  self_monitor: { label: "Monitor at home", cls: "border-success/35 bg-success-soft text-success" },
+  routine: {
+    label: "Routine appointment",
+    cls: "border-primary/30 bg-primary-soft text-primary",
+  },
+  self_monitor: {
+    label: "Monitor at home",
+    cls: "border-success/35 bg-success-soft text-success",
+  },
 };
 
 function TriagePage() {
@@ -80,7 +92,9 @@ function TriagePage() {
   const [result, setResult] = useState<TriageResult | null>(null);
 
   const toggle = (list: string[], value: string, set: (v: string[]) => void) =>
-    set(list.includes(value) ? list.filter((x) => x !== value) : [...list, value]);
+    set(
+      list.includes(value) ? list.filter((x) => x !== value) : [...list, value],
+    );
 
   const submit = async () => {
     if (symptoms.length === 0 && !freeText.trim() && redFlags.length === 0) {
@@ -101,7 +115,8 @@ function TriagePage() {
     });
     setResult(res);
     setLoading(false);
-    if (res.escalate) toast.warning("Warning signs selected — seek emergency care now.");
+    if (res.escalate)
+      toast.warning("Warning signs selected — seek emergency care now.");
     else toast.success("Routing suggestion ready.");
   };
 
@@ -124,7 +139,9 @@ function TriagePage() {
       >
         <div className="space-y-5">
           <fieldset className="surface p-5">
-            <legend className="px-1 text-sm font-semibold text-ink">What are you noticing?</legend>
+            <legend className="px-1 text-sm font-semibold text-ink">
+              What are you noticing?
+            </legend>
             <div className="mt-3 flex flex-wrap gap-2">
               {commonSymptoms.map((s) => {
                 const active = symptoms.includes(s);
@@ -159,9 +176,12 @@ function TriagePage() {
           </fieldset>
 
           <fieldset className="surface p-5">
-            <legend className="px-1 text-sm font-semibold text-ink">Warning signs</legend>
+            <legend className="px-1 text-sm font-semibold text-ink">
+              Warning signs
+            </legend>
             <p className="mt-1 text-sm text-muted-foreground">
-              If any of these apply, Medora stops and routes you straight to emergency care.
+              If any of these apply, Medora stops and routes you straight to
+              emergency care.
             </p>
             <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
               {redFlagOptions.map((f) => (
@@ -180,10 +200,14 @@ function TriagePage() {
 
         <div className="space-y-5">
           <fieldset className="surface p-5">
-            <legend className="px-1 text-sm font-semibold text-ink">Context</legend>
+            <legend className="px-1 text-sm font-semibold text-ink">
+              Context
+            </legend>
             <div className="mt-3 space-y-4">
               <div>
-                <Label htmlFor="triage-days">How many days has this lasted?</Label>
+                <Label htmlFor="triage-days">
+                  How many days has this lasted?
+                </Label>
                 <Input
                   id="triage-days"
                   type="number"
@@ -195,7 +219,9 @@ function TriagePage() {
                 />
               </div>
               <div>
-                <Label htmlFor="triage-severity">How severe does it feel? ({severity}/10)</Label>
+                <Label htmlFor="triage-severity">
+                  How severe does it feel? ({severity}/10)
+                </Label>
                 <Slider
                   id="triage-severity"
                   className="mt-3"
@@ -207,10 +233,18 @@ function TriagePage() {
                 />
               </div>
               <div className="rounded-md border border-border bg-secondary/60 p-3 text-xs text-muted-foreground">
-                <p className="font-medium text-foreground">Used from your health profile</p>
+                <p className="font-medium text-foreground">
+                  Used from your health profile
+                </p>
                 <p className="mt-1">Age band {state.profile.ageBand}</p>
-                <p>Allergies: {state.profile.allergies.join(", ") || "none recorded"}</p>
-                <p>Medicines: {state.profile.currentMedicines.join(", ") || "none recorded"}</p>
+                <p>
+                  Allergies:{" "}
+                  {state.profile.allergies.join(", ") || "none recorded"}
+                </p>
+                <p>
+                  Medicines:{" "}
+                  {state.profile.currentMedicines.join(", ") || "none recorded"}
+                </p>
                 <Link
                   to="/app/settings"
                   className="mt-2 inline-block font-medium text-primary underline"
@@ -223,7 +257,9 @@ function TriagePage() {
 
           <Button type="submit" className="w-full" disabled={loading}>
             <Stethoscope className="size-4" aria-hidden />
-            {loading ? "Working through your answers…" : "Get a routing suggestion"}
+            {loading
+              ? "Working through your answers…"
+              : "Get a routing suggestion"}
           </Button>
         </div>
       </form>
@@ -240,11 +276,16 @@ function TriagePage() {
         <section className="space-y-5" aria-live="polite">
           {result.escalate && <EmergencyCallout />}
           <div className="surface p-5">
-            <Badge variant="outline" className={urgencyTone[result.urgency].cls}>
+            <Badge
+              variant="outline"
+              className={urgencyTone[result.urgency].cls}
+            >
               {urgencyTone[result.urgency].label}
             </Badge>
             <h2 className="mt-3 text-xl font-bold">{result.headline}</h2>
-            <p className="mt-2 text-sm leading-relaxed text-foreground/90">{result.summary}</p>
+            <p className="mt-2 text-sm leading-relaxed text-foreground/90">
+              {result.summary}
+            </p>
           </div>
 
           {result.possibleExplanations.length > 0 && (
@@ -283,7 +324,9 @@ function TriagePage() {
 
           {result.monitoringPlan.length > 0 && (
             <div className="surface p-5">
-              <h3 className="text-sm font-semibold text-ink">A simple monitoring plan</h3>
+              <h3 className="text-sm font-semibold text-ink">
+                A simple monitoring plan
+              </h3>
               <ol className="mt-3 space-y-4">
                 {result.monitoringPlan.map((step) => (
                   <li key={step.day}>
@@ -301,8 +344,12 @@ function TriagePage() {
             </div>
           )}
 
-          <SafetyNotice tone="warning" title="This is a routing suggestion, not a diagnosis">
-            Medora cannot examine you. If you feel worse, or you are unsure, contact a clinician.
+          <SafetyNotice
+            tone="warning"
+            title="This is a routing suggestion, not a diagnosis"
+          >
+            Medora cannot examine you. If you feel worse, or you are unsure,
+            contact a clinician.
           </SafetyNotice>
         </section>
       )}

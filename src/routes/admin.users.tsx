@@ -20,8 +20,17 @@ import {
 } from "@/components/ui/select";
 import { PageHeader } from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
-import { AsyncSection, StatusPill, Timeline, WorkspaceSection } from "@/components/workspace/parts";
-import { shortDate, shortDateTime, useWorkspaceData } from "@/services/workspace";
+import {
+  AsyncSection,
+  StatusPill,
+  Timeline,
+  WorkspaceSection,
+} from "@/components/workspace/parts";
+import {
+  shortDate,
+  shortDateTime,
+  useWorkspaceData,
+} from "@/services/workspace";
 import type { PlatformUser } from "@/data/workspace-demo";
 
 export const Route = createFileRoute("/admin/users")({
@@ -36,7 +45,8 @@ export const Route = createFileRoute("/admin/users")({
       { property: "og:title", content: "Users — Medora Admin workspace" },
       {
         property: "og:description",
-        content: "Administrator view of platform accounts, statuses and role grants.",
+        content:
+          "Administrator view of platform accounts, statuses and role grants.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -72,7 +82,9 @@ interface RoleChangeEntry {
 function UsersPage() {
   const users = useWorkspaceData("platformUsers");
   const [openId, setOpenId] = useState<string | null>(null);
-  const [roleOverrides, setRoleOverrides] = useState<Record<string, PlatformUser["role"]>>({});
+  const [roleOverrides, setRoleOverrides] = useState<
+    Record<string, PlatformUser["role"]>
+  >({});
   const [auditLog, setAuditLog] = useState<RoleChangeEntry[]>([]);
 
   const rows = users.data ?? [];
@@ -152,7 +164,10 @@ function UsersPage() {
                 {
                   key: "role",
                   label: "Role",
-                  options: roles.map((value) => ({ value, label: roleLabel[value] })),
+                  options: roles.map((value) => ({
+                    value,
+                    label: roleLabel[value],
+                  })),
                   predicate: (r, v) => (roleOverrides[r.id] ?? r.role) === v,
                 },
                 {
@@ -168,7 +183,11 @@ function UsersPage() {
               ]}
               onRowClick={(r) => setOpenId(r.id)}
               rowActions={(r) => (
-                <Button variant="outline" size="sm" onClick={() => setOpenId(r.id)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setOpenId(r.id)}
+                >
                   Open
                 </Button>
               )}
@@ -177,7 +196,10 @@ function UsersPage() {
         </AsyncSection>
       </WorkspaceSection>
 
-      <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && setOpenId(null)}>
+      <Dialog
+        open={Boolean(selected)}
+        onOpenChange={(open) => !open && setOpenId(null)}
+      >
         <DialogContent className="max-w-lg">
           {selected && (
             <>
@@ -188,20 +210,31 @@ function UsersPage() {
 
               <dl className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">Joined</dt>
-                  <dd className="mt-0.5">{shortDate(`${selected.joined}T00:00:00.000Z`)}</dd>
+                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+                    Joined
+                  </dt>
+                  <dd className="mt-0.5">
+                    {shortDate(`${selected.joined}T00:00:00.000Z`)}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs uppercase tracking-wide text-muted-foreground">
                     Last active
                   </dt>
-                  <dd className="mt-0.5">{shortDate(`${selected.lastActive}T00:00:00.000Z`)}</dd>
+                  <dd className="mt-0.5">
+                    {shortDate(`${selected.lastActive}T00:00:00.000Z`)}
+                  </dd>
                 </div>
                 <div>
-                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">Status</dt>
+                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+                    Status
+                  </dt>
                   <dd className="mt-0.5">
                     <StatusPill
-                      label={selected.status.charAt(0).toUpperCase() + selected.status.slice(1)}
+                      label={
+                        selected.status.charAt(0).toUpperCase() +
+                        selected.status.slice(1)
+                      }
                       tone={statusTone[selected.status]}
                     />
                   </dd>
@@ -210,7 +243,9 @@ function UsersPage() {
                   <dt className="text-xs uppercase tracking-wide text-muted-foreground">
                     Two-factor authentication
                   </dt>
-                  <dd className="mt-0.5">{selected.mfa ? "Enabled" : "Not enabled"}</dd>
+                  <dd className="mt-0.5">
+                    {selected.mfa ? "Enabled" : "Not enabled"}
+                  </dd>
                 </div>
               </dl>
 
@@ -219,17 +254,25 @@ function UsersPage() {
                   <ShieldCheck className="size-4" aria-hidden /> Role
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  Granting the administrator role is a privileged, audited action. Recording it here
-                  attributes the change to your administrator session for this demo.
+                  Granting the administrator role is a privileged, audited
+                  action. Recording it here attributes the change to your
+                  administrator session for this demo.
                 </p>
                 <Select
                   value={selectedRole}
                   onValueChange={(value) => {
                     const nextRole = value as PlatformUser["role"];
-                    if (!selected || nextRole === (roleOverrides[selected.id] ?? selected.role))
+                    if (
+                      !selected ||
+                      nextRole === (roleOverrides[selected.id] ?? selected.role)
+                    )
                       return;
-                    const fromRole = roleOverrides[selected.id] ?? selected.role;
-                    setRoleOverrides((prev) => ({ ...prev, [selected.id]: nextRole }));
+                    const fromRole =
+                      roleOverrides[selected.id] ?? selected.role;
+                    setRoleOverrides((prev) => ({
+                      ...prev,
+                      [selected.id]: nextRole,
+                    }));
                     setAuditLog((prev) => [
                       {
                         id: `rc-${Date.now()}`,

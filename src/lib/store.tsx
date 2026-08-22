@@ -408,10 +408,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
             const updated = {
               ...o,
               status,
-              timeline: [
-                ...o.timeline,
-                { state: status, at: nowIso(), note },
-              ],
+              timeline: [...o.timeline, { state: status, at: nowIso(), note }],
             };
             void syncOrderToPostgres(updated);
             return updated;

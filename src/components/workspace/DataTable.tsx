@@ -79,18 +79,22 @@ export function DataTable<T>({
 }: DataTableProps<T>) {
   const [query, setQuery] = useState("");
   const [filterValues, setFilterValues] = useState<Record<string, string>>({});
-  const [sort, setSort] = useState<{ key: string; direction: "asc" | "desc" } | null>(
-    initialSort ?? null,
-  );
+  const [sort, setSort] = useState<{
+    key: string;
+    direction: "asc" | "desc";
+  } | null>(initialSort ?? null);
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    let out = rows.filter((row) => (q ? searchText(row).toLowerCase().includes(q) : true));
+    let out = rows.filter((row) =>
+      q ? searchText(row).toLowerCase().includes(q) : true,
+    );
     for (const filter of filters) {
       const value = filterValues[filter.key];
-      if (value && value !== "all") out = out.filter((row) => filter.predicate(row, value));
+      if (value && value !== "all")
+        out = out.filter((row) => filter.predicate(row, value));
     }
     if (sort) {
       const column = columns.find((c) => c.key === sort.key);
@@ -99,7 +103,8 @@ export function DataTable<T>({
         out = [...out].sort((a, b) => {
           const av = column.sortValue!(a);
           const bv = column.sortValue!(b);
-          if (typeof av === "number" && typeof bv === "number") return (av - bv) * dir;
+          if (typeof av === "number" && typeof bv === "number")
+            return (av - bv) * dir;
           return String(av).localeCompare(String(bv)) * dir;
         });
       }
@@ -109,11 +114,16 @@ export function DataTable<T>({
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
   const safePage = Math.min(page, pageCount - 1);
-  const pageRows = filtered.slice(safePage * pageSize, safePage * pageSize + pageSize);
+  const pageRows = filtered.slice(
+    safePage * pageSize,
+    safePage * pageSize + pageSize,
+  );
   const pageIds = pageRows.map(getId);
-  const allOnPageSelected = pageIds.length > 0 && pageIds.every((id) => selected.includes(id));
+  const allOnPageSelected =
+    pageIds.length > 0 && pageIds.every((id) => selected.includes(id));
   const activeFilters =
-    Object.values(filterValues).filter((v) => v && v !== "all").length + (query ? 1 : 0);
+    Object.values(filterValues).filter((v) => v && v !== "all").length +
+    (query ? 1 : 0);
 
   const reset = () => {
     setQuery("");
@@ -172,7 +182,9 @@ export function DataTable<T>({
 
       {bulkActions && selected.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 rounded-md border border-primary/30 bg-primary-soft px-3 py-2 text-sm">
-          <span className="font-medium text-ink">{selected.length} selected</span>
+          <span className="font-medium text-ink">
+            {selected.length} selected
+          </span>
           <div className="ml-auto flex flex-wrap items-center gap-2">
             {bulkActions(selected, () => setSelected([]))}
             <Button variant="ghost" size="sm" onClick={() => setSelected([])}>
@@ -221,7 +233,8 @@ export function DataTable<T>({
                             prev?.key === column.key
                               ? {
                                   key: column.key,
-                                  direction: prev.direction === "asc" ? "desc" : "asc",
+                                  direction:
+                                    prev.direction === "asc" ? "desc" : "asc",
                                 }
                               : { key: column.key, direction: "asc" },
                           )
@@ -240,7 +253,10 @@ export function DataTable<T>({
                             <ArrowDown className="size-3.5" aria-hidden />
                           )
                         ) : (
-                          <ChevronsUpDown className="size-3.5 opacity-50" aria-hidden />
+                          <ChevronsUpDown
+                            className="size-3.5 opacity-50"
+                            aria-hidden
+                          />
                         )}
                       </button>
                     ) : (
@@ -249,18 +265,26 @@ export function DataTable<T>({
                   </TableHead>
                 );
               })}
-              {rowActions && <TableHead className="w-[1%] text-right">Actions</TableHead>}
+              {rowActions && (
+                <TableHead className="w-[1%] text-right">Actions</TableHead>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
             {pageRows.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length + (rowActions ? 1 : 0) + (bulkActions ? 1 : 0)}
+                  colSpan={
+                    columns.length +
+                    (rowActions ? 1 : 0) +
+                    (bulkActions ? 1 : 0)
+                  }
                   className="py-12 text-center"
                 >
                   <p className="font-medium text-ink">{emptyTitle}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{emptyDescription}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {emptyDescription}
+                  </p>
                 </TableCell>
               </TableRow>
             ) : (
@@ -280,7 +304,9 @@ export function DataTable<T>({
                           aria-label={`Select row ${id}`}
                           onCheckedChange={(checked) =>
                             setSelected((prev) =>
-                              checked ? [...prev, id] : prev.filter((x) => x !== id),
+                              checked
+                                ? [...prev, id]
+                                : prev.filter((x) => x !== id),
                             )
                           }
                         />
@@ -298,7 +324,10 @@ export function DataTable<T>({
                       </TableCell>
                     ))}
                     {rowActions && (
-                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                      <TableCell
+                        className="text-right"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         {rowActions(row)}
                       </TableCell>
                     )}

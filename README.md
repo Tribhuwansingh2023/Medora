@@ -40,26 +40,26 @@ Three problems, one product:
 
 ### Patient experience
 
-| Area | What it does |
-| --- | --- |
-| **Dashboard** | Today's medicines, adherence, open prescriptions, active safety alerts, order status |
-| **Medicine search** | Natural-language search ("blood pressure tablet 5mg") resolved to catalogue records |
-| **Medicine detail** | Composition, form, pack size, manufacturer, uses, warnings, side effects, storage, provenance |
-| **Price comparison** | Composition-equivalent alternatives across pharmacies, with lowest/highest spread and savings estimate |
-| **Pharmacy discovery** | Nearby pharmacies with distance, hours, services, licence ID, ratings; list and map views |
-| **Pharmacy detail** | Full profile, stocked listings, contact and directions |
-| **Prescriptions** | Upload, per-line extraction with confidence scores, mandatory human confirmation before anything is used |
-| **Reminders** | Schedules derived from confirmed prescription lines, with taken/skipped logging |
-| **Interactions** | Duplicate-ingredient and allergy cross-checks against the user's own medicine list |
-| **Allergy checks** | Explicit allergy-to-ingredient matching with the basis of each match shown |
-| **Lab reports** | Analyte-by-analyte plain-language explanation with reference ranges and an explicit "what this is not" |
-| **Symptom triage** | Structured intake → routing level (emergency / same-day / routine / self-monitor), never a condition list |
-| **AI assistant** | Conversational medicine intelligence with streaming, sources, confidence, feedback and reporting |
-| **Cart & orders** | Reservation flow with prescription gating for Rx-only items, order timeline |
-| **History** | Everything the account has looked up, compared, uploaded and ordered |
-| **Notifications** | Reminder, price, order, safety and system notices |
-| **Settings** | Health profile, allergies, conditions, consent toggles, location sharing |
-| **Emergency** | Always-reachable red-flag page with escalation guidance |
+| Area                   | What it does                                                                                              |
+| ---------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Dashboard**          | Today's medicines, adherence, open prescriptions, active safety alerts, order status                      |
+| **Medicine search**    | Natural-language search ("blood pressure tablet 5mg") resolved to catalogue records                       |
+| **Medicine detail**    | Composition, form, pack size, manufacturer, uses, warnings, side effects, storage, provenance             |
+| **Price comparison**   | Composition-equivalent alternatives across pharmacies, with lowest/highest spread and savings estimate    |
+| **Pharmacy discovery** | Nearby pharmacies with distance, hours, services, licence ID, ratings; list and map views                 |
+| **Pharmacy detail**    | Full profile, stocked listings, contact and directions                                                    |
+| **Prescriptions**      | Upload, per-line extraction with confidence scores, mandatory human confirmation before anything is used  |
+| **Reminders**          | Schedules derived from confirmed prescription lines, with taken/skipped logging                           |
+| **Interactions**       | Duplicate-ingredient and allergy cross-checks against the user's own medicine list                        |
+| **Allergy checks**     | Explicit allergy-to-ingredient matching with the basis of each match shown                                |
+| **Lab reports**        | Analyte-by-analyte plain-language explanation with reference ranges and an explicit "what this is not"    |
+| **Symptom triage**     | Structured intake → routing level (emergency / same-day / routine / self-monitor), never a condition list |
+| **AI assistant**       | Conversational medicine intelligence with streaming, sources, confidence, feedback and reporting          |
+| **Cart & orders**      | Reservation flow with prescription gating for Rx-only items, order timeline                               |
+| **History**            | Everything the account has looked up, compared, uploaded and ordered                                      |
+| **Notifications**      | Reminder, price, order, safety and system notices                                                         |
+| **Settings**           | Health profile, allergies, conditions, consent toggles, location sharing                                  |
+| **Emergency**          | Always-reachable red-flag page with escalation guidance                                                   |
 
 ### Professional workspaces
 
@@ -154,15 +154,15 @@ scripts/              Static reachability check for store provider mounting
 
 ## Roles and routes
 
-| Prefix | Role | Guard |
-| --- | --- | --- |
-| `/` , `/emergency`, `/auth`, `/reset-password` | public | none |
-| `/app/*` | patient (or admin) | `RequireRole` |
-| `/pharmacy/*` | pharmacy (or admin) | `RequireRole` |
-| `/doctor/*` | doctor (or admin) | `RequireRole` |
-| `/admin/*` | admin | `RequireRole` |
-| `/switch` | any signed-in role | session |
-| `/mcp`, `/.mcp/*`, `/.well-known/*` | agents | OAuth |
+| Prefix                                         | Role                | Guard         |
+| ---------------------------------------------- | ------------------- | ------------- |
+| `/` , `/emergency`, `/auth`, `/reset-password` | public              | none          |
+| `/app/*`                                       | patient (or admin)  | `RequireRole` |
+| `/pharmacy/*`                                  | pharmacy (or admin) | `RequireRole` |
+| `/doctor/*`                                    | doctor (or admin)   | `RequireRole` |
+| `/admin/*`                                     | admin               | `RequireRole` |
+| `/switch`                                      | any signed-in role  | session       |
+| `/mcp`, `/.mcp/*`, `/.well-known/*`            | agents              | OAuth         |
 
 Every guarded group is wrapped in `AppRouteGroup`, which guarantees the global store provider and error boundary are mounted before any child renders.
 
@@ -207,15 +207,15 @@ The visual target is a calm, printed-clinical feel — dense where information m
 
 ## Scripts
 
-| Command | What it does |
-| --- | --- |
-| `npm run dev` | Dev server on :8080 |
-| `npm run build` | Production build |
-| `npm run preview` | Preview the production build |
-| `npm run lint` | ESLint across the repo |
-| `npm run format` | Prettier write |
-| `npm run test` | Vitest run |
-| `npm run test:watch` | Vitest watch |
+| Command               | What it does                                                   |
+| --------------------- | -------------------------------------------------------------- |
+| `npm run dev`         | Dev server on :8080                                            |
+| `npm run build`       | Production build                                               |
+| `npm run preview`     | Preview the production build                                   |
+| `npm run lint`        | ESLint across the repo                                         |
+| `npm run format`      | Prettier write                                                 |
+| `npm run test`        | Vitest run                                                     |
+| `npm run test:watch`  | Vitest watch                                                   |
 | `npm run check:store` | Static check that every `useStore` caller is inside a provider |
 
 ## Data status

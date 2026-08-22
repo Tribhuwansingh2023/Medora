@@ -109,23 +109,23 @@ Three deliberate seams make the product replaceable without UI churn:
 
 ## 4. Technology stack
 
-| Concern | Choice | Notes |
-| --- | --- | --- |
-| Framework | TanStack Start v1 | SSR + server functions, Vite 8 build |
-| Routing | TanStack Router (file-based) | `src/routes`, generated `routeTree.gen.ts` |
-| UI | React 19 | Concurrent rendering, no legacy entry files |
-| Server state | TanStack Query v5 | retry, staleTime, typed keys |
-| Styling | Tailwind CSS v4 | tokens in `src/styles.css`, no config file flow |
-| Components | shadcn/ui + Radix | 40+ primitives in `src/components/ui` |
-| Charts | Recharts | wrapped in `src/components/workspace/charts.tsx` |
-| Forms | react-hook-form + zod | `@hookform/resolvers` |
-| Auth/DB | Supabase (Lovable Cloud) | `profiles`, `user_roles`, RLS |
-| Icons | lucide-react | functional icons only |
-| Toasts | sonner | mounted once in `__root.tsx` |
-| Tests | Vitest + Testing Library + jsdom | `vitest.config.ts` |
-| Lint | ESLint 9 flat config + Prettier | plus a custom project rule |
-| Agents | `@lovable.dev/mcp-js` | OAuth-protected MCP server |
-| Language | TypeScript 5.8, strict | `tsgo` for typechecks |
+| Concern      | Choice                           | Notes                                            |
+| ------------ | -------------------------------- | ------------------------------------------------ |
+| Framework    | TanStack Start v1                | SSR + server functions, Vite 8 build             |
+| Routing      | TanStack Router (file-based)     | `src/routes`, generated `routeTree.gen.ts`       |
+| UI           | React 19                         | Concurrent rendering, no legacy entry files      |
+| Server state | TanStack Query v5                | retry, staleTime, typed keys                     |
+| Styling      | Tailwind CSS v4                  | tokens in `src/styles.css`, no config file flow  |
+| Components   | shadcn/ui + Radix                | 40+ primitives in `src/components/ui`            |
+| Charts       | Recharts                         | wrapped in `src/components/workspace/charts.tsx` |
+| Forms        | react-hook-form + zod            | `@hookform/resolvers`                            |
+| Auth/DB      | Supabase (Lovable Cloud)         | `profiles`, `user_roles`, RLS                    |
+| Icons        | lucide-react                     | functional icons only                            |
+| Toasts       | sonner                           | mounted once in `__root.tsx`                     |
+| Tests        | Vitest + Testing Library + jsdom | `vitest.config.ts`                               |
+| Lint         | ESLint 9 flat config + Prettier  | plus a custom project rule                       |
+| Agents       | `@lovable.dev/mcp-js`            | OAuth-protected MCP server                       |
+| Language     | TypeScript 5.8, strict           | `tsgo` for typechecks                            |
 
 ---
 
@@ -201,9 +201,9 @@ Defined in `src/lib/domain.ts`. Provider-agnostic by design — demo and live ad
 
 ```ts
 interface Provenance {
-  source: string;      // regulator, catalogue, pharmacy feed…
-  updatedAt: string;   // ISO date the source last reviewed it
-  verified: boolean;   // true only for connected live providers
+  source: string; // regulator, catalogue, pharmacy feed…
+  updatedAt: string; // ISO date the source last reviewed it
+  verified: boolean; // true only for connected live providers
   note?: string;
 }
 ```
@@ -212,22 +212,22 @@ Attached to `Medicine`, `PriceListing` and `Pharmacy`. Rendered as provenance UI
 
 ### 6.2 Core entities
 
-| Type | Key fields |
-| --- | --- |
-| `Medicine` | `brandName`, `genericName`, `activeIngredients[]`, `form`, `packSize`, `manufacturer`, `prescriptionOnly`, `usesSummary`, `commonSideEffects[]`, `warnings[]`, `storage`, `provenance`, `compositionKey` |
-| `ActiveIngredient` | `name`, `strength` |
-| `PriceListing` | `medicineId`, `pharmacyId`, `price`, `currency`, `packSize`, `availability`, `updatedAt`, `provenance` |
-| `Pharmacy` | `name`, `address`, `city`, `distanceKm`, `rating`, `reviews`, `opensAt`, `closesAt`, `open24h`, `phone`, `services[]`, `licenseId`, `coords`, `provenance` |
-| `Prescription` | `fileName`, `uploadedAt`, `prescriberName`, `status`, `items[]`, `patientName?`, `reviewNote?` |
-| `PrescriptionItem` | `medicineText`, `strength`, `frequency`, `duration`, `notes?`, `confidence`, `userConfirmed` |
-| `Reminder` | `medicineName`, `strength`, `times[]`, `startDate`, `endDate`, `instruction`, `sourcePrescriptionId?`, `active`, `log[]` |
-| `Order` | `pharmacyId`, `pharmacyName`, `placedAt`, `items[]`, `total`, `fulfilment`, `prescriptionId?`, `status`, `timeline[]` |
-| `LabReport` / `LabValue` | `panel`, `values[]` with `referenceRange`, `flag`, `explanation` |
-| `HealthProfile` | demographics, `allergies[]`, `conditions[]`, `currentMedicines[]`, `pregnancyStatus`, consent flags |
-| `InventoryItem` | `batch`, `stock`, `reorderLevel`, `price`, `expiry`, `supplier` |
-| `DoctorPatient` | `reason`, `lastVisit`, `status`, `allergies[]`, `currentMedicines[]`, `aiSummary` |
-| `AuditEvent` | `at`, `actor`, `action`, `target`, `ip` |
-| `NotificationItem` | `title`, `body`, `at`, `kind`, `read` |
+| Type                     | Key fields                                                                                                                                                                                               |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Medicine`               | `brandName`, `genericName`, `activeIngredients[]`, `form`, `packSize`, `manufacturer`, `prescriptionOnly`, `usesSummary`, `commonSideEffects[]`, `warnings[]`, `storage`, `provenance`, `compositionKey` |
+| `ActiveIngredient`       | `name`, `strength`                                                                                                                                                                                       |
+| `PriceListing`           | `medicineId`, `pharmacyId`, `price`, `currency`, `packSize`, `availability`, `updatedAt`, `provenance`                                                                                                   |
+| `Pharmacy`               | `name`, `address`, `city`, `distanceKm`, `rating`, `reviews`, `opensAt`, `closesAt`, `open24h`, `phone`, `services[]`, `licenseId`, `coords`, `provenance`                                               |
+| `Prescription`           | `fileName`, `uploadedAt`, `prescriberName`, `status`, `items[]`, `patientName?`, `reviewNote?`                                                                                                           |
+| `PrescriptionItem`       | `medicineText`, `strength`, `frequency`, `duration`, `notes?`, `confidence`, `userConfirmed`                                                                                                             |
+| `Reminder`               | `medicineName`, `strength`, `times[]`, `startDate`, `endDate`, `instruction`, `sourcePrescriptionId?`, `active`, `log[]`                                                                                 |
+| `Order`                  | `pharmacyId`, `pharmacyName`, `placedAt`, `items[]`, `total`, `fulfilment`, `prescriptionId?`, `status`, `timeline[]`                                                                                    |
+| `LabReport` / `LabValue` | `panel`, `values[]` with `referenceRange`, `flag`, `explanation`                                                                                                                                         |
+| `HealthProfile`          | demographics, `allergies[]`, `conditions[]`, `currentMedicines[]`, `pregnancyStatus`, consent flags                                                                                                      |
+| `InventoryItem`          | `batch`, `stock`, `reorderLevel`, `price`, `expiry`, `supplier`                                                                                                                                          |
+| `DoctorPatient`          | `reason`, `lastVisit`, `status`, `allergies[]`, `currentMedicines[]`, `aiSummary`                                                                                                                        |
+| `AuditEvent`             | `at`, `actor`, `action`, `target`, `ip`                                                                                                                                                                  |
+| `NotificationItem`       | `title`, `body`, `at`, `kind`, `read`                                                                                                                                                                    |
 
 ### 6.3 Composition key
 
@@ -253,10 +253,10 @@ Every read passes through `settle(value, ms)` in `src/services/provider.ts`, whi
 
 ### 7.2 Service modules
 
-| Module | Responsibility |
-| --- | --- |
-| `medicines.ts` | Catalogue search, medicine lookup, listings, equivalence grouping |
-| `clinical.ts` | Triage logic, duplicate-ingredient and allergy cross-checks |
+| Module         | Responsibility                                                                                                     |
+| -------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `medicines.ts` | Catalogue search, medicine lookup, listings, equivalence grouping                                                  |
+| `clinical.ts`  | Triage logic, duplicate-ingredient and allergy cross-checks                                                        |
 | `workspace.ts` | All professional-workspace loaders + `money` / `shortDate` / `shortDateTime` / `timeOnly` / `daysUntil` formatters |
 
 ### 7.3 `useWorkspaceData`
@@ -288,12 +288,12 @@ File-based under `src/routes`. Never edit `src/routeTree.gen.ts`.
 
 ### 8.1 Public
 
-| Route | Page |
-| --- | --- |
-| `/` | Landing |
-| `/emergency` | Emergency red-flag signs |
-| `/auth` | Sign in / sign up / forgot / verify |
-| `/reset-password` | Password reset completion |
+| Route             | Page                                |
+| ----------------- | ----------------------------------- |
+| `/`               | Landing                             |
+| `/emergency`      | Emergency red-flag signs            |
+| `/auth`           | Sign in / sign up / forgot / verify |
+| `/reset-password` | Password reset completion           |
 
 ### 8.2 Patient (`/app`, guarded: patient or admin)
 
@@ -319,7 +319,9 @@ File-based under `src/routes`. Never edit `src/routeTree.gen.ts`.
 
 ```tsx
 // src/routes/app.tsx
-<AppRouteGroup>                       {/* store provider + error boundary */}
+<AppRouteGroup>
+  {" "}
+  {/* store provider + error boundary */}
   <RequireRole allow={["patient", "admin"]}>
     <PatientShell>
       <Outlet />
@@ -366,16 +368,16 @@ Grants follow the required order: `CREATE TABLE` → `GRANT` → `ENABLE ROW LEV
 
 `src/lib/auth.tsx` exposes `AuthProvider` and `useAuth()`:
 
-| Member | Purpose |
-| --- | --- |
-| `session`, `user`, `profile`, `roles` | Current identity |
-| `loading` | Initial session hydration flag |
-| `signIn(email, password)` | Email/password |
-| `signInWithGoogle()` | OAuth; `redirectTo` is a same-origin public URL |
-| `signUp(email, password, fullName, role)` | Creates profile + role row |
-| `resendVerification(email)` | `supabase.auth.resend`, 45s cooldown in the UI |
-| `requestPasswordReset(email)` | Emails a reset link |
-| `signOut()` | Ends session and clears cached query data |
+| Member                                    | Purpose                                         |
+| ----------------------------------------- | ----------------------------------------------- |
+| `session`, `user`, `profile`, `roles`     | Current identity                                |
+| `loading`                                 | Initial session hydration flag                  |
+| `signIn(email, password)`                 | Email/password                                  |
+| `signInWithGoogle()`                      | OAuth; `redirectTo` is a same-origin public URL |
+| `signUp(email, password, fullName, role)` | Creates profile + role row                      |
+| `resendVerification(email)`               | `supabase.auth.resend`, 45s cooldown in the UI  |
+| `requestPasswordReset(email)`             | Emails a reset link                             |
+| `signOut()`                               | Ends session and clears cached query data       |
 
 ### 9.3 Auth flow
 
@@ -402,10 +404,10 @@ Wrong role → explicit "wrong role" screen with a link to /switch
 
 Three distinct layers, deliberately not merged:
 
-| Layer | Tool | Holds |
-| --- | --- | --- |
-| Identity | `AuthProvider` | session, profile, roles |
-| Server state | TanStack Query | catalogue, workspace resources |
+| Layer        | Tool                                     | Holds                                                              |
+| ------------ | ---------------------------------------- | ------------------------------------------------------------------ |
+| Identity     | `AuthProvider`                           | session, profile, roles                                            |
+| Server state | TanStack Query                           | catalogue, workspace resources                                     |
 | Client state | `AppStoreProvider` (`src/lib/store.tsx`) | health profile, cart, reminders, history, notifications; persisted |
 
 ### The provider-reachability guarantee
@@ -451,9 +453,9 @@ interface AiEnvelope<T extends AiPayload> {
   providerId: string;
   providerLabel: string;
   mode: "demo" | "live";
-  simulated: boolean;        // true when nothing came from a live provider
+  simulated: boolean; // true when nothing came from a live provider
   payload: T;
-  confidence: AiConfidence;  // level + score + rationale
+  confidence: AiConfidence; // level + score + rationale
   sources: AiSource[];
   safety: SafetyVerdict;
   followUps: string[];
@@ -463,25 +465,29 @@ interface AiEnvelope<T extends AiPayload> {
 
 ### 11.3 Capabilities and payloads
 
-| Capability | Payload | Notes |
-| --- | --- | --- |
-| `medicine_explanation` | `MedicineExplanation` | composition, warnings, side effects, storage, supply status |
-| `natural_language_search` | `SearchInterpretation` | shows how the query was parsed and why each match surfaced |
-| `medicine_comparison` | `MedicineComparison` | criteria, rows, an explicit equivalence statement |
-| `symptom_triage` | `SymptomTriage` | routing context, follow-up questions, monitoring plan, escalation level — **never a condition list** |
-| `drug_interaction` | `InteractionReport` | duplicate ingredient / allergy match / not assessed, each with severity |
-| `allergy_check` | `AllergyReport` | matches with the basis of each match |
-| `prescription_ocr` | `OcrExtraction` | per-line confidence and a `needsReview` flag |
-| `lab_explanation` | `LabExplanation` | analytes with reference ranges plus a "what this is not" |
-| `patient_summary` | `PatientSummary` | plus questions to ask your clinician |
-| — | `InformationalAnswer` | general fallback |
-| — | `EscalationNotice` | emitted on red flags, outside the normal answer path |
-| — | `UnavailableNotice` | honest gap + what a live provider would do |
+| Capability                | Payload                | Notes                                                                                                |
+| ------------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| `medicine_explanation`    | `MedicineExplanation`  | composition, warnings, side effects, storage, supply status                                          |
+| `natural_language_search` | `SearchInterpretation` | shows how the query was parsed and why each match surfaced                                           |
+| `medicine_comparison`     | `MedicineComparison`   | criteria, rows, an explicit equivalence statement                                                    |
+| `symptom_triage`          | `SymptomTriage`        | routing context, follow-up questions, monitoring plan, escalation level — **never a condition list** |
+| `drug_interaction`        | `InteractionReport`    | duplicate ingredient / allergy match / not assessed, each with severity                              |
+| `allergy_check`           | `AllergyReport`        | matches with the basis of each match                                                                 |
+| `prescription_ocr`        | `OcrExtraction`        | per-line confidence and a `needsReview` flag                                                         |
+| `lab_explanation`         | `LabExplanation`       | analytes with reference ranges plus a "what this is not"                                             |
+| `patient_summary`         | `PatientSummary`       | plus questions to ask your clinician                                                                 |
+| —                         | `InformationalAnswer`  | general fallback                                                                                     |
+| —                         | `EscalationNotice`     | emitted on red flags, outside the normal answer path                                                 |
+| —                         | `UnavailableNotice`    | honest gap + what a live provider would do                                                           |
 
 ### 11.4 Confidence
 
 ```ts
-interface AiConfidence { level: "high"|"moderate"|"low"|"unverified"; score: number; rationale: string }
+interface AiConfidence {
+  level: "high" | "moderate" | "low" | "unverified";
+  score: number;
+  rationale: string;
+}
 ```
 
 `score` is derived from retrieval match quality supplied by the adapter (`matchScore` + `matchRationale`). **A model's self-reported confidence is never used** — models are systematically overconfident and a self-rated score in a health context is actively harmful.
@@ -490,9 +496,13 @@ interface AiConfidence { level: "high"|"moderate"|"low"|"unverified"; score: num
 
 ```ts
 interface AiSource {
-  id: string; label: string; detail: string;
+  id: string;
+  label: string;
+  detail: string;
   kind: "catalogue" | "policy" | "user_input" | "model" | "external";
-  reference?: string; updatedAt?: string; verified: boolean;
+  reference?: string;
+  updatedAt?: string;
+  verified: boolean;
 }
 ```
 
@@ -502,18 +512,26 @@ A source with `kind: "model"` and `verified: true` is a contradiction — the va
 
 ```ts
 interface MedoraAiProvider {
-  id: string; label: string; mode: ProviderMode;
-  capabilities: AiCapability[]; description: string;
+  id: string;
+  label: string;
+  mode: ProviderMode;
+  capabilities: AiCapability[];
+  description: string;
   explainMedicine(query): Promise<ProviderOutput<MedicineExplanation> | null>;
   answerInformational(query): Promise<ProviderOutput<InformationalAnswer>>;
   interpretSearch(query): Promise<ProviderOutput<SearchInterpretation>>;
   compareMedicines(ids): Promise<ProviderOutput<MedicineComparison> | null>;
   triage(req: TriageRequest): Promise<ProviderOutput<SymptomTriage>>;
-  checkInteractions(meds, allergies): Promise<ProviderOutput<InteractionReport>>;
+  checkInteractions(
+    meds,
+    allergies,
+  ): Promise<ProviderOutput<InteractionReport>>;
   checkAllergies(meds, allergies): Promise<ProviderOutput<AllergyReport>>;
   extractPrescription(file): Promise<ProviderOutput<OcrExtraction>>;
   explainLabReport(panel): Promise<ProviderOutput<LabExplanation> | null>;
-  summarisePatient(req: PatientSummaryRequest): Promise<ProviderOutput<PatientSummary>>;
+  summarisePatient(
+    req: PatientSummaryRequest,
+  ): Promise<ProviderOutput<PatientSummary>>;
 }
 ```
 
@@ -531,14 +549,14 @@ Returning `null` means "I cannot serve this" and the pipeline emits an `Unavaila
 
 ### 12.1 Rules
 
-| Rule | Blocks |
-| --- | --- |
-| `no_invented_price` | Any currency symbol or amount with a currency word — prices may only come from the verified price feed |
-| `no_invented_stock` | "in stock at", "out of stock at", "available now at", "N packs left" |
-| `no_diagnosis` | "you have", "this is probably/likely/definitely", "you are suffering from", "diagnosis is", "I diagnose" |
-| `no_dosage` | A verb + amount + unit (`take 500 mg`), or any frequency (`twice daily`, `every 6 hours`, `bd`, `tds`, `qid`) |
-| `no_prescribing` | "I recommend/prescribe/suggest you take/start/stop", "you should take/start/stop" |
-| Source integrity | Any `kind: "model"` source claiming `verified: true` |
+| Rule                | Blocks                                                                                                        |
+| ------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `no_invented_price` | Any currency symbol or amount with a currency word — prices may only come from the verified price feed        |
+| `no_invented_stock` | "in stock at", "out of stock at", "available now at", "N packs left"                                          |
+| `no_diagnosis`      | "you have", "this is probably/likely/definitely", "you are suffering from", "diagnosis is", "I diagnose"      |
+| `no_dosage`         | A verb + amount + unit (`take 500 mg`), or any frequency (`twice daily`, `every 6 hours`, `bd`, `tds`, `qid`) |
+| `no_prescribing`    | "I recommend/prescribe/suggest you take/start/stop", "you should take/start/stop"                             |
+| Source integrity    | Any `kind: "model"` source claiming `verified: true`                                                          |
 
 The payload is flattened to text and every rule is run against it. A violation sets `passed: false`, and the UI renders `BLOCKED_COPY` instead of the response — explaining that Medora generated something that failed its own checks and directing the user to a pharmacist or prescriber.
 
@@ -634,34 +652,34 @@ Displayed with the assistant, not hidden in a footer.
 
 ### 14.2 Pharmacy
 
-| Page | Contents |
-| --- | --- |
-| Overview | KPI tiles (orders awaiting action, verification backlog, low stock, expiring soon), trend charts |
-| Inventory | Batch, stock vs reorder level, price, expiry with days-until, supplier; low-stock and expiry status |
-| Orders | Queue with status filters and detail dialogs showing items and timeline |
-| Prescriptions | Verification queue with extraction confidence and AI-assist tags; verify/reject with a note |
-| Customers | Profiles, order history, adherence signals |
-| Suppliers | Contacts, lead times, catalogue coverage |
-| Analytics | Sales over time, top movers, category mix |
+| Page          | Contents                                                                                            |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| Overview      | KPI tiles (orders awaiting action, verification backlog, low stock, expiring soon), trend charts    |
+| Inventory     | Batch, stock vs reorder level, price, expiry with days-until, supplier; low-stock and expiry status |
+| Orders        | Queue with status filters and detail dialogs showing items and timeline                             |
+| Prescriptions | Verification queue with extraction confidence and AI-assist tags; verify/reject with a note         |
+| Customers     | Profiles, order history, adherence signals                                                          |
+| Suppliers     | Contacts, lead times, catalogue coverage                                                            |
+| Analytics     | Sales over time, top movers, category mix                                                           |
 
 ### 14.3 Doctor
 
-| Page | Contents |
-| --- | --- |
-| Overview | Patient list with reason, status, allergies, current medicines and an AI-generated summary explicitly tagged as AI-assisted |
-| Schedule | Agenda view of appointments |
-| Prescriptions | Review queue plus a composer working from typed drafts |
+| Page          | Contents                                                                                                                    |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Overview      | Patient list with reason, status, allergies, current medicines and an AI-generated summary explicitly tagged as AI-assisted |
+| Schedule      | Agenda view of appointments                                                                                                 |
+| Prescriptions | Review queue plus a composer working from typed drafts                                                                      |
 
 ### 14.4 Admin
 
-| Page | Contents |
-| --- | --- |
-| Overview | Platform metrics: users by role, verification backlog, moderation queue depth |
-| Users | Search, role assignment and revocation against `user_roles` |
-| Pharmacies | Licence verification workflow with organisation records |
-| Catalogue | Provenance auditing — which records are verified, which are demo, when each was last updated |
-| Moderation | Report triage with resolution actions |
-| Audit | Immutable log: actor, action, target, timestamp, IP |
+| Page       | Contents                                                                                     |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| Overview   | Platform metrics: users by role, verification backlog, moderation queue depth                |
+| Users      | Search, role assignment and revocation against `user_roles`                                  |
+| Pharmacies | Licence verification workflow with organisation records                                      |
+| Catalogue  | Provenance auditing — which records are verified, which are demo, when each was last updated |
+| Moderation | Report triage with resolution actions                                                        |
+| Audit      | Immutable log: actor, action, target, timestamp, IP                                          |
 
 ---
 
@@ -671,14 +689,14 @@ All values are semantic tokens in `src/styles.css`. Components never use raw col
 
 ### Palette
 
-| Token | Value | Use |
-| --- | --- | --- |
-| `--background` | `oklch(0.981 0.006 85)` | Warm off-white page surface |
-| `--foreground` | `oklch(0.245 0.032 254)` | Deep navy text |
-| `--primary` | clinical teal | Actions, emphasis |
-| `--muted` / `--muted-foreground` | | Secondary surfaces and text |
-| `--destructive` | | Errors, red-flag escalation |
-| `--border` / `--ring` | | Hairlines and focus |
+| Token                            | Value                    | Use                         |
+| -------------------------------- | ------------------------ | --------------------------- |
+| `--background`                   | `oklch(0.981 0.006 85)`  | Warm off-white page surface |
+| `--foreground`                   | `oklch(0.245 0.032 254)` | Deep navy text              |
+| `--primary`                      | clinical teal            | Actions, emphasis           |
+| `--muted` / `--muted-foreground` |                          | Secondary surfaces and text |
+| `--destructive`                  |                          | Errors, red-flag escalation |
+| `--border` / `--ring`            |                          | Hairlines and focus         |
 
 oklch is used so lightness steps stay perceptually even and contrast behaves predictably across hues.
 
@@ -706,20 +724,20 @@ Note: `@/hooks/use-toast` and `@/components/ui/toaster` do **not** exist in this
 
 **Application components**
 
-| Component | Purpose |
-| --- | --- |
-| `AppRouteGroup` | Store provider + error boundary for a route group |
-| `PatientShell` | Patient navigation, responsive header/sidebar |
-| `WorkspaceShell` | Professional navigation and chrome |
-| `CommandPalette` | Global `⌘K` search |
-| `RequireRole` | Role guard with wrong-role screen |
-| `AuthHeaderAction` | Session-aware landing CTA |
-| `AppErrorBoundary` | Fallback screen with Reload |
-| `MedicineCard` | Catalogue result card |
-| `AiPayloadView` | Renders every `AiPayload` variant |
-| `ai-parts` | Confidence badge, provenance chips, safety notice, feedback controls |
-| `DataTable` | Workspace tables with full state coverage |
-| `StatTile` / `Timeline` / `WorkspaceSection` | Workspace layout primitives |
+| Component                                    | Purpose                                                              |
+| -------------------------------------------- | -------------------------------------------------------------------- |
+| `AppRouteGroup`                              | Store provider + error boundary for a route group                    |
+| `PatientShell`                               | Patient navigation, responsive header/sidebar                        |
+| `WorkspaceShell`                             | Professional navigation and chrome                                   |
+| `CommandPalette`                             | Global `⌘K` search                                                   |
+| `RequireRole`                                | Role guard with wrong-role screen                                    |
+| `AuthHeaderAction`                           | Session-aware landing CTA                                            |
+| `AppErrorBoundary`                           | Fallback screen with Reload                                          |
+| `MedicineCard`                               | Catalogue result card                                                |
+| `AiPayloadView`                              | Renders every `AiPayload` variant                                    |
+| `ai-parts`                                   | Confidence badge, provenance chips, safety notice, feedback controls |
+| `DataTable`                                  | Workspace tables with full state coverage                            |
+| `StatTile` / `Timeline` / `WorkspaceSection` | Workspace layout primitives                                          |
 
 ---
 
@@ -727,12 +745,12 @@ Note: `@/hooks/use-toast` and `@/components/ui/toaster` do **not** exist in this
 
 Medora exposes an MCP server so AI agents can query it directly.
 
-| Tool | Input | Output |
-| --- | --- | --- |
-| `search_medicines` | query, optional filters | Matching medicines with provenance |
-| `get_medicine` | medicine id | Full record |
-| `compare_prices` | medicine id / composition key | Listings across pharmacies |
-| `find_pharmacies` | location, optional filters | Pharmacies with services and hours |
+| Tool               | Input                         | Output                             |
+| ------------------ | ----------------------------- | ---------------------------------- |
+| `search_medicines` | query, optional filters       | Matching medicines with provenance |
+| `get_medicine`     | medicine id                   | Full record                        |
+| `compare_prices`   | medicine id / composition key | Listings across pharmacies         |
+| `find_pharmacies`  | location, optional filters    | Pharmacies with services and hours |
 
 **Endpoints** — `/mcp`, `/.mcp/list-tools`, `/.mcp/invoke-tool/$tool`, `/.well-known/oauth-protected-resource`, `/.lovable/oauth/consent`.
 
@@ -744,16 +762,16 @@ Public HTTP endpoints intended for external callers live under `src/routes/api/p
 
 ## 18. Error handling and resilience
 
-| Layer | Mechanism |
-| --- | --- |
-| Render errors | `AppErrorBoundary` — safe fallback with Reload |
-| Route errors | TanStack Router error components |
-| Query errors | TanStack Query `retry: 1` + explicit error UI with a retry action |
-| Provider gaps | `UnavailableNotice` instead of improvisation |
-| Unsafe AI output | `BLOCKED_COPY` instead of the payload |
-| Missing store provider | Lint rule + static script + test + boundary |
-| Auth failures | Typed messages on the auth page; no silent redirects |
-| Reporting | `error-capture.ts`, `error-page.ts`, `lovable-error-reporting.ts` |
+| Layer                  | Mechanism                                                         |
+| ---------------------- | ----------------------------------------------------------------- |
+| Render errors          | `AppErrorBoundary` — safe fallback with Reload                    |
+| Route errors           | TanStack Router error components                                  |
+| Query errors           | TanStack Query `retry: 1` + explicit error UI with a retry action |
+| Provider gaps          | `UnavailableNotice` instead of improvisation                      |
+| Unsafe AI output       | `BLOCKED_COPY` instead of the payload                             |
+| Missing store provider | Lint rule + static script + test + boundary                       |
+| Auth failures          | Typed messages on the auth page; no silent redirects              |
+| Reporting              | `error-capture.ts`, `error-page.ts`, `lovable-error-reporting.ts` |
 
 Every async surface has four states — loading, error, empty and success — and empty states explain what would fill them rather than just saying "no data".
 
@@ -761,13 +779,13 @@ Every async surface has four states — loading, error, empty and success — an
 
 ## 19. Testing and quality gates
 
-| Gate | Command | Status |
-| --- | --- | --- |
-| Typecheck | `tsgo` | Clean |
-| Lint | `npm run lint` | Error-free (6 benign shadcn fast-refresh warnings) |
-| Format | `npm run format` | Prettier enforced |
-| Tests | `npm run test` | 1 integration test |
-| Store provider | `npm run check:store` | Passing |
+| Gate           | Command               | Status                                             |
+| -------------- | --------------------- | -------------------------------------------------- |
+| Typecheck      | `tsgo`                | Clean                                              |
+| Lint           | `npm run lint`        | Error-free (6 benign shadcn fast-refresh warnings) |
+| Format         | `npm run format`      | Prettier enforced                                  |
+| Tests          | `npm run test`        | 1 integration test                                 |
+| Store provider | `npm run check:store` | Passing                                            |
 
 `src/test/root-store.test.tsx` renders the root route and asserts `PatientShell` can read the store without throwing.
 
@@ -811,18 +829,18 @@ Also in place: a single `<h1>` per page, semantic sectioning, alt text on images
 
 ## 23. Security posture
 
-| Control | Implementation |
-| --- | --- |
-| Role storage | Separate `user_roles` table; never a profile column |
-| Role checks | `has_role()` security-definer function inside RLS policies |
-| Table access | Explicit `GRANT`s alongside RLS on every public table |
-| Client keys | Only the publishable key reaches the browser |
-| Server secrets | Read inside handlers via `process.env`; never bundled |
-| Admin client | Loaded inside a handler only after the caller is verified; never used to decide whether the caller is an admin |
-| Agent tools | Read-only |
-| Public API routes | Must verify their own caller — the `/api/public/*` prefix bypasses site auth |
-| Redirects | `next` sanitised; `/auth` cannot target itself |
-| Session | Cleared on sign-out along with cached query data |
+| Control           | Implementation                                                                                                 |
+| ----------------- | -------------------------------------------------------------------------------------------------------------- |
+| Role storage      | Separate `user_roles` table; never a profile column                                                            |
+| Role checks       | `has_role()` security-definer function inside RLS policies                                                     |
+| Table access      | Explicit `GRANT`s alongside RLS on every public table                                                          |
+| Client keys       | Only the publishable key reaches the browser                                                                   |
+| Server secrets    | Read inside handlers via `process.env`; never bundled                                                          |
+| Admin client      | Loaded inside a handler only after the caller is verified; never used to decide whether the caller is an admin |
+| Agent tools       | Read-only                                                                                                      |
+| Public API routes | Must verify their own caller — the `/api/public/*` prefix bypasses site auth                                   |
+| Redirects         | `next` sanitised; `/auth` cannot target itself                                                                 |
+| Session           | Cleared on sign-out along with cached query data                                                               |
 
 **Outstanding** — recurring security and dependency scans, rate limiting on MCP endpoints, 2FA, and structured audit-log export.
 
@@ -866,15 +884,17 @@ Browser config uses `import.meta.env.VITE_*`; server config uses `process.env` i
 ```ts
 // src/ai/providers/live.ts
 export const liveProvider: MedoraAiProvider = {
-  id: "live-llm", label: "…", mode: "live",
+  id: "live-llm",
+  label: "…",
+  mode: "live",
   capabilities: ["medicine_explanation", "natural_language_search"],
   description: "…",
   async explainMedicine(query) {
     const result = await callModel(query);
     return {
       payload: result,
-      sources: retrievedRecords.map(toSource),   // real records only
-      matchScore: computeFromRetrieval(),        // never model self-report
+      sources: retrievedRecords.map(toSource), // real records only
+      matchScore: computeFromRetrieval(), // never model self-report
       matchRationale: "…",
     };
   },
@@ -926,20 +946,20 @@ That order, in one migration. RLS without grants is unreachable; grants without 
 
 ## 27. Glossary
 
-| Term | Meaning |
-| --- | --- |
-| **Composition key** | `ingredient + strength + form`; the basis of equivalence grouping |
-| **Provenance** | Source, last-updated date and verified flag on a record |
-| **Envelope** | The wrapper around every AI response carrying provider, mode, confidence, sources, safety verdict and trace |
-| **Capability** | A named AI function an adapter may declare it can serve |
-| **Adapter / provider** | An implementation of `MedoraAiProvider` |
-| **Red flag** | A term in user input that triggers immediate emergency escalation |
-| **Escalation level** | emergency / same_day / routine / self_monitor |
-| **Safety verdict** | The validator's result: rules run, violations, red flags, escalate, notice |
-| **Simulated** | Nothing in the payload came from a connected live provider |
-| **Settle** | The latency-simulating helper every data read passes through |
-| **Trace** | Per-stage timing and status record for one pipeline run |
-| **Route group** | A guarded prefix (`/app`, `/pharmacy`, `/doctor`, `/admin`) sharing a shell and role gate |
+| Term                   | Meaning                                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Composition key**    | `ingredient + strength + form`; the basis of equivalence grouping                                           |
+| **Provenance**         | Source, last-updated date and verified flag on a record                                                     |
+| **Envelope**           | The wrapper around every AI response carrying provider, mode, confidence, sources, safety verdict and trace |
+| **Capability**         | A named AI function an adapter may declare it can serve                                                     |
+| **Adapter / provider** | An implementation of `MedoraAiProvider`                                                                     |
+| **Red flag**           | A term in user input that triggers immediate emergency escalation                                           |
+| **Escalation level**   | emergency / same_day / routine / self_monitor                                                               |
+| **Safety verdict**     | The validator's result: rules run, violations, red flags, escalate, notice                                  |
+| **Simulated**          | Nothing in the payload came from a connected live provider                                                  |
+| **Settle**             | The latency-simulating helper every data read passes through                                                |
+| **Trace**              | Per-stage timing and status record for one pipeline run                                                     |
+| **Route group**        | A guarded prefix (`/app`, `/pharmacy`, `/doctor`, `/admin`) sharing a shell and role gate                   |
 
 ---
 

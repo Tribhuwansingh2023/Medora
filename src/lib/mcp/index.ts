@@ -5,7 +5,8 @@ import findPharmaciesTool from "./tools/find-pharmacies";
 import getMedicineTool from "./tools/get-medicine";
 import searchMedicinesTool from "./tools/search-medicines";
 
-const projectRef = import.meta.env["VITE_SUPABASE_PROJECT_ID"] ?? "project-ref-unset";
+const projectRef =
+  import.meta.env["VITE_SUPABASE_PROJECT_ID"] ?? "project-ref-unset";
 
 export default defineMcp({
   name: "medora-health-hub",
@@ -17,5 +18,10 @@ export default defineMcp({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",
   }),
-  tools: [searchMedicinesTool, getMedicineTool, comparePricesTool, findPharmaciesTool] as never,
+  tools: [
+    searchMedicinesTool,
+    getMedicineTool,
+    comparePricesTool,
+    findPharmaciesTool,
+  ] as never,
 });

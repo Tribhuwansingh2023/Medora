@@ -12,7 +12,11 @@ import {
 } from "@/components/ui/dialog";
 import { PageHeader } from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
-import { AsyncSection, StatusPill, WorkspaceSection } from "@/components/workspace/parts";
+import {
+  AsyncSection,
+  StatusPill,
+  WorkspaceSection,
+} from "@/components/workspace/parts";
 import { daysUntil, shortDate, useWorkspaceData } from "@/services/workspace";
 import type { CatalogueRecord } from "@/data/workspace-demo";
 
@@ -80,7 +84,9 @@ function CataloguePage() {
       hideBelow: "lg",
       sortValue: (r) => r.compositionKey,
       render: (r) => (
-        <span className="numeric text-xs text-muted-foreground">{r.compositionKey}</span>
+        <span className="numeric text-xs text-muted-foreground">
+          {r.compositionKey}
+        </span>
       ),
     },
     {
@@ -104,7 +110,9 @@ function CataloguePage() {
       render: (r) => (
         <div className="flex items-center gap-1.5">
           <span>{shortDate(`${r.lastReviewed}T00:00:00.000Z`)}</span>
-          {isStale(r) && <AlertTriangle className="size-3.5 text-warning" aria-hidden />}
+          {isStale(r) && (
+            <AlertTriangle className="size-3.5 text-warning" aria-hidden />
+          )}
         </div>
       ),
     },
@@ -113,15 +121,20 @@ function CataloguePage() {
       header: "Review state",
       sortValue: (r) => r.reviewState,
       render: (r) => (
-        <StatusPill label={reviewLabel[r.reviewState]} tone={reviewTone[r.reviewState]} />
+        <StatusPill
+          label={reviewLabel[r.reviewState]}
+          tone={reviewTone[r.reviewState]}
+        />
       ),
     },
   ];
 
-  const sourceOptions = Array.from(new Set(rows.map((r) => r.source))).map((source) => ({
-    value: source,
-    label: source,
-  }));
+  const sourceOptions = Array.from(new Set(rows.map((r) => r.source))).map(
+    (source) => ({
+      value: source,
+      label: source,
+    }),
+  );
 
   return (
     <div className="space-y-6">
@@ -147,7 +160,9 @@ function CataloguePage() {
               rows={data}
               columns={columns}
               getId={(r) => r.id}
-              searchText={(r) => `${r.brandName} ${r.genericName} ${r.compositionKey}`}
+              searchText={(r) =>
+                `${r.brandName} ${r.genericName} ${r.compositionKey}`
+              }
               searchPlaceholder="Search by brand, generic or composition…"
               initialSort={{ key: "brandName", direction: "asc" }}
               pageSize={8}
@@ -161,13 +176,19 @@ function CataloguePage() {
                 {
                   key: "reviewState",
                   label: "Review state",
-                  options: Object.entries(reviewLabel).map(([value, label]) => ({ value, label })),
+                  options: Object.entries(reviewLabel).map(
+                    ([value, label]) => ({ value, label }),
+                  ),
                   predicate: (r, v) => r.reviewState === v,
                 },
               ]}
               onRowClick={(r) => setOpenId(r.id)}
               rowActions={(r) => (
-                <Button variant="outline" size="sm" onClick={() => setOpenId(r.id)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setOpenId(r.id)}
+                >
                   Provenance
                 </Button>
               )}
@@ -176,7 +197,10 @@ function CataloguePage() {
         </AsyncSection>
       </WorkspaceSection>
 
-      <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && setOpenId(null)}>
+      <Dialog
+        open={Boolean(selected)}
+        onOpenChange={(open) => !open && setOpenId(null)}
+      >
         <DialogContent className="max-w-lg">
           {selected && (
             <>
@@ -192,7 +216,9 @@ function CataloguePage() {
                   <dt className="text-xs uppercase tracking-wide text-muted-foreground">
                     Composition key
                   </dt>
-                  <dd className="numeric mt-0.5 text-xs">{selected.compositionKey}</dd>
+                  <dd className="numeric mt-0.5 text-xs">
+                    {selected.compositionKey}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -217,7 +243,9 @@ function CataloguePage() {
                   <dt className="text-xs uppercase tracking-wide text-muted-foreground">
                     Last reviewed
                   </dt>
-                  <dd className="mt-0.5">{shortDate(`${selected.lastReviewed}T00:00:00.000Z`)}</dd>
+                  <dd className="mt-0.5">
+                    {shortDate(`${selected.lastReviewed}T00:00:00.000Z`)}
+                  </dd>
                 </div>
               </dl>
 
@@ -225,9 +253,13 @@ function CataloguePage() {
                 <p className="font-medium text-ink">Provenance</p>
                 <p className="mt-1 text-muted-foreground">
                   All clinical and composition claims for this record come from{" "}
-                  <span className="font-medium text-foreground/90">{selected.source}</span>, last
-                  reviewed on {shortDate(`${selected.lastReviewed}T00:00:00.000Z`)}. This is a
-                  sample record — no licensed regulatory feed is connected in this environment.
+                  <span className="font-medium text-foreground/90">
+                    {selected.source}
+                  </span>
+                  , last reviewed on{" "}
+                  {shortDate(`${selected.lastReviewed}T00:00:00.000Z`)}. This is
+                  a sample record — no licensed regulatory feed is connected in
+                  this environment.
                 </p>
               </div>
 
@@ -236,10 +268,14 @@ function CataloguePage() {
                   role="alert"
                   className="flex items-start gap-2 rounded-md border border-warning/40 bg-warning-soft p-3 text-sm text-warning-foreground"
                 >
-                  <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
+                  <AlertTriangle
+                    className="mt-0.5 size-4 shrink-0"
+                    aria-hidden
+                  />
                   <p>
-                    This record has not been reviewed in over {STALE_DAYS} days. It needs a fresh
-                    provenance review before its claims should be trusted.
+                    This record has not been reviewed in over {STALE_DAYS} days.
+                    It needs a fresh provenance review before its claims should
+                    be trusted.
                   </p>
                 </div>
               )}
@@ -248,10 +284,14 @@ function CataloguePage() {
                   role="alert"
                   className="flex items-start gap-2 rounded-md border border-warning/40 bg-warning-soft p-3 text-sm text-warning-foreground"
                 >
-                  <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
+                  <AlertTriangle
+                    className="mt-0.5 size-4 shrink-0"
+                    aria-hidden
+                  />
                   <p>
-                    This record is marked {reviewLabel[selected.reviewState].toLowerCase()} and is
-                    not yet published to patients.
+                    This record is marked{" "}
+                    {reviewLabel[selected.reviewState].toLowerCase()} and is not
+                    yet published to patients.
                   </p>
                 </div>
               )}

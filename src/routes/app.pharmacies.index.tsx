@@ -36,6 +36,8 @@ import { getPharmacies, isOpenNow } from "@/services/medicines";
 import { PharmacySearchGrounding } from "@/components/pharmacy/PharmacySearchGrounding";
 import { GooglePharmacyMap } from "@/components/pharmacy/GooglePharmacyMap";
 
+import { APIProvider } from "@vis.gl/react-google-maps";
+
 export const Route = createFileRoute("/app/pharmacies/")({
   head: () => ({
     meta: [
@@ -144,20 +146,80 @@ function PharmaciesPage() {
   const [q, setQ] = useState("");
   const [openOnly, setOpenOnly] = useState(false);
   const [sort, setSort] = useState<SortKey>("distance");
-  const [view, setView] = useState<"list" | "map">("list");
+  const [radius, setRadius] = useState<number>(5);
+
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const [locationStatus, setLocationStatus] = useState<
+    "initial" | "loading" | "granted" | "denied"
+  >("initial");
+
+  const [selectedPharmacyId, setSelectedPharmacyId] = useState<string | null>(
+    null,
+  );
+
   const { data, isPending } = useQuery({
     queryKey: ["pharmacies"],
     queryFn: getPharmacies,
   });
 
+  const handleUseLocation = () => {
+    setLocationStatus("loading");
+    if (!navigator.geolocation) {
+      toast.error("Geolocation is not supported by your browser");
+      setLocationStatus("denied");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setUserLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        });
+        setLocationStatus("granted");
+        toast.success("Location updated");
+      },
+      () => {
+        setLocationStatus("denied");
+        toast.error("Could not access your location. Using default center.");
+      },
+    );
+  };
+
+  // Calculate distance if we have user location, otherwise use demo distance
+  const calculateDistance = (pLat: number, pLng: number) => {
+    if (!userLocation) return null;
+    const R = 6371; // Radius of the earth in km
+    const dLat = (pLat - userLocation.lat) * (Math.PI / 180);
+    const dLon = (pLng - userLocation.lng) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(userLocation.lat * (Math.PI / 180)) *
+        Math.cos(pLat * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return Number((R * c).toFixed(1));
+  };
+
   const list = (data ?? [])
+    .map((p) => {
+      const realDist = calculateDistance(p.coords.lat, p.coords.lng);
+      return {
+        ...p,
+        distanceKm: realDist !== null ? realDist : p.distanceKm,
+      };
+    })
     .filter(
-      (p) =>
+      (p) => (p) =>
         (!openOnly || isOpenNow(p)) &&
         `${p.name} ${p.address} ${p.city} ${p.services.join(" ")}`
           .toLowerCase()
           .includes(q.toLowerCase()),
     )
+    .filter((p) => p.distanceKm <= radius)
     .sort((a, b) => {
       if (sort === "rating") return b.rating - a.rating;
       if (sort === "open")
@@ -169,142 +231,129 @@ function PharmaciesPage() {
     });
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Pharmacies & Live Stock Grounding"
-        demo
-        description="Verify real-time stock availability, dispensary opening hours, and grounded regional pharmacy pricing before you travel."
-      />
+    <APIProvider
+      apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ""}
+      onLoad={() => console.log("Maps API has loaded.")}
+    >
+      <div className="space-y-6">
+        <PageHeader
+          title="Pharmacies & Live Stock Grounding"
+          demo
+          description="Verify real-time stock availability, dispensary opening hours, and grounded regional pharmacy pricing before you travel."
+        />
 
-      <Tabs defaultValue="grounded" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="grounded" className="gap-2">
-            <Radio className="size-4 text-primary" /> Live Stock Grounding Tool
-          </TabsTrigger>
-          <TabsTrigger value="directory" className="gap-2">
-            <Store className="size-4" /> Pharmacy Directory
-          </TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="directory" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="grounded" className="gap-2">
+              <Radio className="size-4 text-primary" /> Live Stock Grounding
+              Tool
+            </TabsTrigger>
+            <TabsTrigger value="directory" className="gap-2">
+              <Store className="size-4" /> Pharmacy Directory
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="grounded" className="space-y-6">
-          <PharmacySearchGrounding />
-        </TabsContent>
+          <TabsContent value="grounded" className="space-y-6">
+            <PharmacySearchGrounding />
+          </TabsContent>
 
-        <TabsContent value="directory" className="space-y-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="grid flex-1 gap-4 sm:grid-cols-[minmax(0,1fr)_180px] sm:items-end">
-              <div className="space-y-1.5">
-                <Label htmlFor="pq">Search directory</Label>
-                <Input
-                  id="pq"
-                  value={q}
-                  maxLength={80}
-                  placeholder="Name, area or service"
-                  onChange={(e) => setQ(e.target.value)}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="psort">Sort by</Label>
-                <Select
-                  value={sort}
-                  onValueChange={(v) => setSort(v as SortKey)}
-                >
-                  <SelectTrigger id="psort">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="distance">Nearest first</SelectItem>
-                    <SelectItem value="rating">Highest rated</SelectItem>
-                    <SelectItem value="open">Open now first</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div
-              role="group"
-              aria-label="View mode"
-              className="inline-flex self-start rounded-md border border-border bg-card p-0.5 sm:self-end"
-            >
-              {(["list", "map"] as const).map((mode) => (
-                <button
-                  key={mode}
-                  type="button"
-                  aria-pressed={view === mode}
-                  onClick={() => setView(mode)}
-                  className={`inline-flex min-h-9 items-center gap-1.5 rounded-[5px] px-3 text-sm font-medium transition-colors ${
-                    view === mode
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {mode === "list" ? (
-                    <List className="size-4" aria-hidden />
-                  ) : (
-                    <MapIcon className="size-4" aria-hidden />
-                  )}
-                  {mode === "list" ? "List" : "Map"}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Switch
-              id="open"
-              checked={openOnly}
-              onCheckedChange={setOpenOnly}
-            />
-            <Label htmlFor="open">Show open pharmacies only</Label>
-          </div>
-
-          {view === "map" ? (
-            <div className="space-y-4">
-              <GooglePharmacyMap pharmacies={list} />
-            </div>
-          ) : (
-            <>
-              <IntegrationNotConnected integration="maps" />
-              {isPending ? (
-                <div className="grid gap-4 md:grid-cols-2">
-                  {[0, 1, 2, 3].map((i) => (
-                    <Skeleton key={i} className="h-52 w-full rounded-lg" />
-                  ))}
+          <TabsContent value="directory" className="space-y-6">
+            {/* Filters Bar */}
+            <div className="flex flex-col gap-4 surface p-4 border border-border">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 items-end">
+                <div className="space-y-1.5">
+                  <Label htmlFor="pq">Search directory</Label>
+                  <Input
+                    id="pq"
+                    value={q}
+                    maxLength={80}
+                    placeholder="Name, area, pincode or service..."
+                    onChange={(e) => setQ(e.target.value)}
+                  />
                 </div>
-              ) : list.length === 0 ? (
-                <EmptyState
-                  icon={MapPin}
-                  title="No pharmacies matched"
-                  description="Try a broader search term, or turn off the 'open now' filter."
-                  action={
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setQ("");
-                        setOpenOnly(false);
-                      }}
-                    >
-                      Clear filters
-                    </Button>
-                  }
-                />
-              ) : (
-                <>
-                  <p className="text-sm text-muted-foreground">
-                    {list.length} licensed{" "}
-                    {list.length === 1 ? "pharmacy" : "pharmacies"} in the demo
-                    directory
-                  </p>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {list.map((p) => (
-                      <PharmacyCard key={p.id} pharmacy={p} />
-                    ))}
-                  </div>
-                </>
-              )}
-            </>
-          )}
-        </TabsContent>
-      </Tabs>
-    </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="pradius">Radius</Label>
+                  <Select
+                    value={radius.toString()}
+                    onValueChange={(v) => setRadius(Number(v))}
+                  >
+                    <SelectTrigger id="pradius">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1 km</SelectItem>
+                      <SelectItem value="2">2 km</SelectItem>
+                      <SelectItem value="5">5 km</SelectItem>
+                      <SelectItem value="10">10 km</SelectItem>
+                      <SelectItem value="25">25 km</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="psort">Sort by</Label>
+                  <Select
+                    value={sort}
+                    onValueChange={(v) => setSort(v as SortKey)}
+                  >
+                    <SelectTrigger id="psort">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="distance">Nearest first</SelectItem>
+                      <SelectItem value="rating">Highest rated</SelectItem>
+                      <SelectItem value="open">Open now first</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex items-center gap-2 pb-2 h-10">
+                  <Switch
+                    id="open"
+                    checked={openOnly}
+                    onCheckedChange={setOpenOnly}
+                  />
+                  <Label htmlFor="open">Open now only</Label>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-3 border-t border-border">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 text-xs font-medium"
+                    onClick={handleUseLocation}
+                    disabled={locationStatus === "loading"}
+                  >
+                    <MapPin className="size-3.5" />
+                    {locationStatus === "loading"
+                      ? "Locating..."
+                      : "Use my location"}
+                  </Button>
+                  <span className="text-xs text-muted-foreground hidden sm:inline-block">
+                    Or drag the map to search a different area
+                  </span>
+                </div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  {list.length} results
+                </p>
+              </div>
+            </div>
+
+            {/* Unified Map & List View */}
+            <div className="rounded-xl overflow-hidden border border-border bg-card shadow-sm">
+              <GooglePharmacyMap
+                pharmacies={list}
+                selectedPharmacyId={selectedPharmacyId}
+                onSelectPharmacy={(p) => setSelectedPharmacyId(p.id)}
+                userCoords={userLocation || undefined}
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </APIProvider>
   );
 }

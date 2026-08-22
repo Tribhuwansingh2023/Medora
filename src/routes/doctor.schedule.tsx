@@ -6,9 +6,15 @@ export const Route = createFileRoute("/doctor/schedule")({
   head: () => ({
     meta: [
       { title: "Schedule — Medora Doctor workspace" },
-      { name: "description", content: "Schedule workspace for the Medora doctor console." },
+      {
+        name: "description",
+        content: "Schedule workspace for the Medora doctor console.",
+      },
       { property: "og:title", content: "Schedule — Medora Doctor workspace" },
-      { property: "og:description", content: "Schedule workspace for the Medora doctor console." },
+      {
+        property: "og:description",
+        content: "Schedule workspace for the Medora doctor console.",
+      },
     ],
   }),
   component: SchedulePage,

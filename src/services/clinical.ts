@@ -67,7 +67,9 @@ const findMedicine = (text: string) => {
   );
 };
 
-export const askAssistant = async (question: string): Promise<AssistantAnswer> => {
+export const askAssistant = async (
+  question: string,
+): Promise<AssistantAnswer> => {
   const flags = detectRedFlag(question);
   if (flags.length) {
     return settle(
@@ -82,7 +84,8 @@ export const askAssistant = async (question: string): Promise<AssistantAnswer> =
         sources: [
           {
             label: "Medora safety policy",
-            detail: "Red-flag routing rule. Emergency wording is fixed and never model-generated.",
+            detail:
+              "Red-flag routing rule. Emergency wording is fixed and never model-generated.",
           },
         ],
         escalate: true,
@@ -98,14 +101,22 @@ export const askAssistant = async (question: string): Promise<AssistantAnswer> =
         headline: `${medicine.brandName} (${medicine.genericName})`,
         body: medicine.usesSummary,
         bullets: [
-          { label: "Active ingredient", value: medicine.activeIngredients[0]?.name ?? "—" },
-          { label: "Strength", value: medicine.activeIngredients[0]?.strength ?? "—" },
+          {
+            label: "Active ingredient",
+            value: medicine.activeIngredients[0]?.name ?? "—",
+          },
+          {
+            label: "Strength",
+            value: medicine.activeIngredients[0]?.strength ?? "—",
+          },
           { label: "Dosage form", value: medicine.form },
           { label: "Pack size", value: medicine.packSize },
           { label: "Manufacturer", value: medicine.manufacturer },
           {
             label: "Supply",
-            value: medicine.prescriptionOnly ? "Prescription-only" : "Over the counter",
+            value: medicine.prescriptionOnly
+              ? "Prescription-only"
+              : "Over the counter",
           },
         ],
         safetyNotes: [...medicine.warnings, ...safetyBase],
@@ -169,7 +180,8 @@ export interface TriageResult {
 }
 
 export const runTriage = async (input: TriageInput): Promise<TriageResult> => {
-  const emergency = input.redFlags.length > 0 || detectRedFlag(input.freeText).length > 0;
+  const emergency =
+    input.redFlags.length > 0 || detectRedFlag(input.freeText).length > 0;
   if (emergency) {
     return settle({
       urgency: "emergency",
@@ -299,7 +311,9 @@ export const checkInteractions = async (
 
   allergies.filter(Boolean).forEach((allergy) => {
     const matches = medicineNames.filter((n) =>
-      n.toLowerCase().includes(allergy.toLowerCase().split(" ")[0] ?? allergy.toLowerCase()),
+      n
+        .toLowerCase()
+        .includes(allergy.toLowerCase().split(" ")[0] ?? allergy.toLowerCase()),
     );
     if (matches.length) {
       findings.push({

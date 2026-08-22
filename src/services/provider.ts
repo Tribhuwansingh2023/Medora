@@ -34,49 +34,56 @@ export const integrations: Record<IntegrationKey, IntegrationDescriptor> = {
     label: "Medicine catalogue",
     provider: "demo",
     connected: false,
-    liveDescription: "A licensed medicines catalogue or national drug register.",
+    liveDescription:
+      "A licensed medicines catalogue or national drug register.",
   },
   pricing: {
     key: "pricing",
     label: "Price feed",
     provider: "demo",
     connected: false,
-    liveDescription: "Verified retail price feeds published by participating pharmacies.",
+    liveDescription:
+      "Verified retail price feeds published by participating pharmacies.",
   },
   pharmacyDirectory: {
     key: "pharmacyDirectory",
     label: "Pharmacy directory",
     provider: "demo",
     connected: false,
-    liveDescription: "A licensed pharmacy register with live opening hours and stock signals.",
+    liveDescription:
+      "A licensed pharmacy register with live opening hours and stock signals.",
   },
   maps: {
     key: "maps",
     label: "Maps & routing",
     provider: "demo",
     connected: false,
-    liveDescription: "Google Maps or Mapbox for map tiles, geocoding and directions.",
+    liveDescription:
+      "Google Maps or Mapbox for map tiles, geocoding and directions.",
   },
   ocr: {
     key: "ocr",
     label: "Prescription OCR",
     provider: "demo",
     connected: false,
-    liveDescription: "A document AI service that extracts text regions from prescriptions.",
+    liveDescription:
+      "A document AI service that extracts text regions from prescriptions.",
   },
   assistant: {
     key: "assistant",
     label: "Medicine assistant model",
     provider: "demo",
     connected: false,
-    liveDescription: "A reviewed clinical-information model grounded in licensed sources.",
+    liveDescription:
+      "A reviewed clinical-information model grounded in licensed sources.",
   },
   interactions: {
     key: "interactions",
     label: "Interaction & allergy database",
     provider: "demo",
     connected: false,
-    liveDescription: "A licensed drug-interaction and allergy cross-reference database.",
+    liveDescription:
+      "A licensed drug-interaction and allergy cross-reference database.",
   },
   labParsing: {
     key: "labParsing",
@@ -90,7 +97,8 @@ export const integrations: Record<IntegrationKey, IntegrationDescriptor> = {
     label: "Pack verification",
     provider: "demo",
     connected: false,
-    liveDescription: "A manufacturer or regulator serialisation registry (e.g. GS1 / track-trace).",
+    liveDescription:
+      "A manufacturer or regulator serialisation registry (e.g. GS1 / track-trace).",
   },
   ordering: {
     key: "ordering",

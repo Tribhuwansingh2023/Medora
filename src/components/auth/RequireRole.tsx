@@ -18,7 +18,13 @@ function FullScreen({ children }: { children: ReactNode }) {
  * /auth (remembering where they were going) and blocks signed-in users who
  * don't hold one of the allowed roles.
  */
-export function RequireRole({ allow, children }: { allow: AccountRole[]; children: ReactNode }) {
+export function RequireRole({
+  allow,
+  children,
+}: {
+  allow: AccountRole[];
+  children: ReactNode;
+}) {
   const { loading, isAuthenticated, hasAnyRole, primaryRole } = useAuth();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.href });
@@ -35,8 +41,13 @@ export function RequireRole({ allow, children }: { allow: AccountRole[]; childre
   if (loading) {
     return (
       <FullScreen>
-        <Loader2 className="mx-auto size-6 animate-spin text-primary" aria-hidden />
-        <p className="mt-3 text-sm text-muted-foreground">Checking your session…</p>
+        <Loader2
+          className="mx-auto size-6 animate-spin text-primary"
+          aria-hidden
+        />
+        <p className="mt-3 text-sm text-muted-foreground">
+          Checking your session…
+        </p>
       </FullScreen>
     );
   }
@@ -44,7 +55,9 @@ export function RequireRole({ allow, children }: { allow: AccountRole[]; childre
   if (!isAuthenticated) {
     return (
       <FullScreen>
-        <p className="text-sm text-muted-foreground">Redirecting you to sign in…</p>
+        <p className="text-sm text-muted-foreground">
+          Redirecting you to sign in…
+        </p>
       </FullScreen>
     );
   }
@@ -55,16 +68,23 @@ export function RequireRole({ allow, children }: { allow: AccountRole[]; childre
         <span className="mx-auto grid size-11 place-items-center rounded-md bg-destructive/10 text-destructive">
           <ShieldAlert className="size-5" aria-hidden />
         </span>
-        <h1 className="mt-4 text-xl font-semibold">This workspace needs a different role</h1>
+        <h1 className="mt-4 text-xl font-semibold">
+          This workspace needs a different role
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Your account is signed in as{" "}
-          <span className="font-medium text-foreground">{primaryRole ?? "no role assigned"}</span>.
-          Professional workspaces are granted after licence verification by a Medora administrator.
+          <span className="font-medium text-foreground">
+            {primaryRole ?? "no role assigned"}
+          </span>
+          . Professional workspaces are granted after licence verification by a
+          Medora administrator.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           {primaryRole ? (
             <Button asChild>
-              <Link to={ROLE_HOME[primaryRole] as "/app"}>Go to my workspace</Link>
+              <Link to={ROLE_HOME[primaryRole] as "/app"}>
+                Go to my workspace
+              </Link>
             </Button>
           ) : null}
           <Button asChild variant="outline">

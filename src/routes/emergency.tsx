@@ -15,7 +15,8 @@ export const Route = createFileRoute("/emergency")({
       { property: "og:title", content: "Emergency guidance — Medora" },
       {
         property: "og:description",
-        content: "Emergency warning signs and how to get professional help immediately.",
+        content:
+          "Emergency warning signs and how to get professional help immediately.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -50,25 +51,29 @@ function EmergencyPage() {
             <h1 className="text-2xl font-bold">Get emergency help now</h1>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            Medora is an informational product. It cannot assess an emergency, and it will never
-            tell you to wait. If any of the warning signs below apply, contact emergency services in
-            your country immediately or go to the nearest emergency department.
+            Medora is an informational product. It cannot assess an emergency,
+            and it will never tell you to wait. If any of the warning signs
+            below apply, contact emergency services in your country immediately
+            or go to the nearest emergency department.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild variant="destructive">
               <a href="tel:112">
-                <PhoneCall className="size-4" aria-hidden /> Call emergency services
+                <PhoneCall className="size-4" aria-hidden /> Call emergency
+                services
               </a>
             </Button>
             <p className="self-center text-xs text-muted-foreground">
-              Emergency numbers differ by country — 112 in much of Europe, 911 in the US and Canada,
-              999 in the UK, 108 or 112 in India.
+              Emergency numbers differ by country — 112 in much of Europe, 911
+              in the US and Canada, 999 in the UK, 108 or 112 in India.
             </p>
           </div>
         </div>
 
         <section className="mt-10">
-          <h2 className="text-lg font-bold">Warning signs that need emergency care</h2>
+          <h2 className="text-lg font-bold">
+            Warning signs that need emergency care
+          </h2>
           <ul className="mt-4 grid gap-2 sm:grid-cols-2">
             {warningSigns.map((sign) => (
               <li key={sign} className="surface flex gap-2 p-3 text-sm">
@@ -86,9 +91,16 @@ function EmergencyPage() {
           <h2 className="text-base font-bold">While you wait for help</h2>
           <ul className="mt-3 list-disc space-y-1.5 pl-5 text-muted-foreground">
             <li>Stay with the person if you can do so safely.</li>
-            <li>Have any medicine packs or a prescription list ready to show responders.</li>
-            <li>Do not give any medicine unless a professional tells you to.</li>
-            <li>Follow the instructions of the emergency operator, not this page.</li>
+            <li>
+              Have any medicine packs or a prescription list ready to show
+              responders.
+            </li>
+            <li>
+              Do not give any medicine unless a professional tells you to.
+            </li>
+            <li>
+              Follow the instructions of the emergency operator, not this page.
+            </li>
           </ul>
         </section>
       </div>

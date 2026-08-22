@@ -62,10 +62,16 @@ export function CommandPalette({
     >
       <CommandInput placeholder="Search medicines, pharmacies, pages…" />
       <CommandList>
-        <CommandEmpty>Nothing matched. Try a brand name, an ingredient or a page.</CommandEmpty>
+        <CommandEmpty>
+          Nothing matched. Try a brand name, an ingredient or a page.
+        </CommandEmpty>
         <CommandGroup heading="Go to">
           {nav.map((item) => (
-            <CommandItem key={item.to} value={`page ${item.label}`} onSelect={() => go(item.to)}>
+            <CommandItem
+              key={item.to}
+              value={`page ${item.label}`}
+              onSelect={() => go(item.to)}
+            >
               <item.icon className="size-4" aria-hidden />
               {item.label}
               {item.to === "/app" && <CommandShortcut>⌘K</CommandShortcut>}
@@ -119,7 +125,9 @@ export function CommandPalette({
               onSelect={() => go("/app/reminders")}
             >
               <span className="font-medium">{r.medicineName}</span>
-              <span className="text-muted-foreground">{r.times.join(", ")}</span>
+              <span className="text-muted-foreground">
+                {r.times.join(", ")}
+              </span>
             </CommandItem>
           ))}
         </CommandGroup>

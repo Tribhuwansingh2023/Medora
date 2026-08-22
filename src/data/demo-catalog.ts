@@ -836,7 +836,8 @@ export const demoPrescriptions: Prescription[] = [
         strength: "10 mg / 5 mg",
         frequency: "1 tablet once daily at night",
         duration: "14 days",
-        notes: "Combined Montelukast + Levocetirizine for allergic airway control.",
+        notes:
+          "Combined Montelukast + Levocetirizine for allergic airway control.",
         confidence: 0.93,
         userConfirmed: false,
       },
@@ -1069,7 +1070,8 @@ export const demoAuditEvents: AuditEvent[] = [
     target: "rx-1001",
     ip: "10.0.0.14",
     status: "success",
-    details: "Pharmacist verified digital signature and active ingredient matching for Augmentin 625 Duo & Pan-D.",
+    details:
+      "Pharmacist verified digital signature and active ingredient matching for Augmentin 625 Duo & Pan-D.",
   },
   {
     id: "ae-2",
@@ -1081,7 +1083,8 @@ export const demoAuditEvents: AuditEvent[] = [
     target: "med-dolo-650-tab",
     ip: "10.0.0.2",
     status: "success",
-    details: "Automated CDSCO & Jan Aushadhi registry checksum verification passed (1,248 active SKUs updated).",
+    details:
+      "Automated CDSCO & Jan Aushadhi registry checksum verification passed (1,248 active SKUs updated).",
   },
   {
     id: "ae-3",
@@ -1093,7 +1096,8 @@ export const demoAuditEvents: AuditEvent[] = [
     target: "triage-session-9982",
     ip: "10.0.8.44",
     status: "flagged",
-    details: "Red-flag detected: 'acute chest pressure radiating to left arm'. Routed to Emergency Tier with national helpline 112.",
+    details:
+      "Red-flag detected: 'acute chest pressure radiating to left arm'. Routed to Emergency Tier with national helpline 112.",
   },
   {
     id: "ae-4",
@@ -1105,7 +1109,8 @@ export const demoAuditEvents: AuditEvent[] = [
     target: "profile-tribhuwan",
     ip: "10.0.4.91",
     status: "success",
-    details: "Patient declared self-reported penicillin allergy and updated morning metformin schedule.",
+    details:
+      "Patient declared self-reported penicillin allergy and updated morning metformin schedule.",
   },
   {
     id: "ae-5",
@@ -1117,7 +1122,8 @@ export const demoAuditEvents: AuditEvent[] = [
     target: "usr-sharma-90",
     ip: "10.0.0.2",
     status: "success",
-    details: "Verified Medical Council registration #MCI-2014-99812 against National Medical Commission portal.",
+    details:
+      "Verified Medical Council registration #MCI-2014-99812 against National Medical Commission portal.",
   },
   {
     id: "ae-6",
@@ -1129,7 +1135,8 @@ export const demoAuditEvents: AuditEvent[] = [
     target: "rx-1001",
     ip: "10.0.2.7",
     status: "success",
-    details: "Created prescription for Augmentin 625 + Pan-D. Automated DDI matrix cleared with no critical conflicts.",
+    details:
+      "Created prescription for Augmentin 625 + Pan-D. Automated DDI matrix cleared with no critical conflicts.",
   },
   {
     id: "ae-7",
@@ -1141,7 +1148,8 @@ export const demoAuditEvents: AuditEvent[] = [
     target: "orders-tenant-policy",
     ip: "10.0.0.1",
     status: "success",
-    details: "Row-Level Multi-Tenant Isolation confirmed. Unauthenticated cross-user read query rejected (403 Forbidden).",
+    details:
+      "Row-Level Multi-Tenant Isolation confirmed. Unauthenticated cross-user read query rejected (403 Forbidden).",
   },
   {
     id: "ae-8",
@@ -1153,7 +1161,8 @@ export const demoAuditEvents: AuditEvent[] = [
     target: "org-apollo-indiranagar",
     ip: "10.0.0.2",
     status: "success",
-    details: "Drug License 20-B/21-B verified with Karnataka State Drugs Control Department.",
+    details:
+      "Drug License 20-B/21-B verified with Karnataka State Drugs Control Department.",
   },
   {
     id: "ae-9",
@@ -1165,7 +1174,8 @@ export const demoAuditEvents: AuditEvent[] = [
     target: "rx-1002",
     ip: "10.0.1.18",
     status: "success",
-    details: "Batch #GM-8871 logged in Schedule H1 register as per Drugs and Cosmetics Rules.",
+    details:
+      "Batch #GM-8871 logged in Schedule H1 register as per Drugs and Cosmetics Rules.",
   },
   {
     id: "ae-10",
@@ -1177,7 +1187,8 @@ export const demoAuditEvents: AuditEvent[] = [
     target: "ddi-metformin-contrast",
     ip: "10.0.4.91",
     status: "warning",
-    details: "Interaction alert flagged: Metformin + Iodinated Contrast media risk of lactic acidosis. Clinical rationale provided.",
+    details:
+      "Interaction alert flagged: Metformin + Iodinated Contrast media risk of lactic acidosis. Clinical rationale provided.",
   },
   {
     id: "ae-11",
@@ -1189,7 +1200,8 @@ export const demoAuditEvents: AuditEvent[] = [
     target: "doc-apollo-rx-99.pdf",
     ip: "10.0.0.8",
     status: "success",
-    details: "OCR extracted 2 medicines with 96% and 95% confidence scores. Routed to patient confirmation queue.",
+    details:
+      "OCR extracted 2 medicines with 96% and 95% confidence scores. Routed to patient confirmation queue.",
   },
   {
     id: "ae-12",
@@ -1201,6 +1213,7 @@ export const demoAuditEvents: AuditEvent[] = [
     target: "consent-registry",
     ip: "10.0.0.2",
     status: "success",
-    details: "Audited patient data processing consent tokens. 100% compliance with explicit opt-in telemetry controls.",
+    details:
+      "Audited patient data processing consent tokens. 100% compliance with explicit opt-in telemetry controls.",
   },
 ];

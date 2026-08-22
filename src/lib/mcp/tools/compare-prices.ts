@@ -9,19 +9,30 @@ export default defineTool({
   description:
     "Compare local pharmacy prices for a medicine, including equivalents with the same composition. Prices are demo data, not live retail prices.",
   inputSchema: {
-    medicineId: z.string().describe("Medicine id to price, e.g. med-para-500-tab-a."),
+    medicineId: z
+      .string()
+      .describe("Medicine id to price, e.g. med-para-500-tab-a."),
     includeEquivalents: z
       .boolean()
       .optional()
-      .describe("Also price other products with the same composition key. Defaults to true."),
+      .describe(
+        "Also price other products with the same composition key. Defaults to true.",
+      ),
   },
-  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  annotations: {
+    readOnlyHint: true,
+    idempotentHint: true,
+    openWorldHint: false,
+  },
   handler: ({ medicineId, includeEquivalents = true }) => {
     const medicine = demoMedicines.find((m) => m.id === medicineId);
-    if (!medicine) throw new ToolError(`No medicine found with id "${medicineId}".`);
+    if (!medicine)
+      throw new ToolError(`No medicine found with id "${medicineId}".`);
 
     const ids = includeEquivalents
-      ? demoMedicines.filter((m) => m.compositionKey === medicine.compositionKey).map((m) => m.id)
+      ? demoMedicines
+          .filter((m) => m.compositionKey === medicine.compositionKey)
+          .map((m) => m.id)
       : [medicine.id];
 
     const listings = demoPrices

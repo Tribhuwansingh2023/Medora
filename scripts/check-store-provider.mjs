@@ -19,10 +19,13 @@ const errors = [];
 /** ---- 1. Root wiring ---- */
 const rootFile = join(SRC, "routes/__root.tsx");
 const rootSrc = readFileSync(rootFile, "utf8");
-const wraps = /<AppStoreProvider>[\s\S]*<Outlet\s*\/>[\s\S]*<\/AppStoreProvider>/.test(rootSrc);
+const wraps =
+  /<AppStoreProvider>[\s\S]*<Outlet\s*\/>[\s\S]*<\/AppStoreProvider>/.test(
+    rootSrc,
+  );
 if (!wraps) {
   errors.push(
-    "src/routes/__root.tsx must render <Outlet /> inside <AppStoreProvider> — otherwise every route throws \"useStore must be used inside <AppStoreProvider>\".",
+    'src/routes/__root.tsx must render <Outlet /> inside <AppStoreProvider> — otherwise every route throws "useStore must be used inside <AppStoreProvider>".',
   );
 }
 
@@ -59,7 +62,8 @@ function resolveImport(fromFile, spec) {
   return null;
 }
 
-const IMPORT_RE = /(?:import|export)[\s\S]*?from\s*["']([^"']+)["']|import\(\s*["']([^"']+)["']\s*\)/g;
+const IMPORT_RE =
+  /(?:import|export)[\s\S]*?from\s*["']([^"']+)["']|import\(\s*["']([^"']+)["']\s*\)/g;
 const seen = new Set();
 const trail = new Map();
 
@@ -76,7 +80,9 @@ function visit(file, from) {
       chain.unshift(cur.replace(`${ROOT}/`, ""));
       cur = trail.get(cur);
     }
-    errors.push(`useStore() is reachable outside <AppStoreProvider>: ${chain.join(" -> ")}`);
+    errors.push(
+      `useStore() is reachable outside <AppStoreProvider>: ${chain.join(" -> ")}`,
+    );
   }
 
   for (const match of src.matchAll(IMPORT_RE)) {

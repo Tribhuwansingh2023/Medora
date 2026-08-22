@@ -10,7 +10,11 @@ import {
 import type { ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { integrations, type IntegrationKey } from "@/services/provider";
 import type { Provenance } from "@/lib/domain";
 import { cn } from "@/lib/utils";
@@ -75,9 +79,10 @@ export function DemoBadge({
       <HoverCardContent className="w-80 text-sm">
         <p className="font-medium text-ink">Sample records, not live data</p>
         <p className="mt-1.5 text-muted-foreground">
-          No licensed catalogue, price feed or pharmacy inventory provider is connected in this
-          environment. Everything shown here comes from Medora&apos;s demo provider so the flow can
-          be reviewed end to end. Prices, stock and availability are not real.
+          No licensed catalogue, price feed or pharmacy inventory provider is
+          connected in this environment. Everything shown here comes from
+          Medora&apos;s demo provider so the flow can be reviewed end to end.
+          Prices, stock and availability are not real.
         </p>
       </HoverCardContent>
     </HoverCard>
@@ -94,11 +99,17 @@ export function ProvenanceLine({ provenance }: { provenance: Provenance }) {
       <span aria-hidden>·</span>
       <span>updated {provenance.updatedAt}</span>
       <span aria-hidden>·</span>
-      <span className={provenance.verified ? "text-success" : "text-warning-foreground"}>
+      <span
+        className={
+          provenance.verified ? "text-success" : "text-warning-foreground"
+        }
+      >
         {provenance.verified ? "verified provider" : "unverified demo provider"}
       </span>
       {provenance.note && (
-        <span className="w-full text-muted-foreground/80">{provenance.note}</span>
+        <span className="w-full text-muted-foreground/80">
+          {provenance.note}
+        </span>
       )}
     </p>
   );
@@ -116,7 +127,11 @@ export function SafetyNotice({
   className?: string | undefined;
 }) {
   const Icon =
-    tone === "emergency" ? AlertTriangle : tone === "warning" ? AlertTriangle : ShieldCheck;
+    tone === "emergency"
+      ? AlertTriangle
+      : tone === "warning"
+        ? AlertTriangle
+        : ShieldCheck;
   return (
     <div
       role={tone === "emergency" ? "alert" : "note"}
@@ -149,10 +164,13 @@ export function SafetyNotice({
 
 export function ClinicalDisclaimer({ className }: { className?: string }) {
   return (
-    <SafetyNotice title="Informational only — not medical advice" className={className}>
-      Medora helps you understand medicines and find them nearby. It does not diagnose conditions,
-      prescribe, or change a dose. Always confirm with a pharmacist or doctor, and use emergency
-      services for anything urgent.
+    <SafetyNotice
+      title="Informational only — not medical advice"
+      className={className}
+    >
+      Medora helps you understand medicines and find them nearby. It does not
+      diagnose conditions, prescribe, or change a dose. Always confirm with a
+      pharmacist or doctor, and use emergency services for anything urgent.
     </SafetyNotice>
   );
 }
@@ -180,8 +198,8 @@ export function IntegrationNotConnected({
       <div className="flex-1">
         <p className="font-semibold text-ink">{meta.label} is not connected</p>
         <p className="text-muted-foreground">
-          {meta.liveDescription} Until it is connected, Medora shows clearly labelled demo behaviour
-          instead of inventing results.
+          {meta.liveDescription} Until it is connected, Medora shows clearly
+          labelled demo behaviour instead of inventing results.
         </p>
       </div>
       {action}
@@ -203,15 +221,24 @@ export function SectionHeading({
   className?: string | undefined;
 }) {
   return (
-    <div className={cn("flex flex-wrap items-end justify-between gap-4", className)}>
+    <div
+      className={cn(
+        "flex flex-wrap items-end justify-between gap-4",
+        className,
+      )}
+    >
       <div className="max-w-2xl">
         {eyebrow && (
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
             {eyebrow}
           </p>
         )}
-        <h2 className="text-balance text-2xl font-bold sm:text-[1.75rem]">{title}</h2>
-        {description && <p className="mt-2 text-muted-foreground">{description}</p>}
+        <h2 className="text-balance text-2xl font-bold sm:text-[1.75rem]">
+          {title}
+        </h2>
+        {description && (
+          <p className="mt-2 text-muted-foreground">{description}</p>
+        )}
       </div>
       {action}
     </div>
@@ -236,9 +263,13 @@ export function PageHeader({
           <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
           {demo && <DemoBadge />}
         </div>
-        {description && <p className="mt-2 text-sm text-muted-foreground">{description}</p>}
+        {description && (
+          <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+        )}
       </div>
-      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+      {actions && (
+        <div className="flex flex-wrap items-center gap-2">{actions}</div>
+      )}
     </header>
   );
 }
@@ -259,7 +290,9 @@ export function StatTile({
   return (
     <div className="surface p-4">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          {label}
+        </p>
         {Icon && <Icon className="size-4 text-muted-foreground" aria-hidden />}
       </div>
       <p
@@ -293,15 +326,24 @@ export function EmptyState({
         <Icon className="size-5" aria-hidden />
       </span>
       <p className="mt-4 font-semibold text-ink">{title}</p>
-      <p className="mt-1.5 max-w-md text-sm text-muted-foreground">{description}</p>
+      <p className="mt-1.5 max-w-md text-sm text-muted-foreground">
+        {description}
+      </p>
       {action && <div className="mt-5">{action}</div>}
     </div>
   );
 }
 
-export function AvailabilityPill({ value }: { value: "in_stock" | "low_stock" | "out_of_stock" }) {
+export function AvailabilityPill({
+  value,
+}: {
+  value: "in_stock" | "low_stock" | "out_of_stock";
+}) {
   const map = {
-    in_stock: { label: "In stock", cls: "border-success/35 bg-success-soft text-success" },
+    in_stock: {
+      label: "In stock",
+      cls: "border-success/35 bg-success-soft text-success",
+    },
     low_stock: {
       label: "Low stock",
       cls: "border-warning/40 bg-warning-soft text-warning-foreground",
@@ -314,7 +356,10 @@ export function AvailabilityPill({ value }: { value: "in_stock" | "low_stock" | 
   const item = map[value];
   return (
     <span
-      className={cn("inline-flex rounded-full border px-2 py-0.5 text-xs font-medium", item.cls)}
+      className={cn(
+        "inline-flex rounded-full border px-2 py-0.5 text-xs font-medium",
+        item.cls,
+      )}
     >
       {item.label}
     </span>
@@ -323,7 +368,10 @@ export function AvailabilityPill({ value }: { value: "in_stock" | "low_stock" | 
 
 export function RxPill({ prescriptionOnly }: { prescriptionOnly: boolean }) {
   return (
-    <Badge variant={prescriptionOnly ? "outline" : "secondary"} className="font-medium">
+    <Badge
+      variant={prescriptionOnly ? "outline" : "secondary"}
+      className="font-medium"
+    >
       {prescriptionOnly ? "Prescription-only" : "Over the counter"}
     </Badge>
   );
@@ -339,12 +387,17 @@ export function EmergencyCallout({ className }: { className?: string }) {
       )}
     >
       <div className="flex gap-3">
-        <AlertTriangle className="mt-0.5 size-4 shrink-0 text-destructive" aria-hidden />
+        <AlertTriangle
+          className="mt-0.5 size-4 shrink-0 text-destructive"
+          aria-hidden
+        />
         <div className="text-sm">
-          <p className="font-semibold text-ink">If this is an emergency, stop here</p>
+          <p className="font-semibold text-ink">
+            If this is an emergency, stop here
+          </p>
           <p className="text-muted-foreground">
-            Call your local emergency number or go to the nearest emergency department. Medora
-            cannot assess emergencies.
+            Call your local emergency number or go to the nearest emergency
+            department. Medora cannot assess emergencies.
           </p>
         </div>
       </div>

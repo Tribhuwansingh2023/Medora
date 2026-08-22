@@ -9,10 +9,20 @@ export default defineTool({
   description:
     "List Medora's demo pharmacy directory with distance, opening hours, services and licence identifiers.",
   inputSchema: {
-    query: z.string().optional().describe("Optional name, city or service text to filter on."),
-    open24hOnly: z.boolean().optional().describe("Only return pharmacies open 24 hours."),
+    query: z
+      .string()
+      .optional()
+      .describe("Optional name, city or service text to filter on."),
+    open24hOnly: z
+      .boolean()
+      .optional()
+      .describe("Only return pharmacies open 24 hours."),
   },
-  annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+  annotations: {
+    readOnlyHint: true,
+    idempotentHint: true,
+    openWorldHint: false,
+  },
   handler: ({ query, open24hOnly }) => {
     const q = (query ?? "").trim().toLowerCase();
     const results = demoPharmacies

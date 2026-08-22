@@ -11,7 +11,11 @@ import {
 } from "@/components/ui/dialog";
 import { PageHeader, SafetyNotice } from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
-import { AsyncSection, StatusPill, WorkspaceSection } from "@/components/workspace/parts";
+import {
+  AsyncSection,
+  StatusPill,
+  WorkspaceSection,
+} from "@/components/workspace/parts";
 import { shortDate, useWorkspaceData } from "@/services/workspace";
 import type { Supplier } from "@/data/workspace-demo";
 
@@ -24,10 +28,14 @@ export const Route = createFileRoute("/pharmacy/suppliers")({
         content:
           "Supplier directory with lead time, on-time reliability and purchase order status from demo records.",
       },
-      { property: "og:title", content: "Suppliers — Medora Pharmacy workspace" },
+      {
+        property: "og:title",
+        content: "Suppliers — Medora Pharmacy workspace",
+      },
       {
         property: "og:description",
-        content: "Review supplier lead time and reliability in the Medora pharmacy console.",
+        content:
+          "Review supplier lead time and reliability in the Medora pharmacy console.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -72,7 +80,11 @@ function SuppliersPage() {
       hideBelow: "sm",
       sortValue: (r) => r.leadTimeDays,
       render: (r) => (
-        <span className={r.leadTimeDays > 5 ? "font-medium text-destructive" : "numeric"}>
+        <span
+          className={
+            r.leadTimeDays > 5 ? "font-medium text-destructive" : "numeric"
+          }
+        >
           {r.leadTimeDays} day{r.leadTimeDays === 1 ? "" : "s"}
         </span>
       ),
@@ -128,8 +140,9 @@ function SuppliersPage() {
       />
 
       <SafetyNotice tone="info" title="Demo procurement figures">
-        Lead times, purchase order counts and reliability rates are sample figures for reviewing
-        this workflow. They are not a live procurement feed.
+        Lead times, purchase order counts and reliability rates are sample
+        figures for reviewing this workflow. They are not a live procurement
+        feed.
       </SafetyNotice>
 
       <WorkspaceSection
@@ -176,7 +189,11 @@ function SuppliersPage() {
                 },
               ]}
               rowActions={(r) => (
-                <Button variant="outline" size="sm" onClick={() => setOpenId(r.id)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setOpenId(r.id)}
+                >
                   View detail
                 </Button>
               )}
@@ -198,7 +215,9 @@ function SuppliersPage() {
                   <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Lead time
                   </dt>
-                  <dd className="numeric mt-1 font-medium text-ink">{open.leadTimeDays} days</dd>
+                  <dd className="numeric mt-1 font-medium text-ink">
+                    {open.leadTimeDays} days
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -212,7 +231,9 @@ function SuppliersPage() {
                   <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Open purchase orders
                   </dt>
-                  <dd className="numeric mt-1 font-medium text-ink">{open.openPurchaseOrders}</dd>
+                  <dd className="numeric mt-1 font-medium text-ink">
+                    {open.openPurchaseOrders}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">

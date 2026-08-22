@@ -6,13 +6,35 @@
       "type": "object",
       "properties": {
         "userId": { "type": "string", "description": "Unique user ID" },
-        "fullName": { "type": "string", "description": "Full name of the user" },
+        "fullName": {
+          "type": "string",
+          "description": "Full name of the user"
+        },
         "email": { "type": "string", "description": "User email address" },
-        "role": { "type": "string", "enum": ["patient", "pharmacy", "doctor", "admin"], "description": "User role in Medora" },
-        "city": { "type": "string", "description": "City of residence or practice" },
-        "allergies": { "type": "array", "items": { "type": "string" }, "description": "Known allergies" },
-        "conditions": { "type": "array", "items": { "type": "string" }, "description": "Known medical conditions" },
-        "currentMedicines": { "type": "array", "items": { "type": "string" }, "description": "Active regular medicines" },
+        "role": {
+          "type": "string",
+          "enum": ["patient", "pharmacy", "doctor", "admin"],
+          "description": "User role in Medora"
+        },
+        "city": {
+          "type": "string",
+          "description": "City of residence or practice"
+        },
+        "allergies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Known allergies"
+        },
+        "conditions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Known medical conditions"
+        },
+        "currentMedicines": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Active regular medicines"
+        },
         "createdAt": { "type": "string", "format": "date-time" },
         "updatedAt": { "type": "string", "format": "date-time" }
       },
@@ -27,7 +49,10 @@
         "userId": { "type": "string" },
         "fileName": { "type": "string" },
         "prescriberName": { "type": "string" },
-        "status": { "type": "string", "enum": ["extracted", "reviewed", "verified", "rejected"] },
+        "status": {
+          "type": "string",
+          "enum": ["extracted", "reviewed", "verified", "rejected"]
+        },
         "uploadedAt": { "type": "string", "format": "date-time" },
         "items": { "type": "array", "items": { "type": "object" } }
       },

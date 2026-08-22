@@ -1,5 +1,11 @@
 import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
-import type { Order, Reminder, Prescription, LabReport, HealthProfile } from "@/lib/domain";
+import type {
+  Order,
+  Reminder,
+  Prescription,
+  LabReport,
+  HealthProfile,
+} from "@/lib/domain";
 
 /**
  * Service to sync application state with Supabase Postgres tables.
@@ -8,7 +14,10 @@ import type { Order, Reminder, Prescription, LabReport, HealthProfile } from "@/
  * LocalStorage serves as an immediate local cache / offline fallback.
  */
 
-export async function syncOrderToPostgres(order: Order, userId: string = "00000000-0000-0000-0000-000000000001") {
+export async function syncOrderToPostgres(
+  order: Order,
+  userId: string = "00000000-0000-0000-0000-000000000001",
+) {
   if (!isSupabaseConfigured) return;
   try {
     const { error } = await supabase.from("orders").upsert({
@@ -34,7 +43,10 @@ export async function syncOrderToPostgres(order: Order, userId: string = "000000
   }
 }
 
-export async function syncReminderToPostgres(reminder: Reminder, userId: string = "00000000-0000-0000-0000-000000000001") {
+export async function syncReminderToPostgres(
+  reminder: Reminder,
+  userId: string = "00000000-0000-0000-0000-000000000001",
+) {
   if (!isSupabaseConfigured) return;
   try {
     const { error } = await supabase.from("reminders").upsert({
@@ -60,7 +72,10 @@ export async function syncReminderToPostgres(reminder: Reminder, userId: string 
   }
 }
 
-export async function syncPrescriptionToPostgres(rx: Prescription, userId: string = "00000000-0000-0000-0000-000000000001") {
+export async function syncPrescriptionToPostgres(
+  rx: Prescription,
+  userId: string = "00000000-0000-0000-0000-000000000001",
+) {
   if (!isSupabaseConfigured) return;
   try {
     const { error } = await supabase.from("prescriptions").upsert({
@@ -83,7 +98,10 @@ export async function syncPrescriptionToPostgres(rx: Prescription, userId: strin
   }
 }
 
-export async function syncLabReportToPostgres(report: LabReport, userId: string = "00000000-0000-0000-0000-000000000001") {
+export async function syncLabReportToPostgres(
+  report: LabReport,
+  userId: string = "00000000-0000-0000-0000-000000000001",
+) {
   if (!isSupabaseConfigured) return;
   try {
     const { error } = await supabase.from("lab_reports").upsert({
@@ -103,7 +121,10 @@ export async function syncLabReportToPostgres(report: LabReport, userId: string 
   }
 }
 
-export async function syncProfileToPostgres(profile: HealthProfile, userId: string = "00000000-0000-0000-0000-000000000001") {
+export async function syncProfileToPostgres(
+  profile: HealthProfile,
+  userId: string = "00000000-0000-0000-0000-000000000001",
+) {
   if (!isSupabaseConfigured) return;
   try {
     const { error } = await supabase.from("profiles").upsert({

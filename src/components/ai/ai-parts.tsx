@@ -10,7 +10,12 @@ import {
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { confidenceCopy } from "@/ai/render";
-import type { AiEnvelope, AiSource, PipelineStage, SafetyVerdict } from "@/ai/schemas";
+import type {
+  AiEnvelope,
+  AiSource,
+  PipelineStage,
+  SafetyVerdict,
+} from "@/ai/schemas";
 
 export function ModeBadge({ envelope }: { envelope: AiEnvelope }) {
   const demo = envelope.mode === "demo";
@@ -90,7 +95,10 @@ export function SafetyStrip({ safety }: { safety: SafetyVerdict }) {
         <AlertTriangle className="mt-0.5 size-3.5 shrink-0" aria-hidden />
       )}
       <span>
-        {safety.notice} <span className="opacity-70">Checks run: {safety.rulesRun.length}.</span>
+        {safety.notice}{" "}
+        <span className="opacity-70">
+          Checks run: {safety.rulesRun.length}.
+        </span>
       </span>
     </div>
   );
@@ -107,7 +115,9 @@ export function PipelineTrace({ trace }: { trace: PipelineStage[] }) {
       <ol className="mt-3 space-y-2">
         {trace.map((stage, i) => (
           <li key={`${stage.name}-${i}`} className="flex gap-3">
-            <span className="mt-0.5 font-mono text-[10px] text-muted-foreground">{i + 1}</span>
+            <span className="mt-0.5 font-mono text-[10px] text-muted-foreground">
+              {i + 1}
+            </span>
             <span className="min-w-0">
               <span className="font-medium text-foreground">{stage.label}</span>
               <span
@@ -122,7 +132,9 @@ export function PipelineTrace({ trace }: { trace: PipelineStage[] }) {
               >
                 {stage.status}
               </span>
-              <span className="ml-2 text-[10px] text-muted-foreground">{stage.ms} ms</span>
+              <span className="ml-2 text-[10px] text-muted-foreground">
+                {stage.ms} ms
+              </span>
               <p className="mt-0.5 text-muted-foreground">{stage.detail}</p>
             </span>
           </li>
@@ -132,7 +144,11 @@ export function PipelineTrace({ trace }: { trace: PipelineStage[] }) {
   );
 }
 
-export function FieldGrid({ items }: { items: { label: string; value: ReactNode }[] }) {
+export function FieldGrid({
+  items,
+}: {
+  items: { label: string; value: ReactNode }[];
+}) {
   if (!items.length) return null;
   return (
     <dl className="grid gap-3 sm:grid-cols-2">
@@ -151,7 +167,13 @@ export function FieldGrid({ items }: { items: { label: string; value: ReactNode 
   );
 }
 
-export function BulletList({ title, items }: { title: string; items: string[] }) {
+export function BulletList({
+  title,
+  items,
+}: {
+  title: string;
+  items: string[];
+}) {
   if (!items.length) return null;
   return (
     <div>

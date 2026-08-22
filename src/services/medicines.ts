@@ -1,6 +1,6 @@
-import { demoMedicines, demoPharmacies, demoPrices } from "@/data/demo-catalog";
+import { demoMedicines, demoPharmacies } from "@/data/demo-catalog";
 import type { Medicine, Pharmacy, PriceListing } from "@/lib/domain";
-import { settle } from "./provider";
+import { getProvider, demoProvider } from "./medicine-provider";
 
 export interface OfferRow {
   listing: PriceListing;
@@ -15,83 +15,139 @@ const unitsInPack = (packSize: string) => {
   return Number.isFinite(n) && n > 0 ? n : 1;
 };
 
-export const searchMedicines = async (query: string): Promise<Medicine[]> => {
-  const q = query.trim().toLowerCase();
-  const results = !q
-    ? demoMedicines
-    : demoMedicines.filter((m) =>
-        [
-          m.brandName,
-          m.genericName,
-          m.manufacturer,
-          m.form,
-          ...m.activeIngredients.map((a) => `${a.name} ${a.strength}`),
-        ]
-          .join(" ")
-          .toLowerCase()
-          .includes(q),
-      );
-  return settle(results);
+// We will attempt to use the active provider.
+// If it fails because it is the unconnected live provider, we fallback to demo provider gracefully
+// (or we can let the UI show the unconnected state).
+// For now, let's fallback to demoProvider so the existing UI doesn't break,
+// but the provider abstraction is fully in place.
+
+const executeWithFallback = async <T>(
+  operation: (provider: ReturnType<typeof getProvider>) => Promise<T>,
+): Promise<T> => {
+  const provider = getProvider();
+  try {
+    return await operation(provider);
+  } catch (error) {
+    console.warn(
+      "Primary medicine provider failed or not connected, falling back to DemoProvider",
+      error,
+    );
+    return await operation(demoProvider);
+  }
 };
 
-export const getMedicine = async (id: string): Promise<Medicine | undefined> =>
-  settle(demoMedicines.find((m) => m.id === id));
+export const searchMedicines = async (query: string): Promise<Medicine[]> => {
+  return executeWithFallback((p) => p.searchMedicines(query));
+};
 
+export const getMedicine = async (
+  id: string,
+): Promise<Medicine | undefined> => {
+  return executeWithFallback((p) => p.getMedicine(id));
+};
+
+// Sync version is still used occasionally, we'll try to find in demo if it's there
 export const getMedicineSync = (id: string) =>
   demoMedicines.find((m) => m.id === id);
 
 /** Equivalence = identical active ingredient + strength + dosage form. */
-export const getEquivalents = async (medicine: Medicine): Promise<Medicine[]> =>
-  settle(
-    demoMedicines.filter(
-      (m) =>
-        m.compositionKey === medicine.compositionKey && m.id !== medicine.id,
-    ),
-  );
+export const getEquivalents = async (
+  medicine: Medicine,
+): Promise<Medicine[]> => {
+  return executeWithFallback((p) => p.getEquivalents(medicine));
+};
 
 export const getOffers = async (medicineIds: string[]): Promise<OfferRow[]> => {
-  const rows = demoPrices
-    .filter((p) => medicineIds.includes(p.medicineId))
-    .map((listing) => {
-      const medicine = demoMedicines.find((m) => m.id === listing.medicineId)!;
-      const pharmacy = demoPharmacies.find((p) => p.id === listing.pharmacyId)!;
+  const listings = await executeWithFallback((p) => p.getOffers(medicineIds));
+  // We need to resolve medicines and pharmacies for these listings
+  // Usually the provider would return joined data or we fetch it.
+  // For this abstraction, we will use the provider to fetch them if needed.
+  // To keep it simple and performant, we'll map them using demo catalog if they are demo listings,
+  // or fetch from provider.
+
+  const provider = getProvider();
+  const rows: OfferRow[] = [];
+
+  for (const listing of listings) {
+    let medicine: Medicine | undefined;
+    let pharmacy: Pharmacy | undefined;
+
+    if (listing.provenance.source === "Medora Demo Data") {
+      medicine = demoMedicines.find((m) => m.id === listing.medicineId);
+      pharmacy = demoPharmacies.find((p) => p.id === listing.pharmacyId);
+    } else {
+      medicine = await provider
+        .getMedicine(listing.medicineId)
+        .catch(() => undefined);
+      pharmacy = await provider
+        .getPharmacy(listing.pharmacyId)
+        .catch(() => undefined);
+    }
+
+    if (medicine && pharmacy) {
       const units = unitsInPack(listing.packSize);
-      return {
+      rows.push({
         listing,
         medicine,
         pharmacy,
         units,
         unitPrice: listing.price / units,
-      };
-    })
-    .sort((a, b) => a.unitPrice - b.unitPrice);
-  return settle(rows);
+      });
+    }
+  }
+
+  return rows.sort((a, b) => a.unitPrice - b.unitPrice);
 };
 
-export const getPharmacies = async (): Promise<Pharmacy[]> =>
-  settle([...demoPharmacies].sort((a, b) => a.distanceKm - b.distanceKm));
+export const getPharmacies = async (): Promise<Pharmacy[]> => {
+  return executeWithFallback((p) => p.getPharmacies());
+};
 
-export const getPharmacy = async (id: string): Promise<Pharmacy | undefined> =>
-  settle(demoPharmacies.find((p) => p.id === id));
+export const getPharmacy = async (
+  id: string,
+): Promise<Pharmacy | undefined> => {
+  return executeWithFallback((p) => p.getPharmacy(id));
+};
 
 export const getPharmacyStock = async (
   pharmacyId: string,
 ): Promise<OfferRow[]> => {
-  const rows = demoPrices
-    .filter((p) => p.pharmacyId === pharmacyId)
-    .map((listing) => {
-      const medicine = demoMedicines.find((m) => m.id === listing.medicineId)!;
-      const pharmacy = demoPharmacies.find((p) => p.id === listing.pharmacyId)!;
+  const listings = await executeWithFallback((p) =>
+    p.getPharmacyStock(pharmacyId),
+  );
+
+  const provider = getProvider();
+  const rows: OfferRow[] = [];
+
+  for (const listing of listings) {
+    let medicine: Medicine | undefined;
+    let pharmacy: Pharmacy | undefined;
+
+    if (listing.provenance.source === "Medora Demo Data") {
+      medicine = demoMedicines.find((m) => m.id === listing.medicineId);
+      pharmacy = demoPharmacies.find((p) => p.id === listing.pharmacyId);
+    } else {
+      medicine = await provider
+        .getMedicine(listing.medicineId)
+        .catch(() => undefined);
+      pharmacy = await provider
+        .getPharmacy(listing.pharmacyId)
+        .catch(() => undefined);
+    }
+
+    if (medicine && pharmacy) {
       const units = unitsInPack(listing.packSize);
-      return {
+      rows.push({
         listing,
         medicine,
         pharmacy,
         units,
         unitPrice: listing.price / units,
-      };
-    });
-  return settle(rows);
+      });
+    }
+  }
+
+  return rows;
 };
 
 export const isOpenNow = (p: Pharmacy, now = new Date()) => {

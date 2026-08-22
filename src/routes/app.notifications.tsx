@@ -14,7 +14,8 @@ export const Route = createFileRoute("/app/notifications")({
       { title: "Notifications — Medora" },
       {
         name: "description",
-        content: "Dose reminders, price movements, order updates and safety notices in one place.",
+        content:
+          "Dose reminders, price movements, order updates and safety notices in one place.",
       },
       { property: "og:title", content: "Notifications — Medora" },
       {
@@ -109,7 +110,11 @@ function NotificationsPage() {
                   {new Date(n.at).toLocaleString()}
                 </p>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => markNotification(n.id, !n.read)}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => markNotification(n.id, !n.read)}
+              >
                 {n.read ? "Mark unread" : "Mark read"}
               </Button>
             </li>

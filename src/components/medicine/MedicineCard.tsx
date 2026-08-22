@@ -44,7 +44,9 @@ export function MedicineCard({
       <dl className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
         <div>
           <dt className="text-muted-foreground">Manufacturer</dt>
-          <dd className="font-medium text-foreground">{medicine.manufacturer}</dd>
+          <dd className="font-medium text-foreground">
+            {medicine.manufacturer}
+          </dd>
         </div>
         <div>
           <dt className="text-muted-foreground">Pack size</dt>
@@ -56,11 +58,18 @@ export function MedicineCard({
         <p className="text-sm">
           {lowestPrice != null ? (
             <>
-              <span className="numeric font-semibold text-ink">{formatMoney(lowestPrice)}</span>
-              <span className="text-muted-foreground"> lowest demo listing</span>
+              <span className="numeric font-semibold text-ink">
+                {formatMoney(lowestPrice)}
+              </span>
+              <span className="text-muted-foreground">
+                {" "}
+                lowest demo listing
+              </span>
             </>
           ) : (
-            <span className="text-muted-foreground">No listing in demo data</span>
+            <span className="text-muted-foreground">
+              No listing in demo data
+            </span>
           )}
         </p>
         {onToggleCompare && (

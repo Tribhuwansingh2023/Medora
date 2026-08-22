@@ -60,17 +60,33 @@ export interface MedoraAiProvider {
   capabilities: AiCapability[];
   description: string;
 
-  explainMedicine(query: string): Promise<ProviderOutput<MedicineExplanation> | null>;
-  answerInformational(query: string): Promise<ProviderOutput<InformationalAnswer>>;
+  explainMedicine(
+    query: string,
+  ): Promise<ProviderOutput<MedicineExplanation> | null>;
+  answerInformational(
+    query: string,
+  ): Promise<ProviderOutput<InformationalAnswer>>;
   interpretSearch(query: string): Promise<ProviderOutput<SearchInterpretation>>;
-  compareMedicines(medicineIds: string[]): Promise<ProviderOutput<MedicineComparison> | null>;
+  compareMedicines(
+    medicineIds: string[],
+  ): Promise<ProviderOutput<MedicineComparison> | null>;
   triage(request: TriageRequest): Promise<ProviderOutput<SymptomTriage>>;
   checkInteractions(
     medicines: string[],
     allergies: string[],
   ): Promise<ProviderOutput<InteractionReport>>;
-  checkAllergies(medicines: string[], allergies: string[]): Promise<ProviderOutput<AllergyReport>>;
-  extractPrescription(file: { name: string; type: string }): Promise<ProviderOutput<OcrExtraction>>;
-  explainLabReport(panel: string): Promise<ProviderOutput<LabExplanation> | null>;
-  summarisePatient(request: PatientSummaryRequest): Promise<ProviderOutput<PatientSummary>>;
+  checkAllergies(
+    medicines: string[],
+    allergies: string[],
+  ): Promise<ProviderOutput<AllergyReport>>;
+  extractPrescription(file: {
+    name: string;
+    type: string;
+  }): Promise<ProviderOutput<OcrExtraction>>;
+  explainLabReport(
+    panel: string,
+  ): Promise<ProviderOutput<LabExplanation> | null>;
+  summarisePatient(
+    request: PatientSummaryRequest,
+  ): Promise<ProviderOutput<PatientSummary>>;
 }

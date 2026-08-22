@@ -18,7 +18,9 @@ export default tseslint.config(
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      medora: { rules: { "no-usestore-outside-provider": noUseStoreOutsideProvider } },
+      medora: {
+        rules: { "no-usestore-outside-provider": noUseStoreOutsideProvider },
+      },
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -35,7 +37,10 @@ export default tseslint.config(
           ],
         },
       ],
-      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+      "react-refresh/only-export-components": [
+        "warn",
+        { allowConstantExport: true },
+      ],
       "@typescript-eslint/no-unused-vars": "off",
     },
   },

@@ -227,7 +227,13 @@ export interface AuditEvent {
   at: string;
   actor: string;
   role?: AppRole | "system";
-  category?: "clinical" | "security" | "catalog" | "prescription" | "pharmacy" | "compliance";
+  category?:
+    | "clinical"
+    | "security"
+    | "catalog"
+    | "prescription"
+    | "pharmacy"
+    | "compliance";
   action: string;
   target: string;
   ip: string;

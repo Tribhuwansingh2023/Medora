@@ -6,9 +6,15 @@ export const Route = createFileRoute("/admin/moderation")({
   head: () => ({
     meta: [
       { title: "Moderation — Medora Admin workspace" },
-      { name: "description", content: "Moderation workspace for the Medora admin console." },
+      {
+        name: "description",
+        content: "Moderation workspace for the Medora admin console.",
+      },
       { property: "og:title", content: "Moderation — Medora Admin workspace" },
-      { property: "og:description", content: "Moderation workspace for the Medora admin console." },
+      {
+        property: "og:description",
+        content: "Moderation workspace for the Medora admin console.",
+      },
     ],
   }),
   component: ModerationPage,

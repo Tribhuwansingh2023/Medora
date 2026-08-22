@@ -26,7 +26,10 @@ export const Route = createFileRoute("/pharmacy/prescriptions")({
         content:
           "Pharmacist verification queue for submitted prescriptions, with extracted lines shown as assistive suggestions requiring confirmation before dispensing.",
       },
-      { property: "og:title", content: "Verification queue — Medora Pharmacy workspace" },
+      {
+        property: "og:title",
+        content: "Verification queue — Medora Pharmacy workspace",
+      },
       {
         property: "og:description",
         content:
@@ -61,7 +64,10 @@ function VerificationQueuePage() {
   const [reason, setReason] = useState("");
 
   const rows = queue.data ?? [];
-  const open = useMemo(() => rows.find((r) => r.id === openId) ?? null, [rows, openId]);
+  const open = useMemo(
+    () => rows.find((r) => r.id === openId) ?? null,
+    [rows, openId],
+  );
 
   const columns: DataColumn<VerificationQueueRow>[] = [
     {
@@ -80,7 +86,9 @@ function VerificationQueuePage() {
       header: "Prescription",
       hideBelow: "md",
       sortValue: (r) => r.prescriptionId,
-      render: (r) => <span className="numeric text-sm">{r.prescriptionId}</span>,
+      render: (r) => (
+        <span className="numeric text-sm">{r.prescriptionId}</span>
+      ),
     },
     {
       key: "received",
@@ -135,9 +143,10 @@ function VerificationQueuePage() {
         tone="warning"
         title="The registered pharmacist makes every dispensing decision"
       >
-        Extracted text and confidence scores are assistive only. They are never treated as verified,
-        never auto-approved, and never used to infer a dose. Approving or rejecting a queue item
-        records the decision as made by the reviewing pharmacist in this demo session.
+        Extracted text and confidence scores are assistive only. They are never
+        treated as verified, never auto-approved, and never used to infer a
+        dose. Approving or rejecting a queue item records the decision as made
+        by the reviewing pharmacist in this demo session.
       </SafetyNotice>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
@@ -157,7 +166,9 @@ function VerificationQueuePage() {
                 rows={data}
                 columns={columns}
                 getId={(r) => r.id}
-                searchText={(r) => `${r.patient} ${r.prescriber} ${r.prescriptionId}`}
+                searchText={(r) =>
+                  `${r.patient} ${r.prescriber} ${r.prescriptionId}`
+                }
                 searchPlaceholder="Search by patient, prescriber or prescription id…"
                 initialSort={{ key: "received", direction: "desc" }}
                 pageSize={6}
@@ -169,11 +180,14 @@ function VerificationQueuePage() {
                   {
                     key: "status",
                     label: "Status",
-                    options: Object.entries(statusMeta).map(([value, meta]) => ({
-                      value,
-                      label: meta.label,
-                    })),
-                    predicate: (r, v) => (localState[r.id]?.status ?? r.status) === v,
+                    options: Object.entries(statusMeta).map(
+                      ([value, meta]) => ({
+                        value,
+                        label: meta.label,
+                      }),
+                    ),
+                    predicate: (r, v) =>
+                      (localState[r.id]?.status ?? r.status) === v,
                   },
                 ]}
                 rowActions={(r) => (
@@ -198,25 +212,34 @@ function VerificationQueuePage() {
             <WorkspaceSection
               title={`Prescription ${open.prescriptionId}`}
               description={`${open.patient} · ${open.prescriber} · received ${shortDateTime(open.receivedAt)}`}
-              actions={<StatusPill {...statusMeta[localState[open.id]?.status ?? open.status]} />}
+              actions={
+                <StatusPill
+                  {...statusMeta[localState[open.id]?.status ?? open.status]}
+                />
+              }
             >
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-ink">Extracted line count</span>
+                  <span className="text-sm font-medium text-ink">
+                    Extracted line count
+                  </span>
                   <span className="numeric text-sm">{open.items}</span>
                   <AiAssistTag />
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-ink">Extraction confidence</span>
+                  <span className="text-sm font-medium text-ink">
+                    Extraction confidence
+                  </span>
                   <StatusPill
                     label={`${Math.round(open.confidence * 100)}%`}
                     tone={confidenceTone(open.confidence)}
                   />
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  This score reflects how confidently the assistive layer read the uploaded image.
-                  It is not a clinical judgement. The pharmacist must confirm every line against the
-                  original prescription before approving.
+                  This score reflects how confidently the assistive layer read
+                  the uploaded image. It is not a clinical judgement. The
+                  pharmacist must confirm every line against the original
+                  prescription before approving.
                 </p>
                 {open.note && (
                   <p className="rounded-md bg-secondary p-3 text-sm text-muted-foreground">
@@ -252,11 +275,14 @@ function VerificationQueuePage() {
                       ...prev,
                       [open.id]: { status: "approved", reason: reason.trim() },
                     }));
-                    toast.success("Recorded as approved by you, the reviewing pharmacist (demo)");
+                    toast.success(
+                      "Recorded as approved by you, the reviewing pharmacist (demo)",
+                    );
                     setReason("");
                   }}
                 >
-                  <CheckCircle2 className="size-4" aria-hidden /> Approve as pharmacist
+                  <CheckCircle2 className="size-4" aria-hidden /> Approve as
+                  pharmacist
                 </Button>
                 <Button
                   variant="outline"
@@ -266,7 +292,9 @@ function VerificationQueuePage() {
                       ...prev,
                       [open.id]: { status: "rejected", reason: reason.trim() },
                     }));
-                    toast("Recorded as rejected by you, the reviewing pharmacist (demo)");
+                    toast(
+                      "Recorded as rejected by you, the reviewing pharmacist (demo)",
+                    );
                     setReason("");
                   }}
                 >
@@ -279,7 +307,9 @@ function VerificationQueuePage() {
               title="Prescription detail"
               description="Select a submission from the queue to review it."
             >
-              <p className="text-sm text-muted-foreground">No prescription selected.</p>
+              <p className="text-sm text-muted-foreground">
+                No prescription selected.
+              </p>
             </WorkspaceSection>
           )}
         </div>

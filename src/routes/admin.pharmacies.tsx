@@ -13,8 +13,17 @@ import {
 } from "@/components/ui/dialog";
 import { PageHeader } from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
-import { AsyncSection, StatusPill, Timeline, WorkspaceSection } from "@/components/workspace/parts";
-import { shortDate, shortDateTime, useWorkspaceData } from "@/services/workspace";
+import {
+  AsyncSection,
+  StatusPill,
+  Timeline,
+  WorkspaceSection,
+} from "@/components/workspace/parts";
+import {
+  shortDate,
+  shortDateTime,
+  useWorkspaceData,
+} from "@/services/workspace";
 import type { OrganisationRecord } from "@/data/workspace-demo";
 
 export const Route = createFileRoute("/admin/pharmacies")({
@@ -26,10 +35,14 @@ export const Route = createFileRoute("/admin/pharmacies")({
         content:
           "Review pharmacy and clinic licence records and record verification decisions as a named administrator.",
       },
-      { property: "og:title", content: "Organisations — Medora Admin workspace" },
+      {
+        property: "og:title",
+        content: "Organisations — Medora Admin workspace",
+      },
       {
         property: "og:description",
-        content: "Administrator licence verification workflow for pharmacies and clinics.",
+        content:
+          "Administrator licence verification workflow for pharmacies and clinics.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -61,14 +74,16 @@ interface Decision {
 function OrganisationsPage() {
   const orgs = useWorkspaceData("organisations");
   const [openId, setOpenId] = useState<string | null>(null);
-  const [overrides, setOverrides] = useState<Record<string, OrganisationRecord["verification"]>>(
-    {},
-  );
+  const [overrides, setOverrides] = useState<
+    Record<string, OrganisationRecord["verification"]>
+  >({});
   const [decisions, setDecisions] = useState<Decision[]>([]);
 
   const rows = orgs.data ?? [];
   const selected = rows.find((o) => o.id === openId) ?? null;
-  const selectedStatus = selected ? (overrides[selected.id] ?? selected.verification) : undefined;
+  const selectedStatus = selected
+    ? (overrides[selected.id] ?? selected.verification)
+    : undefined;
 
   const columns: DataColumn<OrganisationRecord>[] = [
     {
@@ -104,7 +119,12 @@ function OrganisationsPage() {
       sortValue: (r) => r.verification,
       render: (r) => {
         const status = overrides[r.id] ?? r.verification;
-        return <StatusPill label={verificationLabel[status]} tone={verificationTone[status]} />;
+        return (
+          <StatusPill
+            label={verificationLabel[status]}
+            tone={verificationTone[status]}
+          />
+        );
       },
     },
     {
@@ -116,7 +136,10 @@ function OrganisationsPage() {
     },
   ];
 
-  const recordDecision = (org: OrganisationRecord, outcome: "approved" | "rejected") => {
+  const recordDecision = (
+    org: OrganisationRecord,
+    outcome: "approved" | "rejected",
+  ) => {
     const nextStatus: OrganisationRecord["verification"] =
       outcome === "approved" ? "verified" : "expired";
     setOverrides((prev) => ({ ...prev, [org.id]: nextStatus }));
@@ -167,16 +190,23 @@ function OrganisationsPage() {
                 {
                   key: "verification",
                   label: "Verification",
-                  options: Object.entries(verificationLabel).map(([value, label]) => ({
-                    value,
-                    label,
-                  })),
-                  predicate: (r, v) => (overrides[r.id] ?? r.verification) === v,
+                  options: Object.entries(verificationLabel).map(
+                    ([value, label]) => ({
+                      value,
+                      label,
+                    }),
+                  ),
+                  predicate: (r, v) =>
+                    (overrides[r.id] ?? r.verification) === v,
                 },
               ]}
               onRowClick={(r) => setOpenId(r.id)}
               rowActions={(r) => (
-                <Button variant="outline" size="sm" onClick={() => setOpenId(r.id)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setOpenId(r.id)}
+                >
                   Review
                 </Button>
               )}
@@ -185,14 +215,18 @@ function OrganisationsPage() {
         </AsyncSection>
       </WorkspaceSection>
 
-      <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && setOpenId(null)}>
+      <Dialog
+        open={Boolean(selected)}
+        onOpenChange={(open) => !open && setOpenId(null)}
+      >
         <DialogContent className="max-w-lg">
           {selected && (
             <>
               <DialogHeader>
                 <DialogTitle>{selected.name}</DialogTitle>
                 <DialogDescription>
-                  {selected.kind === "pharmacy" ? "Pharmacy" : "Clinic"} · {selected.city}
+                  {selected.kind === "pharmacy" ? "Pharmacy" : "Clinic"} ·{" "}
+                  {selected.city}
                 </DialogDescription>
               </DialogHeader>
 
@@ -204,14 +238,18 @@ function OrganisationsPage() {
                   <dd className="numeric mt-0.5">{selected.licenceId}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">Contact</dt>
+                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+                    Contact
+                  </dt>
                   <dd className="mt-0.5">{selected.contact}</dd>
                 </div>
                 <div>
                   <dt className="text-xs uppercase tracking-wide text-muted-foreground">
                     Registered
                   </dt>
-                  <dd className="mt-0.5">{shortDate(`${selected.onboarded}T00:00:00.000Z`)}</dd>
+                  <dd className="mt-0.5">
+                    {shortDate(`${selected.onboarded}T00:00:00.000Z`)}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs uppercase tracking-wide text-muted-foreground">
@@ -227,21 +265,27 @@ function OrganisationsPage() {
               </dl>
 
               <div className="rounded-md border border-border bg-secondary/50 p-3 text-sm text-muted-foreground">
-                Licence evidence on file (sample): scanned licence document {selected.licenceId},
-                submitted at onboarding on {shortDate(`${selected.onboarded}T00:00:00.000Z`)}. This
-                is demo evidence only — no live regulatory registry is connected.
+                Licence evidence on file (sample): scanned licence document{" "}
+                {selected.licenceId}, submitted at onboarding on{" "}
+                {shortDate(`${selected.onboarded}T00:00:00.000Z`)}. This is demo
+                evidence only — no live regulatory registry is connected.
               </div>
 
               <p className="text-xs text-muted-foreground">
-                Approving or rejecting here records a decision made by you, the signed-in
-                administrator, in this session's audit trail. It does not call a live regulator.
+                Approving or rejecting here records a decision made by you, the
+                signed-in administrator, in this session's audit trail. It does
+                not call a live regulator.
               </p>
 
               <DialogFooter className="gap-2 sm:justify-start">
                 <Button onClick={() => recordDecision(selected, "approved")}>
-                  <CheckCircle2 className="size-4" aria-hidden /> Approve licence
+                  <CheckCircle2 className="size-4" aria-hidden /> Approve
+                  licence
                 </Button>
-                <Button variant="outline" onClick={() => recordDecision(selected, "rejected")}>
+                <Button
+                  variant="outline"
+                  onClick={() => recordDecision(selected, "rejected")}
+                >
                   <XCircle className="size-4" aria-hidden /> Reject licence
                 </Button>
                 <Button variant="ghost" onClick={() => setOpenId(null)}>

@@ -11,7 +11,11 @@ import {
 } from "@/components/ui/dialog";
 import { PageHeader, SafetyNotice } from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
-import { AsyncSection, StatusPill, WorkspaceSection } from "@/components/workspace/parts";
+import {
+  AsyncSection,
+  StatusPill,
+  WorkspaceSection,
+} from "@/components/workspace/parts";
 import { money, shortDate, useWorkspaceData } from "@/services/workspace";
 import type { PharmacyCustomer } from "@/data/workspace-demo";
 
@@ -24,10 +28,14 @@ export const Route = createFileRoute("/pharmacy/customers")({
         content:
           "Pharmacy customer directory with order history, lifetime spend and account flags from demo records.",
       },
-      { property: "og:title", content: "Customers — Medora Pharmacy workspace" },
+      {
+        property: "og:title",
+        content: "Customers — Medora Pharmacy workspace",
+      },
       {
         property: "og:description",
-        content: "Search, filter and review customer records in the Medora pharmacy console.",
+        content:
+          "Search, filter and review customer records in the Medora pharmacy console.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -121,10 +129,10 @@ function CustomersPage() {
       />
 
       <SafetyNotice tone="info" title="Contact details are demo records">
-        Names, contact preferences and order history shown here are sample data for reviewing this
-        workflow. In production, patient contact details are handled under applicable
-        data-protection and pharmacy confidentiality requirements and are never shown to
-        unauthorised staff.
+        Names, contact preferences and order history shown here are sample data
+        for reviewing this workflow. In production, patient contact details are
+        handled under applicable data-protection and pharmacy confidentiality
+        requirements and are never shown to unauthorised staff.
       </SafetyNotice>
 
       <WorkspaceSection
@@ -155,7 +163,8 @@ function CustomersPage() {
                     { value: "yes", label: "Consented" },
                     { value: "no", label: "Not consented" },
                   ],
-                  predicate: (r, v) => (v === "yes" ? r.consentMarketing : !r.consentMarketing),
+                  predicate: (r, v) =>
+                    v === "yes" ? r.consentMarketing : !r.consentMarketing,
                 },
                 {
                   key: "flags",
@@ -169,7 +178,11 @@ function CustomersPage() {
                 },
               ]}
               rowActions={(r) => (
-                <Button variant="outline" size="sm" onClick={() => setOpenId(r.id)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setOpenId(r.id)}
+                >
                   View history
                 </Button>
               )}
@@ -194,13 +207,17 @@ function CustomersPage() {
                   <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Orders
                   </dt>
-                  <dd className="numeric mt-1 font-medium text-ink">{open.orders}</dd>
+                  <dd className="numeric mt-1 font-medium text-ink">
+                    {open.orders}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Lifetime value
                   </dt>
-                  <dd className="numeric mt-1 font-medium text-ink">{money(open.spend)}</dd>
+                  <dd className="numeric mt-1 font-medium text-ink">
+                    {money(open.spend)}
+                  </dd>
                 </div>
                 <div>
                   <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -208,7 +225,9 @@ function CustomersPage() {
                   </dt>
                   <dd className="mt-1">
                     <StatusPill
-                      label={open.consentMarketing ? "Consented" : "Not consented"}
+                      label={
+                        open.consentMarketing ? "Consented" : "Not consented"
+                      }
                       tone={open.consentMarketing ? "positive" : "neutral"}
                     />
                   </dd>
@@ -227,12 +246,14 @@ function CustomersPage() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-sm text-muted-foreground">No flags recorded.</p>
+                  <p className="text-sm text-muted-foreground">
+                    No flags recorded.
+                  </p>
                 )}
               </div>
               <p className="flex items-center gap-1.5 border-t border-border pt-3 text-xs text-muted-foreground">
-                <ShieldCheck className="size-3.5" aria-hidden /> Demo record — no real contact
-                details are stored or displayed here.
+                <ShieldCheck className="size-3.5" aria-hidden /> Demo record —
+                no real contact details are stored or displayed here.
               </p>
             </>
           )}

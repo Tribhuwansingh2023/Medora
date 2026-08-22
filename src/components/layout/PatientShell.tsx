@@ -8,7 +8,8 @@ import {
   SlidersHorizontal,
   User,
 } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -85,6 +86,39 @@ export function PatientShell({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const unread = state.notifications.filter((n) => !n.read).length;
   const cartCount = state.cart.reduce((s, i) => s + i.qty, 0);
+
+  // Background check for scheduled medications
+  useEffect(() => {
+    const checkReminders = () => {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      const currentTimeStr = `${hours}:${minutes}`;
+
+      state.reminders.forEach((reminder) => {
+        if (!reminder.active) return;
+
+        if (reminder.times.includes(currentTimeStr)) {
+          const today = now.toISOString().slice(0, 10);
+          const hasLoggedToday = reminder.log.some(
+            (l) => l.date === today && l.time === currentTimeStr,
+          );
+
+          if (!hasLoggedToday) {
+            toast.info(`Time to take ${reminder.medicineName}`, {
+              description: `Dosage: ${reminder.strength} — ${reminder.instruction}`,
+              duration: 20000,
+              icon: <Bell className="size-4 text-primary" />,
+            });
+          }
+        }
+      });
+    };
+
+    checkReminders();
+    const interval = setInterval(checkReminders, 60000);
+    return () => clearInterval(interval);
+  }, [state.reminders]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -208,7 +242,10 @@ export function PatientShell({ children }: { children: ReactNode }) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" aria-label="Account menu">
                     <span className="grid size-7 place-items-center rounded-full bg-primary-soft text-xs font-bold text-primary uppercase">
-                      {(profile?.full_name ?? state.profile.fullName).slice(0, 1)}
+                      {(profile?.full_name ?? state.profile.fullName).slice(
+                        0,
+                        1,
+                      )}
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
