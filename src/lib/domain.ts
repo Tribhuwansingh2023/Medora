@@ -222,6 +222,33 @@ export interface DoctorPatient {
   aiSummary: string;
 }
 
+export interface UserActivityItem {
+  id: string;
+  action:
+    | "search"
+    | "view_medicine"
+    | "compare"
+    | "scan"
+    | "order"
+    | "reminder"
+    | "clinical_note"
+    | "verification";
+  title: string;
+  detail: string;
+  timestamp: string;
+  metadata?: Record<string, string | number | boolean>;
+}
+
+export interface ClinicalNote {
+  id: string;
+  patientId: string;
+  patientName: string;
+  author: string;
+  content: string;
+  category: "consult" | "decision" | "prescription" | "general";
+  timestamp: string;
+}
+
 export interface AuditEvent {
   id: string;
   at: string;

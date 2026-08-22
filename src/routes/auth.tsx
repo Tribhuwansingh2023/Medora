@@ -1750,16 +1750,29 @@ function AuthPage() {
                       : "Resend Verification Email"}
                   </Button>
 
-                  <button
+                  <div className="rounded-xl border border-border bg-secondary/40 p-3.5 text-left text-xs space-y-1.5">
+                    <p className="font-semibold text-ink flex items-center gap-1.5">
+                      <HelpCircle className="size-3.5 text-primary" />
+                      Not receiving the email in your inbox?
+                    </p>
+                    <ul className="text-[11px] text-muted-foreground list-disc pl-4 space-y-1">
+                      <li>Check your <strong>Spam</strong> or <strong>Junk</strong> folder.</li>
+                      <li>In your Supabase Dashboard: go to <strong>Authentication → Providers → Email</strong> and turn off <em>&quot;Confirm email&quot;</em> for instant verification.</li>
+                      <li>Or configure custom SMTP in <strong>Project Settings → Auth</strong>.</li>
+                    </ul>
+                  </div>
+
+                  <Button
                     type="button"
+                    variant="outline"
                     onClick={() => {
                       setEmail(pendingEmail);
                       setMode("signin");
                     }}
-                    className="block w-full text-center text-xs font-bold text-primary underline-offset-4 hover:underline"
+                    className="h-10 w-full text-xs font-semibold"
                   >
-                    Verified already? Proceed to Sign In →
-                  </button>
+                    Proceed to Sign In Directly →
+                  </Button>
                 </div>
               )}
 

@@ -17,6 +17,7 @@ import {
 } from "@/services/db-sync";
 import type {
   AppRole,
+  ClinicalNote,
   ComparisonRecord,
   HealthProfile,
   LabReport,
@@ -26,6 +27,7 @@ import type {
   OrderStatus,
   Prescription,
   Reminder,
+  UserActivityItem,
 } from "@/lib/domain";
 
 const STORAGE_KEY = "medora.state.v1";
@@ -43,6 +45,8 @@ export interface AppState {
   labReports: LabReport[];
   notifications: NotificationItem[];
   compareSelection: string[];
+  activities: UserActivityItem[];
+  clinicalNotes: ClinicalNote[];
 }
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -240,6 +244,60 @@ const defaultComparisons: ComparisonRecord[] = [
   },
 ];
 
+const defaultActivities: UserActivityItem[] = [
+  {
+    id: "act-1",
+    action: "search",
+    title: "Searched 'Paracetamol 650 mg'",
+    detail: "Viewed 4 equivalent brand matches and price comparisons.",
+    timestamp: "2026-08-14T09:12:00.000Z",
+  },
+  {
+    id: "act-2",
+    action: "view_medicine",
+    title: "Viewed Monograph: Dolo 650",
+    detail: "Checked composition, side effects, and dispensing criteria.",
+    timestamp: "2026-08-14T09:15:00.000Z",
+  },
+  {
+    id: "act-3",
+    action: "compare",
+    title: "Compared Paracetamol Brands",
+    detail: "Compared Dolo 650, Calpol 650, Crocin 650 and Pacimol 650.",
+    timestamp: "2026-08-12T10:00:00.000Z",
+  },
+  {
+    id: "act-4",
+    action: "scan",
+    title: "Verified Pack: Glycomet 500 SR",
+    detail: "Optical barcode check verified against verified catalog.",
+    timestamp: "2026-08-10T11:22:00.000Z",
+  },
+];
+
+const defaultClinicalNotes: ClinicalNote[] = [
+  {
+    id: "note-1",
+    patientId: "pat-1",
+    patientName: "Aarav Sharma",
+    author: "Dr. Ananya Roy",
+    content:
+      "Reviewed fasting blood glucose and HbA1c. Continue Metformin 500mg SR with dinner. Repeat lipid profile in 3 months.",
+    category: "decision",
+    timestamp: "2026-08-16T10:30:00.000Z",
+  },
+  {
+    id: "note-2",
+    patientId: "pat-2",
+    patientName: "Priya Nair",
+    author: "Dr. Ananya Roy",
+    content:
+      "Patient reports mild epigastric discomfort. Prescribed Pantoprazole 40mg before breakfast for 14 days.",
+    category: "consult",
+    timestamp: "2026-08-15T14:15:00.000Z",
+  },
+];
+
 const initialState: AppState = {
   signedIn: false,
   onboarded: false,
@@ -253,6 +311,8 @@ const initialState: AppState = {
   labReports: [demoLabReport],
   notifications: defaultNotifications,
   compareSelection: [],
+  activities: defaultActivities,
+  clinicalNotes: defaultClinicalNotes,
 };
 
 interface StoreValue {
@@ -283,6 +343,9 @@ interface StoreValue {
   markAllNotificationsRead: () => void;
   pushNotification: (n: Omit<NotificationItem, "id" | "at" | "read">) => void;
   addLabReport: (r: LabReport) => void;
+  logActivity: (item: Omit<UserActivityItem, "id" | "timestamp">) => void;
+  saveClinicalNote: (note: Omit<ClinicalNote, "id" | "timestamp">) => void;
+  clearActivities: () => void;
   resetDemo: () => void;
 }
 
@@ -494,6 +557,35 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       addLabReport: (r) => {
         setState((p) => ({ ...p, labReports: [r, ...p.labReports] }));
         void syncLabReportToPostgres(r);
+      },
+      logActivity: (item) => {
+        setState((p) => ({
+          ...p,
+          activities: [
+            {
+              ...item,
+              id: `act-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+              timestamp: nowIso(),
+            },
+            ...(p.activities ?? []),
+          ].slice(0, 50),
+        }));
+      },
+      saveClinicalNote: (note) => {
+        setState((p) => ({
+          ...p,
+          clinicalNotes: [
+            {
+              ...note,
+              id: `cn-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+              timestamp: nowIso(),
+            },
+            ...(p.clinicalNotes ?? []),
+          ],
+        }));
+      },
+      clearActivities: () => {
+        setState((p) => ({ ...p, activities: [] }));
       },
       resetDemo: () => setState(initialState),
     };

@@ -1,6 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { BarChart3, Bookmark, Info, TrendingDown, X } from "lucide-react";
+import {
+  BarChart3,
+  Bookmark,
+  GitCompare,
+  Info,
+  TrendingDown,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -29,6 +36,7 @@ import {
   PageHeader,
   SafetyNotice,
 } from "@/components/common/primitives";
+import { MedicineComparativeView } from "@/components/medicine/MedicineComparativeView";
 import type { OfferRow } from "@/services/medicines";
 import {
   explainBestValue,
@@ -116,29 +124,35 @@ function ComparePage() {
 
   if (ids.length === 0) {
     return (
-      <div className="space-y-6">
+      <div className="rise space-y-6">
         <PageHeader
-          title="Compare prices"
-          description="Select products from search to compare them here."
+          title="Comparative Medicine Analysis"
+          description="Compare active ingredients, clinical side effects, and pricing dynamics side-by-side."
         />
-        <EmptyState
-          icon={BarChart3}
-          title="Nothing selected yet"
-          description="Add two or more products with the same composition from search, then return here for a side-by-side view."
-          action={
-            <Button asChild>
-              <Link to="/app/search">Find medicines</Link>
-            </Button>
-          }
+
+        {/* Interactive Side-by-side Comparative View */}
+        <MedicineComparativeView
+          initialMedAId="med-dolo-650-tab"
+          initialMedBId="med-calpol-650-tab"
         />
+
+        <div className="surface p-5 text-center shadow-soft">
+          <p className="text-xs text-muted-foreground">
+            Looking for multi-pharmacy live price comparisons? Search the
+            catalogue and select items to view dispensary listings.
+          </p>
+          <Button asChild className="mt-3 text-xs" size="sm">
+            <Link to="/app/search">Explore All Medicines</Link>
+          </Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="rise space-y-6">
       <PageHeader
-        title="Compare prices"
+        title="Compare Prices & Clinical Differences"
         demo
         description="Every row is one listing at one pharmacy. Pack prices are normalised to a price per unit so different pack sizes compare honestly."
         actions={
@@ -173,6 +187,12 @@ function ComparePage() {
             </Button>
           </>
         }
+      />
+
+      {/* Side-by-side Active Ingredients & Side Effects Comparative View */}
+      <MedicineComparativeView
+        initialMedAId={ids[0] || "med-dolo-650-tab"}
+        initialMedBId={ids[1] || "med-calpol-650-tab"}
       />
 
       {/* Matching criteria — always visible, never implied */}

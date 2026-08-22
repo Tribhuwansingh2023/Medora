@@ -2,7 +2,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
-import { GitCompareArrows, Search as SearchIcon, X } from "lucide-react";
+import {
+  Camera,
+  GitCompareArrows,
+  Search as SearchIcon,
+  Sparkles,
+  X,
+} from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +28,7 @@ import {
   SafetyNotice,
 } from "@/components/common/primitives";
 import { MedicineCard } from "@/components/medicine/MedicineCard";
+import { MedicineBottleScanner } from "@/components/medication/MedicineBottleScanner";
 import { demoPrices } from "@/data/demo-catalog";
 import { searchMedicines } from "@/services/medicines";
 import { getProvider } from "@/services/medicine-provider";
@@ -63,6 +71,7 @@ function SearchPage() {
   const { q, form, supply } = Route.useSearch();
   const navigate = useNavigate({ from: "/app/search" });
   const { state, toggleCompare, clearCompare } = useStore();
+  const [showScanner, setShowScanner] = useState(false);
 
   const { data, isPending } = useQuery({
     queryKey: ["medicines", q],
@@ -80,12 +89,50 @@ function SearchPage() {
     void navigate({ to: ".", search: (prev) => ({ ...prev, [key]: value }) });
 
   return (
-    <div className="space-y-6">
+    <div className="rise space-y-6">
       <PageHeader
         title="Find a medicine"
         demo
         description="Search by brand name, generic name, active ingredient or manufacturer. Equivalence in Medora means the same active ingredient, strength and dosage form — never an assumption about quality."
+        actions={
+          <Button
+            variant={showScanner ? "secondary" : "outline"}
+            size="sm"
+            onClick={() => setShowScanner(!showScanner)}
+            className="gap-2 text-xs"
+          >
+            <Camera className="size-4 text-primary" />
+            {showScanner
+              ? "Close Bottle Scanner"
+              : "Scan Medicine Bottle / Label"}
+          </Button>
+        }
       />
+
+      {/* Expandable Bottle Scanner */}
+      {showScanner && (
+        <div className="rise surface p-5 shadow-soft border-primary/40 bg-gradient-to-b from-card to-secondary/30">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="font-display text-sm font-bold text-ink">
+              Camera & AI Vision Medicine Bottle Scanner
+            </h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowScanner(false)}
+              className="h-7 text-xs"
+            >
+              <X className="size-3.5" />
+            </Button>
+          </div>
+          <MedicineBottleScanner
+            onMedicineIdentified={(med) => {
+              setParam("q", med.brandName);
+              setShowScanner(false);
+            }}
+          />
+        </div>
+      )}
 
       <div className="surface grid gap-4 p-5 sm:grid-cols-[1fr_170px_190px]">
         <div className="space-y-1.5">

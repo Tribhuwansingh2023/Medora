@@ -16,6 +16,7 @@
     "check:store": "node scripts/check-store-provider.mjs"
   },
   "dependencies": {
+    "@google/genai": "^2.18.0",
     "@hookform/resolvers": "^5.2.2",
     "@lovable.dev/cloud-auth-js": "^1.0.0",
     "@lovable.dev/mcp-js": "^0.26.2",
