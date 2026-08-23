@@ -40,8 +40,8 @@ export function getStoredGeminiKey(): string {
     const stored = window.localStorage.getItem(GEMINI_API_KEY_STORAGE);
     if (stored && stored.trim()) return stored.trim();
   }
-  const viteEnv = typeof import.meta !== "undefined" && import.meta.env ? (import.meta.env.VITE_GEMINI_API_KEY as string) : undefined;
-  const nodeEnv = typeof process !== "undefined" && process.env ? (process.env.VITE_GEMINI_API_KEY as string) : undefined;
+  const viteEnv = typeof import.meta !== "undefined" && import.meta.env ? (import.meta.env["VITE_GEMINI_API_KEY"] as string) : undefined;
+  const nodeEnv = typeof process !== "undefined" && process.env ? (process.env["VITE_GEMINI_API_KEY"] as string) : undefined;
   return viteEnv || nodeEnv || "";
 }
 
@@ -359,9 +359,9 @@ export const liveGeminiProvider: MedoraAiProvider = {
       if (direct && !matchedMeds.some((m) => m.id === direct.id)) {
         matchedMeds.push(direct);
       } else {
-        const ragMeds = clinicalRag.retrieve(term).relevantMedicines;
-        if (ragMeds[0] && !matchedMeds.some((m) => m.id === ragMeds[0].id)) {
-          matchedMeds.push(ragMeds[0]);
+        const candidate = clinicalRag.retrieve(term).relevantMedicines[0];
+        if (candidate && !matchedMeds.some((m) => m.id === candidate.id)) {
+          matchedMeds.push(candidate);
         }
       }
     }
