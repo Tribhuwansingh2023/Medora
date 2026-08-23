@@ -72,9 +72,9 @@ export function isGoogleMapsKeyValid(key?: string): boolean {
 
 interface GooglePharmacyMapProps {
   pharmacies: Pharmacy[];
-  selectedPharmacyId?: string | null;
-  onSelectPharmacy?: (pharmacy: Pharmacy) => void;
-  userCoords?: { lat: number; lng: number };
+  selectedPharmacyId?: string | null | undefined;
+  onSelectPharmacy?: ((pharmacy: Pharmacy) => void) | undefined;
+  userCoords?: { lat: number; lng: number } | undefined;
 }
 
 export function GooglePharmacyMap({
@@ -180,7 +180,7 @@ function InteractiveDemoVectorMap({
   pharmacies,
   selectedPharmacyId,
   onSelectPharmacy,
-  userCoords,
+  userCoords = { lat: 19.076, lng: 72.8777 },
   onOpenKeyModal,
 }: GooglePharmacyMapProps & { onOpenKeyModal: () => void }) {
   const [activePharmacy, setActivePharmacy] = useState<Pharmacy | null>(
@@ -558,7 +558,9 @@ function InteractiveDemoVectorMap({
               return (
                 <div
                   key={p.id}
-                  ref={(el) => (itemRefs.current[p.id] = el)}
+                  ref={(el) => {
+                    itemRefs.current[p.id] = el;
+                  }}
                   onClick={() => handleSelect(p)}
                   className={`rounded-xl p-3 text-xs transition cursor-pointer ${
                     isSelected
@@ -606,7 +608,7 @@ function LiveGoogleMapInner({
   pharmacies,
   selectedPharmacyId,
   onSelectPharmacy,
-  userCoords,
+  userCoords = { lat: 19.076, lng: 72.8777 },
   onOpenKeyModal,
 }: GooglePharmacyMapProps & { onOpenKeyModal: () => void }) {
   const [activePharmacy, setActivePharmacy] = useState<Pharmacy | null>(

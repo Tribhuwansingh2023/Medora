@@ -387,7 +387,9 @@ export function LeafletPharmacyMap({
               return (
                 <div
                   key={p.id}
-                  ref={(el) => (itemRefs.current[p.id] = el)}
+                  ref={(el) => {
+                    itemRefs.current[p.id] = el;
+                  }}
                   onClick={() => handleSelect(p)}
                   className={`rounded-xl p-3 text-xs transition cursor-pointer ${
                     isSelected

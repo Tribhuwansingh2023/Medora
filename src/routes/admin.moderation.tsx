@@ -280,8 +280,8 @@ export function AdminModerationPage() {
               rows={filteredReports}
               columns={columns}
               getId={(r) => r.id}
-              searchText={(r) => `${r.id} ${r.reporter} ${r.subject} ${r.details}`}
-              searchPlaceholder="Search ticket ID, reporter, subject..."
+              searchText={(r) => `${r.id} ${r.reporter} ${r.target} ${r.reason} ${r.surface}`}
+              searchPlaceholder="Search ticket ID, reporter, target or reason…"
               onRowClick={(r) => setSelectedReport(r)}
             />
           )}
