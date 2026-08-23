@@ -18,26 +18,9 @@ import type {
   SafetyVerdict,
 } from "@/ai/schemas";
 
-export function ModeBadge({ envelope }: { envelope: AiEnvelope }) {
-  const isLive = envelope.mode === "live";
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide",
-        isLive
-          ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-          : "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300",
-      )}
-      title={`${envelope.providerLabel} — ${isLive ? "live clinical model grounded in Medora RAG" : "simulated demo model"}`}
-    >
-      {isLive ? (
-        <Sparkles className="size-3 text-emerald-500" aria-hidden />
-      ) : (
-        <FlaskConical className="size-3" aria-hidden />
-      )}
-      {isLive ? (envelope.providerLabel?.includes("Gemini") ? "LIVE AI · GEMINI" : "LIVE CLINICAL RAG") : "Demo · simulated"}
-    </span>
-  );
+export function ModeBadge({ envelope: _envelope }: { envelope: AiEnvelope }) {
+  // Completely hidden from frontend UI everywhere as per user requirement
+  return null;
 }
 
 export function ConfidenceBadge({ envelope }: { envelope: AiEnvelope }) {
