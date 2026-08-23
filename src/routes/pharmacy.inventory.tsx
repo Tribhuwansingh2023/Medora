@@ -3,9 +3,11 @@ import {
   AlertTriangle,
   Boxes,
   Calendar,
+  Camera,
   CheckCircle2,
   Clock,
   Download,
+  FileDown,
   FileSpreadsheet,
   Layers,
   Minus,
@@ -13,14 +15,18 @@ import {
   PackagePlus,
   PackageSearch,
   Plus,
+  QrCode,
   RefreshCw,
+  ScanLine,
   Search,
   ShieldCheck,
   Sparkles,
+  Tag,
   Thermometer,
   Trash2,
   Truck,
   Upload,
+  Zap,
 } from "lucide-react";
 import { useState, useMemo } from "react";
 import { toast } from "sonner";
@@ -107,8 +113,11 @@ function InventoryPage() {
   const [addBatchOpen, setAddBatchOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [onboardingOpen, setOnboardingOpen] = useState(false);
+  const [scannerOpen, setScannerOpen] = useState(false);
   const [syncingFeed, setSyncingFeed] = useState(false);
   const [filterQuery, setFilterQuery] = useState("");
+  const [scannerQuery, setScannerQuery] = useState("8901030383121");
+  const [scannedItem, setScannedItem] = useState<InventoryItem | null>(null);
 
   // New Batch Form State
   const [batchName, setBatchName] = useState("");
@@ -205,6 +214,70 @@ function InventoryPage() {
     toast.success("Pharmacy Verification Profile Updated", {
       description: "State Drug Control credentials & license verification confirmed.",
     });
+  };
+
+  // Export Inventory as CSV Ledger
+  const handleExportCsv = () => {
+    const raw = inventory.data || [];
+    if (raw.length === 0) {
+      toast.info("Inventory is empty");
+      return;
+    }
+    const headers = [
+      "SKU ID",
+      "Medicine Brand Name",
+      "Batch Number",
+      "Stock on Hand",
+      "Reorder Alert Level",
+      "Unit Price (INR)",
+      "Expiry Date",
+      "Authorized Distributor",
+      "CDSCO Status",
+    ];
+    const rows = raw.map((item) => [
+      `"${item.id}"`,
+      `"${item.name.replace(/"/g, '""')}"`,
+      `"${item.batch}"`,
+      item.stock,
+      item.reorderLevel,
+      item.price.toFixed(2),
+      `"${item.expiry}"`,
+      `"${item.supplier.replace(/"/g, '""')}"`,
+      `"${getStockStatus(item).toUpperCase()}"`,
+    ]);
+    const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Medora_Pharmacy_Inventory_Ledger_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Inventory Ledger Exported (.CSV)", {
+      description: `Downloaded ${raw.length} stock line records with regulatory classifications.`,
+    });
+  };
+
+  // Barcode Scanner Lookup
+  const handleScanBarcode = () => {
+    const raw = inventory.data || [];
+    const query = scannerQuery.trim().toLowerCase();
+    const match = raw.find(
+      (i) =>
+        i.batch.toLowerCase().includes(query) ||
+        i.name.toLowerCase().includes(query) ||
+        i.id.toLowerCase().includes(query),
+    ) || raw[0] || null;
+
+    setScannedItem(match);
+    if (match) {
+      toast.success(`Barcode Scanned: ${match.name}`, {
+        description: `Batch ${match.batch} · ${match.stock} units currently in stock`,
+      });
+    } else {
+      toast.info("No existing batch found. Ready to register as new batch.");
+    }
   };
 
   // Filtered inventory
@@ -375,6 +448,26 @@ function InventoryPage() {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => setScannerOpen(true)}
+              className="text-xs font-bold border-primary/30 text-primary hover:bg-primary/5"
+            >
+              <ScanLine className="mr-1.5 size-3.5" />
+              Scan Barcode / SKU
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportCsv}
+              className="text-xs font-bold"
+            >
+              <Download className="mr-1.5 size-3.5" />
+              Export CSV
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => setOnboardingOpen(true)}
               className="text-xs font-bold"
             >
@@ -390,7 +483,7 @@ function InventoryPage() {
               className="text-xs font-bold shadow-2xs"
             >
               <RefreshCw className={cn("mr-1.5 size-3.5", syncingFeed && "animate-spin text-primary")} />
-              {syncingFeed ? "Syncing POS Feed..." : "Sync POS/ERP Feed"}
+              {syncingFeed ? "Syncing Feed..." : "Sync POS Feed"}
             </Button>
 
             <Button
@@ -492,6 +585,8 @@ function InventoryPage() {
             <DataTable
               rows={inventoryList}
               columns={columns}
+              getId={(r) => r.id}
+              searchText={(r) => `${r.name} ${r.batch} ${r.supplier}`}
               onRowClick={(item) => setViewing(item)}
               ariaLabel="Pharmacy Live Stock Inventory"
             />
@@ -718,6 +813,100 @@ function InventoryPage() {
               <Button type="submit" className="bg-primary text-primary-foreground font-bold">Save Credentials</Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* DIALOG: BARCODE / QR SCANNER SIMULATOR */}
+      <Dialog open={scannerOpen} onOpenChange={setScannerOpen}>
+        <DialogContent className="max-w-md rounded-3xl p-6">
+          <DialogHeader>
+            <DialogTitle className="font-display text-base font-extrabold flex items-center gap-2">
+              <ScanLine className="size-5 text-primary" />
+              Dispensary Barcode & SKU Scanner
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Scan standard GS1 DataMatrix, EAN-13, or internal batch QR codes for instantaneous medicine verification and stock adjustments.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            {/* Viewfinder simulation */}
+            <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-950 border border-border/80 flex flex-col items-center justify-center p-4">
+              <div className="absolute inset-x-8 top-1/2 -translate-y-1/2 h-0.5 bg-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.9)] animate-pulse" />
+              <Camera className="size-8 text-slate-500 mb-2 opacity-50" />
+              <span className="text-[11px] font-mono text-slate-400">
+                [ Laser Viewfinder Active ]
+              </span>
+              <span className="text-[10px] text-slate-500 mt-1">
+                Align barcode within red laser line
+              </span>
+            </div>
+
+            {/* Manual SKU / Barcode input */}
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Enter Barcode / Batch Code / SKU
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  value={scannerQuery}
+                  onChange={(e) => setScannerQuery(e.target.value)}
+                  placeholder="e.g. 8901030383121 or BATCH-2026-X01"
+                  className="font-mono text-xs"
+                />
+                <Button size="sm" onClick={handleScanBarcode} className="font-bold shrink-0">
+                  <Zap className="size-3.5 mr-1" /> Scan
+                </Button>
+              </div>
+            </div>
+
+            {/* Scanned Item Result Details */}
+            {scannedItem && (
+              <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4 space-y-3 animate-in zoom-in-95">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h4 className="font-bold text-ink text-sm">{scannedItem.name}</h4>
+                    <span className="font-mono text-xs text-muted-foreground">
+                      Batch: {scannedItem.batch}
+                    </span>
+                  </div>
+                  <Badge variant="outline" className="font-mono text-xs font-bold bg-background">
+                    {scannedItem.stock} in stock
+                  </Badge>
+                </div>
+
+                <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border/50">
+                  <span>Price: <strong className="text-ink">{money(scannedItem.price)}</strong></span>
+                  <span>Expires: <strong className="text-foreground">{scannedItem.expiry}</strong></span>
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleAdjustStock(scannedItem, -1)}
+                    disabled={scannedItem.stock <= 0}
+                    className="flex-1 text-xs font-bold"
+                  >
+                    -1 Fast Dispense
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => handleAdjustStock(scannedItem, 10)}
+                    className="flex-1 text-xs font-bold bg-primary text-primary-foreground"
+                  >
+                    +10 Restock Pack
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setScannerOpen(false)}>
+              Close Scanner
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

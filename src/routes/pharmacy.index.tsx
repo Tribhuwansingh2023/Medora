@@ -1,20 +1,30 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
+  Activity,
   AlertCircle,
   AlertTriangle,
+  Bot,
   Boxes,
+  CheckCheck,
   CheckCircle2,
   ClipboardCheck,
+  FileText,
   Gauge,
   Info,
   Package,
   Pill,
   Receipt,
+  ScanLine,
   ShieldAlert,
   ShieldCheck,
+  Sparkles,
+  Thermometer,
   ThermometerSnowflake,
   TrendingDown,
+  TrendingUp,
+  Truck,
   Warehouse,
+  Zap,
 } from "lucide-react";
 import { useState } from "react";
 import { PageHeader, StatTile } from "@/components/common/primitives";
@@ -515,8 +525,109 @@ function OverviewPage() {
                           </AsyncSection>
                         </div>
 
-                        {/* Right Column: Recent Activity Timeline */}
+                        {/* Right Column: AI Demand Forecaster, Cold-Chain Telemetry & Activity Timeline */}
                         <div className="space-y-6">
+                          {/* AI Demand Forecaster Widget */}
+                          <div className="surface rise rounded-2xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-card to-background p-5 shadow-soft">
+                            <div className="flex items-center justify-between border-b border-border/80 pb-3">
+                              <div className="flex items-center gap-2">
+                                <span className="grid size-7 place-items-center rounded-lg bg-primary/20 text-primary">
+                                  <Sparkles className="size-4" />
+                                </span>
+                                <div>
+                                  <h4 className="font-display text-sm font-bold text-ink">
+                                    AI Stock Forecaster & Procurement
+                                  </h4>
+                                  <p className="text-[11px] text-muted-foreground">
+                                    Seasonal epidemiological surge projection.
+                                  </p>
+                                </div>
+                              </div>
+                              <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-extrabold text-primary">
+                                98.4% Confidence
+                              </span>
+                            </div>
+
+                            <div className="mt-3 space-y-2.5 text-xs">
+                              <div className="rounded-xl border border-border/60 bg-card p-3 space-y-1.5">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-bold text-ink flex items-center gap-1.5">
+                                    <TrendingUp className="size-3.5 text-emerald-500" />
+                                    Paracetamol 650mg & ORS
+                                  </span>
+                                  <Badge variant="outline" className="border-emerald-500/30 bg-emerald-500/10 text-emerald-600 text-[10px] font-bold">
+                                    +45% Surge
+                                  </Badge>
+                                </div>
+                                <p className="text-[11px] text-muted-foreground">
+                                  Monsoon seasonal viral fever surge detected across regional postal code clusters. Recommended safety buffer: +120 units.
+                                </p>
+                              </div>
+
+                              <div className="rounded-xl border border-border/60 bg-card p-3 space-y-1.5">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-bold text-ink flex items-center gap-1.5">
+                                    <TrendingUp className="size-3.5 text-blue-500" />
+                                    Montelukast + Levocetirizine
+                                  </span>
+                                  <Badge variant="outline" className="border-blue-500/30 bg-blue-500/10 text-blue-600 text-[10px] font-bold">
+                                    +32% Surge
+                                  </Badge>
+                                </div>
+                                <p className="text-[11px] text-muted-foreground">
+                                  Allergic rhinitis seasonal spike forecasted. Auto-generated PO ready for distributor dispatch.
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="mt-3.5 pt-3 border-t border-border/60 flex items-center justify-between">
+                              <span className="text-[11px] text-muted-foreground">Reorder Lead Time: ~24 hrs</span>
+                              <Button size="sm" asChild className="h-7 text-xs font-bold gap-1 rounded-xl">
+                                <Link to="/pharmacy/suppliers">
+                                  <Zap className="size-3" /> Auto-Generate PO
+                                </Link>
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* Cold Chain Live Telemetry Card */}
+                          <div className="surface rise rounded-2xl border border-border bg-card p-5 shadow-soft">
+                            <div className="flex items-center justify-between border-b border-border pb-3">
+                              <div className="flex items-center gap-2">
+                                <span className="grid size-7 place-items-center rounded-lg bg-blue-500/15 text-blue-600">
+                                  <ThermometerSnowflake className="size-4" />
+                                </span>
+                                <div>
+                                  <h4 className="font-display text-sm font-bold text-ink">
+                                    Cold-Chain Telemetry
+                                  </h4>
+                                  <p className="text-[11px] text-muted-foreground">
+                                    Active Biological Refrigerator Units
+                                  </p>
+                                </div>
+                              </div>
+                              <Badge variant="outline" className="font-mono text-xs font-bold border-emerald-500/30 bg-emerald-500/10 text-emerald-600">
+                                +4.2°C (Optimal)
+                              </Badge>
+                            </div>
+
+                            <div className="mt-3 space-y-2 text-xs">
+                              <div className="flex items-center justify-between py-1 border-b border-border/40 text-muted-foreground">
+                                <span>Unit B1 (Insulin & Vaccines):</span>
+                                <strong className="text-emerald-600 font-mono">+3.8°C · Nominal</strong>
+                              </div>
+                              <div className="flex items-center justify-between py-1 border-b border-border/40 text-muted-foreground">
+                                <span>Unit B2 (Injectables):</span>
+                                <strong className="text-emerald-600 font-mono">+4.6°C · Nominal</strong>
+                              </div>
+                              <div className="flex items-center justify-between py-1 text-muted-foreground">
+                                <span>Compliance Envelope:</span>
+                                <strong className="text-ink font-mono">+2.0°C to +8.0°C (100%)</strong>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Recent Activity Timeline */}
                           <WorkspaceSection
                             title="Recent Activity"
                             description="Most recently placed and dispensed pharmacy orders."

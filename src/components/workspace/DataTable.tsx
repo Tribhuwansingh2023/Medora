@@ -41,18 +41,19 @@ export interface DataFilter<T> {
 interface DataTableProps<T> {
   rows: T[];
   columns: DataColumn<T>[];
-  getId: (row: T) => string;
-  searchText: (row: T) => string;
-  searchPlaceholder?: string;
-  filters?: DataFilter<T>[];
-  rowActions?: (row: T) => ReactNode;
-  bulkActions?: (ids: string[], clear: () => void) => ReactNode;
-  onRowClick?: (row: T) => void;
-  pageSize?: number;
-  initialSort?: { key: string; direction: "asc" | "desc" };
-  emptyTitle?: string;
-  emptyDescription?: string;
-  toolbarExtra?: ReactNode;
+  getId?: ((row: T) => string) | undefined;
+  searchText?: ((row: T) => string) | undefined;
+  searchPlaceholder?: string | undefined;
+  filters?: DataFilter<T>[] | undefined;
+  rowActions?: ((row: T) => ReactNode) | undefined;
+  bulkActions?: ((ids: string[], clear: () => void) => ReactNode) | undefined;
+  onRowClick?: ((row: T) => void) | undefined;
+  pageSize?: number | undefined;
+  initialSort?: { key: string; direction: "asc" | "desc" } | undefined;
+  emptyTitle?: string | undefined;
+  emptyDescription?: string | undefined;
+  toolbarExtra?: ReactNode | undefined;
+  ariaLabel?: string | undefined;
 }
 
 const hideClass = {
@@ -86,10 +87,30 @@ export function DataTable<T>({
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<string[]>([]);
 
+  const resolveId = useMemo(() => {
+    return (
+      getId ??
+      ((row: any) =>
+        String(row?.id ?? row?._id ?? row?.key ?? row?.code ?? JSON.stringify(row)))
+    );
+  }, [getId]);
+
+  const resolveSearch = useMemo(() => {
+    return (
+      searchText ??
+      ((row: any) => {
+        if (!row || typeof row !== "object") return String(row ?? "");
+        return Object.values(row)
+          .filter((v) => typeof v === "string" || typeof v === "number")
+          .join(" ");
+      })
+    );
+  }, [searchText]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     let out = rows.filter((row) =>
-      q ? searchText(row).toLowerCase().includes(q) : true,
+      q ? resolveSearch(row).toLowerCase().includes(q) : true,
     );
     for (const filter of filters) {
       const value = filterValues[filter.key];
@@ -110,7 +131,7 @@ export function DataTable<T>({
       }
     }
     return out;
-  }, [rows, query, filterValues, filters, sort, columns, searchText]);
+  }, [rows, query, filterValues, filters, sort, columns, resolveSearch]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
   const safePage = Math.min(page, pageCount - 1);
@@ -118,7 +139,7 @@ export function DataTable<T>({
     safePage * pageSize,
     safePage * pageSize + pageSize,
   );
-  const pageIds = pageRows.map(getId);
+  const pageIds = pageRows.map(resolveId);
   const allOnPageSelected =
     pageIds.length > 0 && pageIds.every((id) => selected.includes(id));
   const activeFilters =
@@ -289,7 +310,7 @@ export function DataTable<T>({
               </TableRow>
             ) : (
               pageRows.map((row) => {
-                const id = getId(row);
+                const id = resolveId(row);
                 return (
                   <TableRow
                     key={id}
