@@ -133,6 +133,61 @@ export interface OrderItem {
   prescriptionOnly: boolean;
 }
 
+export type OrderStatus =
+  | "awaiting_prescription"
+  | "verifying"
+  | "accepted"
+  | "preparing"
+  | "ready"
+  | "out_for_delivery"
+  | "completed"
+  | "cancelled";
+
+export interface PaymentDetails {
+  method: "upi" | "card" | "netbanking" | "cod";
+  status: "pending" | "completed" | "failed" | "refunded";
+  transactionId?: string;
+  receiptNumber?: string;
+  paidAt?: string;
+  amount: number;
+  gstBreakdown?: {
+    subtotal: number;
+    cgst: number;
+    sgst: number;
+    total: number;
+  };
+}
+
+export interface DeliveryDetails {
+  partner: "Dunzo MedExpress" | "Shadowfax Health Logistics" | "Porter Clinical" | "Local Express";
+  riderName?: string;
+  riderPhone?: string;
+  vehicleNumber?: string;
+  trackingNumber?: string;
+  currentLat?: number;
+  currentLng?: number;
+  distanceKm?: number;
+  estimatedMinutes?: number;
+  deliveryAddress?: string;
+}
+
+export interface PrescriptionVerification {
+  status: "not_required" | "pending" | "approved" | "rejected";
+  verifiedByPharmacist?: string;
+  pharmacistLicence?: string;
+  digitalSignature?: string;
+  verifiedAt?: string;
+  verificationNotes?: string;
+}
+
+export interface CancellationDetails {
+  cancelledAt?: string;
+  reason?: string;
+  refundStatus?: "not_applicable" | "processing" | "refunded";
+  refundAmount?: number;
+  refundTransactionId?: string;
+}
+
 export interface Order {
   id: string;
   pharmacyId: string;
@@ -143,17 +198,12 @@ export interface Order {
   fulfilment: "pickup" | "delivery";
   prescriptionId?: string | undefined;
   status: OrderStatus;
+  payment?: PaymentDetails;
+  delivery?: DeliveryDetails;
+  prescriptionVerification?: PrescriptionVerification;
+  cancellation?: CancellationDetails;
   timeline: { state: OrderStatus; at: string; note: string }[];
 }
-
-export type OrderStatus =
-  | "awaiting_prescription"
-  | "verifying"
-  | "accepted"
-  | "preparing"
-  | "ready"
-  | "completed"
-  | "cancelled";
 
 export interface LabValue {
   name: string;

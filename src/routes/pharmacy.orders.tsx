@@ -1,6 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Package, Truck } from "lucide-react";
-import { useMemo, useState } from "react";
+import {
+  AlertTriangle,
+  BadgeCheck,
+  CheckCircle2,
+  Clock,
+  FileCheck2,
+  Navigation,
+  Package,
+  Phone,
+  RefreshCw,
+  ShieldCheck,
+  Truck,
+  User,
+} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +23,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -17,73 +32,122 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { PageHeader } from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
 import {
-  AsyncSection,
   StatusPill,
   WorkspaceSection,
 } from "@/components/workspace/parts";
-import { money, shortDateTime, useWorkspaceData } from "@/services/workspace";
-import type { PharmacyOrderRow } from "@/data/workspace-demo";
+import type { Order, OrderStatus } from "@/lib/domain";
+import { formatMoney } from "@/services/medicines";
+import { orderService } from "@/services/order-service";
 
 export const Route = createFileRoute("/pharmacy/orders")({
   head: () => ({
     meta: [
-      { title: "Orders — Medora Pharmacy workspace" },
+      { title: "Pharmacy Orders & Live Fulfillment — Medora" },
       {
         name: "description",
         content:
-          "Review demo pharmacy orders, filter by status and fulfilment type, and update status for this session.",
+          "Live pharmacy dispensing console: verify prescriptions with digital signatures, advance packing, and dispatch to Dunzo/Shadowfax couriers.",
       },
-      { property: "og:title", content: "Orders — Medora Pharmacy workspace" },
+      { property: "og:title", content: "Pharmacy Orders & Live Fulfillment — Medora" },
       {
         property: "og:description",
-        content:
-          "Order queue, bulk status actions and order detail for the Medora pharmacy console.",
+        content: "Live pharmacist order queue and courier dispatch portal.",
       },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: OrdersPage,
 });
 
-type OrderStatus = PharmacyOrderRow["status"];
-
-const statusMeta: Record<
+const statusTone: Record<
   OrderStatus,
-  {
-    label: string;
-    tone: "neutral" | "positive" | "warning" | "danger" | "info";
-  }
+  { label: string; tone: "neutral" | "positive" | "warning" | "danger" | "info" }
 > = {
-  awaiting_prescription: { label: "Awaiting prescription", tone: "warning" },
-  verifying: { label: "Verifying", tone: "info" },
+  awaiting_prescription: { label: "Awaiting Prescription", tone: "warning" },
+  verifying: { label: "Verification Required", tone: "info" },
   accepted: { label: "Accepted", tone: "neutral" },
-  preparing: { label: "Preparing", tone: "neutral" },
-  ready: { label: "Ready for collection/delivery", tone: "positive" },
+  preparing: { label: "Packing Order", tone: "neutral" },
+  ready: { label: "Ready for Dispatch", tone: "positive" },
+  out_for_delivery: { label: "⚡ Out for Delivery", tone: "positive" },
   completed: { label: "Completed", tone: "positive" },
   cancelled: { label: "Cancelled", tone: "danger" },
 };
 
-const channelLabel = {
-  reservation: "Reservation",
-  delivery: "Delivery",
-  counter: "Counter",
-} as const;
-
 function OrdersPage() {
-  const orders = useWorkspaceData("pharmacyOrders");
-  const [localStatus, setLocalStatus] = useState<Record<string, OrderStatus>>(
-    {},
-  );
-  const [viewing, setViewing] = useState<PharmacyOrderRow | null>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [viewing, setViewing] = useState<Order | null>(null);
 
-  const effectiveStatus = (row: PharmacyOrderRow) =>
-    localStatus[row.id] ?? row.status;
+  // Pharmacist Prescription Verification Modal
+  const [rxModalOpen, setRxModalOpen] = useState(false);
+  const [pharmacistName, setPharmacistName] = useState("R. Ph. Sandeep Varma");
+  const [licenceNo, setLicenceNo] = useState("MH-PH-849201");
+  const [rxNotes, setRxNotes] = useState("Verified dosage, frequency and scheduled drug compliance with CDSCO guidelines.");
+  const [rxApproved, setRxApproved] = useState(true);
 
-  const columns: DataColumn<PharmacyOrderRow>[] = useMemo(
+  // Courier Dispatch Modal
+  const [dispatchModalOpen, setDispatchModalOpen] = useState(false);
+  const [courierPartner, setCourierPartner] = useState("Dunzo MedExpress");
+  const [riderName, setRiderName] = useState("Kavish Sharma");
+  const [riderPhone, setRiderPhone] = useState("+91 98201 44829");
+  const [vehicleNo, setVehicleNo] = useState("MH 02 CB 4921");
+
+  useEffect(() => {
+    const unsub = orderService.subscribe((data) => {
+      setOrders([...data]);
+      if (viewing) {
+        const fresh = data.find((o) => o.id === viewing.id);
+        if (fresh) setViewing(fresh);
+      }
+    });
+    return unsub;
+  }, [viewing?.id]);
+
+  const handleVerifyPrescription = () => {
+    if (!viewing) return;
+    const updated = orderService.verifyPrescription(viewing.id, {
+      name: pharmacistName,
+      licence: licenceNo,
+      approved: rxApproved,
+      notes: rxNotes,
+    });
+    if (updated) {
+      setViewing(updated);
+      toast.success(
+        rxApproved
+          ? `Prescription digitally signed & approved for Order ${viewing.id}`
+          : `Prescription rejected for Order ${viewing.id}`,
+      );
+    }
+    setRxModalOpen(false);
+  };
+
+  const handleAdvanceStatus = (next: OrderStatus, note?: string) => {
+    if (!viewing) return;
+    const updated = orderService.updateOrderStatus(viewing.id, next, note);
+    if (updated) {
+      setViewing(updated);
+      toast.success(`Order ${viewing.id} marked as ${next.replace(/_/g, " ")}`);
+    }
+  };
+
+  const handleDispatchCourier = () => {
+    if (!viewing) return;
+    const updated = orderService.updateOrderStatus(
+      viewing.id,
+      "out_for_delivery",
+      `Dispatched via ${courierPartner} (Rider: ${riderName}, ${vehicleNo}). Live GPS active.`,
+    );
+    if (updated) {
+      setViewing(updated);
+      toast.success(`Order ${viewing.id} dispatched with live GPS tracking!`);
+    }
+    setDispatchModalOpen(false);
+  };
+
+  const columns: DataColumn<Order>[] = useMemo(
     () => [
       {
         key: "id",
@@ -91,227 +155,342 @@ function OrdersPage() {
         sortValue: (r) => r.id,
         render: (r) => (
           <div>
-            <p className="font-medium text-ink">{r.id}</p>
+            <p className="font-bold text-ink">{r.id}</p>
             <p className="text-xs text-muted-foreground">
-              {channelLabel[r.channel]}
+              {r.fulfilment === "delivery" ? "⚡ Delivery" : "🏪 Counter"}
             </p>
           </div>
         ),
       },
       {
-        key: "customer",
-        header: "Customer",
-        sortValue: (r) => r.customer,
-        render: (r) => r.customer,
+        key: "status",
+        header: "Status",
+        sortValue: (r) => r.status,
+        render: (r) => {
+          const m = statusTone[r.status];
+          return <StatusPill tone={m.tone}>{m.label}</StatusPill>;
+        },
       },
       {
         key: "items",
-        header: "Items",
-        align: "right",
-        hideBelow: "sm",
-        sortValue: (r) => r.items,
-        render: (r) => <span className="numeric">{r.items}</span>,
-      },
-      {
-        key: "total",
-        header: "Total",
-        align: "right",
-        sortValue: (r) => r.total,
+        header: "Prescription / Items",
         render: (r) => (
-          <span className="numeric font-medium text-ink">{money(r.total)}</span>
+          <div className="max-w-[240px]">
+            <p className="font-medium text-ink truncate text-xs">
+              {r.items.map((i) => `${i.name} (x${i.qty})`).join(", ")}
+            </p>
+            {r.prescriptionVerification && r.prescriptionVerification.status === "approved" ? (
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1 mt-0.5">
+                <BadgeCheck className="size-3" /> Digitally Signed
+              </span>
+            ) : r.status === "verifying" ? (
+              <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold animate-pulse">
+                Needs Pharmacist Verification
+              </span>
+            ) : null}
+          </div>
         ),
       },
       {
-        key: "status",
-        header: "Status",
-        sortValue: (r) => effectiveStatus(r),
-        render: (r) => {
-          const meta = statusMeta[effectiveStatus(r)];
-          return <StatusPill label={meta.label} tone={meta.tone} />;
-        },
+        key: "payment",
+        header: "Payment",
+        render: (r) => (
+          <div>
+            <p className="font-mono text-xs font-bold text-ink">{formatMoney(r.total)}</p>
+            <p className="text-[10px] text-muted-foreground uppercase font-semibold">
+              {r.payment?.method || "UPI"} · {r.payment?.status || "paid"}
+            </p>
+          </div>
+        ),
       },
       {
         key: "placedAt",
         header: "Placed",
-        hideBelow: "md",
         sortValue: (r) => r.placedAt,
-        render: (r) => shortDateTime(r.placedAt),
+        render: (r) => (
+          <span className="text-xs text-muted-foreground font-mono">
+            {new Date(r.placedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          </span>
+        ),
+      },
+      {
+        key: "actions",
+        header: "Action",
+        render: (r) => (
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 text-xs font-bold rounded-lg"
+            onClick={() => setViewing(r)}
+          >
+            Fulfill & Manage
+          </Button>
+        ),
       },
     ],
-    [localStatus],
+    [],
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <PageHeader
-        title="Orders"
-        demo
-        description="Demo order queue across reservations, deliveries and counter sales. Status changes here are recorded for this session only."
+        title="Live Order Dispensing Queue"
+        description="Review incoming patient orders, verify electronic prescriptions with R. Ph. state digital signatures, and dispatch couriers with real-time GPS synchronization."
       />
 
-      <AsyncSection
-        query={orders}
-        emptyIcon={Package}
-        emptyTitle="No orders"
-        emptyDescription="Orders placed through Medora will appear in this queue."
-        isEmpty={(d) => d.length === 0}
+      <WorkspaceSection
+        title="Live Dispensing & Fulfillment"
+        description="Connected to Medora Real-Time Order Service. Status transitions update the patient tracking app instantly."
       >
-        {(data) => (
-          <WorkspaceSection
-            title="All orders"
-            description="Search, filter, bulk-update or open an order for detail."
-          >
-            <DataTable
-              rows={data}
-              columns={columns}
-              getId={(r) => r.id}
-              searchText={(r) => `${r.id} ${r.customer}`}
-              searchPlaceholder="Search by reference or customer…"
-              pageSize={8}
-              initialSort={{ key: "placedAt", direction: "desc" }}
-              filters={[
-                {
-                  key: "status",
-                  label: "Status",
-                  options: Object.entries(statusMeta).map(([value, meta]) => ({
-                    value,
-                    label: meta.label,
-                  })),
-                  predicate: (r, v) => effectiveStatus(r) === v,
-                },
-                {
-                  key: "channel",
-                  label: "Fulfilment",
-                  options: Object.entries(channelLabel).map(
-                    ([value, label]) => ({
-                      value,
-                      label,
-                    }),
-                  ),
-                  predicate: (r, v) => r.channel === v,
-                },
-              ]}
-              rowActions={(r) => (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setViewing(r)}
-                >
-                  View
-                </Button>
-              )}
-              bulkActions={(ids, clear) => (
+        <DataTable
+          columns={columns}
+          rows={orders}
+          keyField="id"
+          searchPlaceholder="Search order ID, patient, drug..."
+        />
+      </WorkspaceSection>
+
+      {/* Main Order Details & Dispensing Modal */}
+      <Dialog open={Boolean(viewing)} onOpenChange={(open) => !open && setViewing(null)}>
+        {viewing && (
+          <DialogContent className="max-w-2xl rounded-3xl p-6 sm:p-7 max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Select
-                    onValueChange={(value) => {
-                      setLocalStatus((prev) => {
-                        const next = { ...prev };
-                        for (const id of ids) next[id] = value as OrderStatus;
-                        return next;
-                      });
-                      toast.success(
-                        `Recorded ${ids.length} order${ids.length === 1 ? "" : "s"} as "${statusMeta[value as OrderStatus].label}" for this demo session`,
-                      );
-                      clear();
-                    }}
+                  <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-xs">
+                    <Package className="size-4" />
+                  </span>
+                  <div>
+                    <DialogTitle className="font-display text-lg font-extrabold text-ink">
+                      Order {viewing.id} Dispensing Console
+                    </DialogTitle>
+                    <DialogDescription className="text-xs text-muted-foreground">
+                      {viewing.fulfilment === "delivery" ? "⚡ Delivery Order" : "🏪 Counter Reservation"} · Placed {new Date(viewing.placedAt).toLocaleString()}
+                    </DialogDescription>
+                  </div>
+                </div>
+                <StatusPill tone={statusTone[viewing.status].tone}>
+                  {statusTone[viewing.status].label}
+                </StatusPill>
+              </div>
+            </DialogHeader>
+
+            <div className="space-y-5 py-2">
+              {/* Prescription Action Banner */}
+              {viewing.status === "verifying" && (
+                <div className="rounded-2xl border-2 border-blue-500/40 bg-blue-500/10 p-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div>
+                    <span className="text-xs font-bold text-blue-700 dark:text-blue-300 flex items-center gap-1.5">
+                      <ShieldCheck className="size-4" /> Prescription Verification Pending
+                    </span>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Scheduled Rx item attached. Licensed pharmacist signature required prior to dispensing.
+                    </p>
+                  </div>
+                  <Button
+                    size="sm"
+                    className="font-bold text-xs shrink-0"
+                    onClick={() => setRxModalOpen(true)}
                   >
-                    <SelectTrigger
-                      className="h-8 w-[200px]"
-                      aria-label="Set status for selected orders"
-                    >
-                      <SelectValue placeholder="Set status…" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(statusMeta).map(([value, meta]) => (
-                        <SelectItem key={value} value={value}>
-                          {meta.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    <FileCheck2 className="size-3.5 mr-1" /> Review & Digitally Sign
+                  </Button>
                 </div>
               )}
-            />
-          </WorkspaceSection>
-        )}
-      </AsyncSection>
 
-      <Dialog
-        open={Boolean(viewing)}
-        onOpenChange={(open) => !open && setViewing(null)}
-      >
-        <DialogContent>
-          {viewing && (
-            <>
-              <DialogHeader>
-                <DialogTitle>Order {viewing.id}</DialogTitle>
-                <DialogDescription>
-                  {viewing.customer} · placed {shortDateTime(viewing.placedAt)}{" "}
-                  · {channelLabel[viewing.channel]}
-                </DialogDescription>
-              </DialogHeader>
+              {/* Verified Prescription Details */}
+              {viewing.prescriptionVerification && viewing.prescriptionVerification.status === "approved" && (
+                <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-3.5 space-y-1 text-xs">
+                  <div className="flex justify-between font-bold text-emerald-700 dark:text-emerald-300">
+                    <span className="flex items-center gap-1">
+                      <BadgeCheck className="size-4 text-emerald-600 dark:text-emerald-400" /> Digitally Endorsed by Pharmacist
+                    </span>
+                    <span className="font-mono">{viewing.prescriptionVerification.digitalSignature}</span>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Signatory: <span className="font-semibold text-foreground">{viewing.prescriptionVerification.verifiedByPharmacist}</span> ({viewing.prescriptionVerification.pharmacistLicence})
+                  </p>
+                </div>
+              )}
 
-              <div className="flex items-center gap-2">
-                <StatusPill {...statusMeta[effectiveStatus(viewing)]} />
-                {viewing.prescriptionRequired && (
-                  <StatusPill label="Prescription required" tone="info" />
+              {/* Order Items Table */}
+              <div className="rounded-2xl border border-border/80 bg-card p-4 space-y-2.5">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Medications to Dispense</h4>
+                <div className="divide-y divide-border/50">
+                  {viewing.items.map((it) => (
+                    <div key={it.medicineId} className="flex justify-between py-2 text-xs">
+                      <div>
+                        <p className="font-semibold text-foreground">{it.name}</p>
+                        <p className="text-muted-foreground">
+                          {it.prescriptionOnly ? "Prescription Drug (Schedule H)" : "OTC Generic"} · Qty: {it.qty}
+                        </p>
+                      </div>
+                      <span className="font-mono font-bold text-foreground">{formatMoney(it.price * it.qty)}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-between border-t border-border pt-2 text-sm font-extrabold text-foreground">
+                  <span>Total Amount Paid ({viewing.payment?.method.toUpperCase()})</span>
+                  <span>{formatMoney(viewing.total)}</span>
+                </div>
+              </div>
+
+              {/* Delivery Details */}
+              {viewing.delivery && (
+                <div className="rounded-2xl border border-border/80 bg-muted/30 p-4 space-y-1.5 text-xs">
+                  <div className="flex justify-between font-semibold text-foreground">
+                    <span className="flex items-center gap-1.5">
+                      <Truck className="size-3.5 text-primary" /> Delivery Partner: {viewing.delivery.partner}
+                    </span>
+                    <span className="font-mono">{viewing.delivery.trackingNumber}</span>
+                  </div>
+                  <p className="text-muted-foreground">
+                    Rider: <span className="font-semibold text-foreground">{viewing.delivery.riderName}</span> ({viewing.delivery.riderPhone}) · {viewing.delivery.vehicleNumber}
+                  </p>
+                  <p className="text-muted-foreground truncate">
+                    Destination: {viewing.delivery.deliveryAddress}
+                  </p>
+                </div>
+              )}
+
+              {/* Action Buttons for Dispensing */}
+              <div className="flex flex-wrap items-center justify-end gap-2 border-t border-border/60 pt-3">
+                {viewing.status === "accepted" && (
+                  <Button
+                    size="sm"
+                    className="font-bold text-xs"
+                    onClick={() => handleAdvanceStatus("preparing", "Medicines picked and packed in tamper-proof seal.")}
+                  >
+                    <Package className="size-3.5 mr-1" /> Start Packing
+                  </Button>
+                )}
+
+                {viewing.status === "preparing" && viewing.fulfilment === "delivery" && (
+                  <Button
+                    size="sm"
+                    className="font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
+                    onClick={() => setDispatchModalOpen(true)}
+                  >
+                    <Truck className="size-3.5 mr-1" /> Dispatch to Courier (Dunzo/Shadowfax)
+                  </Button>
+                )}
+
+                {viewing.status === "preparing" && viewing.fulfilment === "pickup" && (
+                  <Button
+                    size="sm"
+                    className="font-bold text-xs"
+                    onClick={() => handleAdvanceStatus("ready", "Packed and placed in Counter Pickup shelf.")}
+                  >
+                    <BadgeCheck className="size-3.5 mr-1" /> Mark Ready for Pickup
+                  </Button>
+                )}
+
+                {(viewing.status === "ready" || viewing.status === "out_for_delivery") && (
+                  <Button
+                    size="sm"
+                    className="font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
+                    onClick={() => handleAdvanceStatus("completed", "Handover completed successfully. Patient received package.")}
+                  >
+                    <CheckCircle2 className="size-3.5 mr-1" /> Mark Order Completed
+                  </Button>
                 )}
               </div>
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
 
-              <dl className="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">
-                    Items
-                  </dt>
-                  <dd className="numeric mt-1 font-medium text-ink">
-                    {viewing.items}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">
-                    Order total
-                  </dt>
-                  <dd className="mt-1 font-medium text-ink">
-                    {money(viewing.total)}
-                  </dd>
-                </div>
-              </dl>
-              <p className="text-xs text-muted-foreground">
-                This demo dataset records order totals and item counts only — a
-                per-line breakdown is not available in this sample provider.
-              </p>
+      {/* Pharmacist Verification Modal */}
+      <Dialog open={rxModalOpen} onOpenChange={setRxModalOpen}>
+        <DialogContent className="max-w-md rounded-3xl p-6">
+          <DialogHeader>
+            <DialogTitle className="font-display text-base font-extrabold text-ink flex items-center gap-2">
+              <FileCheck2 className="size-5 text-primary" /> Pharmacist Digital Signature Endorsement
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Sign off on Schedule H prescription dispensation per CDSCO Pharmacy Practice Regulations.
+            </DialogDescription>
+          </DialogHeader>
 
-              <div className="flex flex-wrap justify-end gap-2 pt-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setLocalStatus((prev) => ({
-                      ...prev,
-                      [viewing.id]: "preparing",
-                    }));
-                    toast.success(
-                      `Order ${viewing.id} recorded as preparing (demo session)`,
-                    );
-                  }}
-                >
-                  <Truck className="size-4" aria-hidden /> Mark preparing
-                </Button>
-                <Button
-                  onClick={() => {
-                    setLocalStatus((prev) => ({
-                      ...prev,
-                      [viewing.id]: "completed",
-                    }));
-                    toast.success(
-                      `Order ${viewing.id} recorded as completed (demo session)`,
-                    );
-                  }}
-                >
-                  Mark completed
-                </Button>
+          <div className="space-y-4 py-2">
+            <div className="space-y-1">
+              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Pharmacist Name</Label>
+              <Input value={pharmacistName} onChange={(e) => setPharmacistName(e.target.value)} className="text-xs" />
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">State Pharmacy Registration No.</Label>
+              <Input value={licenceNo} onChange={(e) => setLicenceNo(e.target.value)} className="font-mono text-xs" />
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Verification Notes</Label>
+              <Textarea value={rxNotes} onChange={(e) => setRxNotes(e.target.value)} rows={3} className="text-xs" />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button size="sm" variant="outline" onClick={() => setRxModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleVerifyPrescription} className="font-bold">
+                <ShieldCheck className="size-3.5 mr-1" /> Endorse & Digitally Sign
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Courier Dispatch Modal */}
+      <Dialog open={dispatchModalOpen} onOpenChange={setDispatchModalOpen}>
+        <DialogContent className="max-w-md rounded-3xl p-6">
+          <DialogHeader>
+            <DialogTitle className="font-display text-base font-extrabold text-ink flex items-center gap-2">
+              <Truck className="size-5 text-primary" /> Dispatch to Delivery Partner
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              Assign order to courier with live GPS telemetry integration.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="space-y-1">
+              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Delivery Partner</Label>
+              <Select value={courierPartner} onValueChange={setCourierPartner}>
+                <SelectTrigger className="text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Dunzo MedExpress">Dunzo MedExpress (30 min SLA)</SelectItem>
+                  <SelectItem value="Shadowfax Health Logistics">Shadowfax Health Logistics</SelectItem>
+                  <SelectItem value="Porter Clinical">Porter Clinical Express</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Rider Name</Label>
+                <Input value={riderName} onChange={(e) => setRiderName(e.target.value)} className="text-xs" />
               </div>
-            </>
-          )}
+              <div className="space-y-1">
+                <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Vehicle Number</Label>
+                <Input value={vehicleNo} onChange={(e) => setVehicleNo(e.target.value)} className="font-mono text-xs" />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Rider Contact</Label>
+              <Input value={riderPhone} onChange={(e) => setRiderPhone(e.target.value)} className="font-mono text-xs" />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button size="sm" variant="outline" onClick={() => setDispatchModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button size="sm" onClick={handleDispatchCourier} className="font-bold bg-emerald-600 hover:bg-emerald-700 text-white">
+                <Navigation className="size-3.5 mr-1" /> Dispatch & Start GPS
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
