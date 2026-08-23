@@ -27,6 +27,8 @@ import { Route as AdminAuditRouteImport } from './routes/admin.audit'
 import { Route as AdminCatalogRouteImport } from './routes/admin.catalog'
 import { Route as AdminModerationRouteImport } from './routes/admin.moderation'
 import { Route as AdminPharmaciesRouteImport } from './routes/admin.pharmacies'
+import { Route as AdminRevenueRouteImport } from './routes/admin.revenue'
+import { Route as AdminSystemRouteImport } from './routes/admin.system'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as ApiScanBottleRouteImport } from './routes/api.scan-bottle'
 import { Route as AppIndexRouteImport } from './routes/app.index'
@@ -152,6 +154,16 @@ const AdminModerationRoute = AdminModerationRouteImport.update({
 const AdminPharmaciesRoute = AdminPharmaciesRouteImport.update({
   id: '/pharmacies',
   path: '/pharmacies',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRevenueRoute = AdminRevenueRouteImport.update({
+  id: '/revenue',
+  path: '/revenue',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSystemRoute = AdminSystemRouteImport.update({
+  id: '/system',
+  path: '/system',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
@@ -344,6 +356,8 @@ export interface FileRoutesByFullPath {
   '/admin/catalog': typeof AdminCatalogRoute
   '/admin/moderation': typeof AdminModerationRoute
   '/admin/pharmacies': typeof AdminPharmaciesRoute
+  '/admin/revenue': typeof AdminRevenueRoute
+  '/admin/system': typeof AdminSystemRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/scan-bottle': typeof ApiScanBottleRoute
   '/app/assistant': typeof AppAssistantRoute
@@ -394,6 +408,8 @@ export interface FileRoutesByTo {
   '/admin/catalog': typeof AdminCatalogRoute
   '/admin/moderation': typeof AdminModerationRoute
   '/admin/pharmacies': typeof AdminPharmaciesRoute
+  '/admin/revenue': typeof AdminRevenueRoute
+  '/admin/system': typeof AdminSystemRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/scan-bottle': typeof ApiScanBottleRoute
   '/app/assistant': typeof AppAssistantRoute
@@ -448,6 +464,8 @@ export interface FileRoutesById {
   '/admin/catalog': typeof AdminCatalogRoute
   '/admin/moderation': typeof AdminModerationRoute
   '/admin/pharmacies': typeof AdminPharmaciesRoute
+  '/admin/revenue': typeof AdminRevenueRoute
+  '/admin/system': typeof AdminSystemRoute
   '/admin/users': typeof AdminUsersRoute
   '/api/scan-bottle': typeof ApiScanBottleRoute
   '/app/assistant': typeof AppAssistantRoute
@@ -504,6 +522,8 @@ export interface FileRouteTypes {
     | '/admin/catalog'
     | '/admin/moderation'
     | '/admin/pharmacies'
+    | '/admin/revenue'
+    | '/admin/system'
     | '/admin/users'
     | '/api/scan-bottle'
     | '/app/assistant'
@@ -554,6 +574,8 @@ export interface FileRouteTypes {
     | '/admin/catalog'
     | '/admin/moderation'
     | '/admin/pharmacies'
+    | '/admin/revenue'
+    | '/admin/system'
     | '/admin/users'
     | '/api/scan-bottle'
     | '/app/assistant'
@@ -607,6 +629,8 @@ export interface FileRouteTypes {
     | '/admin/catalog'
     | '/admin/moderation'
     | '/admin/pharmacies'
+    | '/admin/revenue'
+    | '/admin/system'
     | '/admin/users'
     | '/api/scan-bottle'
     | '/app/assistant'
@@ -789,6 +813,20 @@ declare module '@tanstack/react-router' {
       path: '/pharmacies'
       fullPath: '/admin/pharmacies'
       preLoaderRoute: typeof AdminPharmaciesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/revenue': {
+      id: '/admin/revenue'
+      path: '/revenue'
+      fullPath: '/admin/revenue'
+      preLoaderRoute: typeof AdminRevenueRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/system': {
+      id: '/admin/system'
+      path: '/system'
+      fullPath: '/admin/system'
+      preLoaderRoute: typeof AdminSystemRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/users': {
@@ -1037,6 +1075,8 @@ interface AdminRouteChildren {
   AdminCatalogRoute: typeof AdminCatalogRoute
   AdminModerationRoute: typeof AdminModerationRoute
   AdminPharmaciesRoute: typeof AdminPharmaciesRoute
+  AdminRevenueRoute: typeof AdminRevenueRoute
+  AdminSystemRoute: typeof AdminSystemRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -1046,6 +1086,8 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminCatalogRoute: AdminCatalogRoute,
   AdminModerationRoute: AdminModerationRoute,
   AdminPharmaciesRoute: AdminPharmaciesRoute,
+  AdminRevenueRoute: AdminRevenueRoute,
+  AdminSystemRoute: AdminSystemRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminIndexRoute: AdminIndexRoute,
 }

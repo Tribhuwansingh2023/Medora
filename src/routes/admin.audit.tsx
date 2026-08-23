@@ -444,17 +444,25 @@ function AuditLogPage() {
         </div>
 
         <AsyncSection
-          isLoading={auditQuery.isLoading}
-          isError={auditQuery.isError}
-          errorMessage={auditQuery.error?.message}
-          onRetry={() => auditQuery.refetch()}
+          query={auditQuery}
+          emptyIcon={ShieldCheck}
+          emptyTitle="No audit log records"
+          emptyDescription="Audit records will automatically appear here as system events occur."
+          isEmpty={(d) => d.length === 0}
         >
-          <DataTable
-            rows={filteredRows}
-            columns={columns}
-            rowKey={(r) => r.id}
-            emptyMessage="No audit log events match the selected filters."
-          />
+          {() => (
+            <div className="rounded-2xl border border-border/80 bg-card overflow-hidden">
+              <DataTable
+                rows={filteredRows}
+                columns={columns}
+                getId={(r) => r.id}
+                searchText={(r) => `${r.actor} ${r.action} ${r.target} ${r.details || ""}`}
+                searchPlaceholder="Search audit events…"
+                initialSort={{ key: "at", direction: "desc" }}
+                pageSize={10}
+              />
+            </div>
+          )}
         </AsyncSection>
       </WorkspaceSection>
 
