@@ -5,6 +5,7 @@ import {
   FlaskConical,
   Gauge,
   ShieldCheck,
+  Sparkles,
   Workflow,
 } from "lucide-react";
 import type { ReactNode } from "react";
@@ -18,19 +19,23 @@ import type {
 } from "@/ai/schemas";
 
 export function ModeBadge({ envelope }: { envelope: AiEnvelope }) {
-  const demo = envelope.mode === "demo";
+  const isLive = envelope.mode === "live";
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium uppercase tracking-wide",
-        demo
-          ? "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300"
-          : "border-primary/30 bg-primary/10 text-primary",
+        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide",
+        isLive
+          ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+          : "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300",
       )}
-      title={`${envelope.providerLabel} — ${demo ? "simulated output, no live provider connected" : "live provider"}`}
+      title={`${envelope.providerLabel} — ${isLive ? "live clinical model grounded in Medora RAG" : "simulated demo model"}`}
     >
-      <FlaskConical className="size-3" aria-hidden />
-      {demo ? "Demo · simulated" : "Live provider"}
+      {isLive ? (
+        <Sparkles className="size-3 text-emerald-500" aria-hidden />
+      ) : (
+        <FlaskConical className="size-3" aria-hidden />
+      )}
+      {isLive ? (envelope.providerLabel?.includes("Gemini") ? "LIVE AI · GEMINI" : "LIVE CLINICAL RAG") : "Demo · simulated"}
     </span>
   );
 }

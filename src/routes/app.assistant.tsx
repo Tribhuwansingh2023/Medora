@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
+  Brain,
   Check,
   Copy,
   Download,
   Flag,
   HelpCircle,
+  Key,
   Pill,
   RotateCcw,
   Send,
@@ -18,6 +20,8 @@ import { toast } from "sonner";
 import { capabilityLabels } from "@/ai/registry";
 import { summarise } from "@/ai/render";
 import { ASSISTANT_ROLE_STATEMENT } from "@/ai/safety";
+import { getStoredGeminiKey } from "@/ai/providers/gemini";
+import { GeminiConnectModal } from "@/components/ai/GeminiConnectModal";
 import {
   useAiConversation,
   type ConversationTurn,
@@ -287,6 +291,8 @@ function TurnCard({
 function MedicineAssistantPage() {
   const { turns, ask, retry, setFeedback, clear, busy } = useAiConversation();
   const [draft, setDraft] = useState("");
+  const [geminiModalOpen, setGeminiModalOpen] = useState(false);
+  const [hasGeminiKey, setHasGeminiKey] = useState(() => Boolean(getStoredGeminiKey()));
   const [activeCategory, setActiveCategory] = useState<string>(
     PROMPT_CATEGORIES[0]?.title ?? "",
   );
@@ -330,30 +336,48 @@ function MedicineAssistantPage() {
 
   return (
     <div className="space-y-6 pb-28">
+      {/* Google Gemini API Key Dialog */}
+      <GeminiConnectModal
+        open={geminiModalOpen}
+        onOpenChange={setGeminiModalOpen}
+        onKeyUpdated={() => setHasGeminiKey(Boolean(getStoredGeminiKey()))}
+      />
+
       <PageHeader
         title="Medicine assistant"
         description="Every answer runs through intent detection, structured extraction, source retrieval and a clinical-safety validator before you see it."
         actions={
-          turns.length > 0 ? (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExportTranscript}
-                className="gap-1.5"
-              >
-                <Download className="size-3.5" /> Export
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={clear}
-                className="text-destructive hover:bg-destructive/10"
-              >
-                <Trash2 className="mr-1.5 size-3.5" /> Clear conversation
-              </Button>
-            </div>
-          ) : null
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setGeminiModalOpen(true)}
+              className={hasGeminiKey ? "border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 font-bold" : "font-bold text-primary"}
+            >
+              <Sparkles className="mr-1.5 size-3.5" />
+              {hasGeminiKey ? "🟢 Gemini 1.5 Live" : "🔑 Connect Gemini API Key"}
+            </Button>
+            {turns.length > 0 && (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleExportTranscript}
+                  className="gap-1.5"
+                >
+                  <Download className="size-3.5" /> Export
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clear}
+                  className="text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="mr-1.5 size-3.5" /> Clear conversation
+                </Button>
+              </>
+            )}
+          </div>
         }
       />
 

@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   ClipboardCheck,
   Gauge,
+  Info,
   Package,
   Pill,
   Receipt,

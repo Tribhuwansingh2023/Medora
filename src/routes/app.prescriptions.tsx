@@ -54,7 +54,7 @@ const statusTone: Record<Prescription["status"], string> = {
 
 interface ReviewState {
   file: File | null;
-  url?: string;
+  url?: string | undefined;
   template: Prescription;
   step: number;
 }

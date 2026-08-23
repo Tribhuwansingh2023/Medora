@@ -28,6 +28,7 @@ import { Route as AdminCatalogRouteImport } from './routes/admin.catalog'
 import { Route as AdminModerationRouteImport } from './routes/admin.moderation'
 import { Route as AdminPharmaciesRouteImport } from './routes/admin.pharmacies'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as ApiScanBottleRouteImport } from './routes/api.scan-bottle'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppAssistantRouteImport } from './routes/app.assistant'
 import { Route as AppCartRouteImport } from './routes/app.cart'
@@ -44,6 +45,7 @@ import { Route as AppSearchRouteImport } from './routes/app.search'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
 import { Route as AppTriageRouteImport } from './routes/app.triage'
 import { Route as AppVerifyRouteImport } from './routes/app.verify'
+import { Route as AppWorkspaceRouteImport } from './routes/app.workspace'
 import { Route as DoctorIndexRouteImport } from './routes/doctor.index'
 import { Route as DoctorPrescriptionsRouteImport } from './routes/doctor.prescriptions'
 import { Route as DoctorScheduleRouteImport } from './routes/doctor.schedule'
@@ -157,6 +159,11 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiScanBottleRoute = ApiScanBottleRouteImport.update({
+  id: '/api/scan-bottle',
+  path: '/api/scan-bottle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -235,6 +242,11 @@ const AppTriageRoute = AppTriageRouteImport.update({
 const AppVerifyRoute = AppVerifyRouteImport.update({
   id: '/verify',
   path: '/verify',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppWorkspaceRoute = AppWorkspaceRouteImport.update({
+  id: '/workspace',
+  path: '/workspace',
   getParentRoute: () => AppRoute,
 } as any)
 const DoctorIndexRoute = DoctorIndexRouteImport.update({
@@ -333,6 +345,7 @@ export interface FileRoutesByFullPath {
   '/admin/moderation': typeof AdminModerationRoute
   '/admin/pharmacies': typeof AdminPharmaciesRoute
   '/admin/users': typeof AdminUsersRoute
+  '/api/scan-bottle': typeof ApiScanBottleRoute
   '/app/assistant': typeof AppAssistantRoute
   '/app/cart': typeof AppCartRoute
   '/app/compare': typeof AppCompareRoute
@@ -348,6 +361,7 @@ export interface FileRoutesByFullPath {
   '/app/settings': typeof AppSettingsRoute
   '/app/triage': typeof AppTriageRoute
   '/app/verify': typeof AppVerifyRoute
+  '/app/workspace': typeof AppWorkspaceRoute
   '/doctor/prescriptions': typeof DoctorPrescriptionsRoute
   '/doctor/schedule': typeof DoctorScheduleRoute
   '/pharmacy/analytics': typeof PharmacyAnalyticsRoute
@@ -381,6 +395,7 @@ export interface FileRoutesByTo {
   '/admin/moderation': typeof AdminModerationRoute
   '/admin/pharmacies': typeof AdminPharmaciesRoute
   '/admin/users': typeof AdminUsersRoute
+  '/api/scan-bottle': typeof ApiScanBottleRoute
   '/app/assistant': typeof AppAssistantRoute
   '/app/cart': typeof AppCartRoute
   '/app/compare': typeof AppCompareRoute
@@ -395,6 +410,7 @@ export interface FileRoutesByTo {
   '/app/settings': typeof AppSettingsRoute
   '/app/triage': typeof AppTriageRoute
   '/app/verify': typeof AppVerifyRoute
+  '/app/workspace': typeof AppWorkspaceRoute
   '/doctor/prescriptions': typeof DoctorPrescriptionsRoute
   '/doctor/schedule': typeof DoctorScheduleRoute
   '/pharmacy/analytics': typeof PharmacyAnalyticsRoute
@@ -433,6 +449,7 @@ export interface FileRoutesById {
   '/admin/moderation': typeof AdminModerationRoute
   '/admin/pharmacies': typeof AdminPharmaciesRoute
   '/admin/users': typeof AdminUsersRoute
+  '/api/scan-bottle': typeof ApiScanBottleRoute
   '/app/assistant': typeof AppAssistantRoute
   '/app/cart': typeof AppCartRoute
   '/app/compare': typeof AppCompareRoute
@@ -448,6 +465,7 @@ export interface FileRoutesById {
   '/app/settings': typeof AppSettingsRoute
   '/app/triage': typeof AppTriageRoute
   '/app/verify': typeof AppVerifyRoute
+  '/app/workspace': typeof AppWorkspaceRoute
   '/doctor/prescriptions': typeof DoctorPrescriptionsRoute
   '/doctor/schedule': typeof DoctorScheduleRoute
   '/pharmacy/analytics': typeof PharmacyAnalyticsRoute
@@ -487,6 +505,7 @@ export interface FileRouteTypes {
     | '/admin/moderation'
     | '/admin/pharmacies'
     | '/admin/users'
+    | '/api/scan-bottle'
     | '/app/assistant'
     | '/app/cart'
     | '/app/compare'
@@ -502,6 +521,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/triage'
     | '/app/verify'
+    | '/app/workspace'
     | '/doctor/prescriptions'
     | '/doctor/schedule'
     | '/pharmacy/analytics'
@@ -535,6 +555,7 @@ export interface FileRouteTypes {
     | '/admin/moderation'
     | '/admin/pharmacies'
     | '/admin/users'
+    | '/api/scan-bottle'
     | '/app/assistant'
     | '/app/cart'
     | '/app/compare'
@@ -549,6 +570,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/triage'
     | '/app/verify'
+    | '/app/workspace'
     | '/doctor/prescriptions'
     | '/doctor/schedule'
     | '/pharmacy/analytics'
@@ -586,6 +608,7 @@ export interface FileRouteTypes {
     | '/admin/moderation'
     | '/admin/pharmacies'
     | '/admin/users'
+    | '/api/scan-bottle'
     | '/app/assistant'
     | '/app/cart'
     | '/app/compare'
@@ -601,6 +624,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/triage'
     | '/app/verify'
+    | '/app/workspace'
     | '/doctor/prescriptions'
     | '/doctor/schedule'
     | '/pharmacy/analytics'
@@ -634,6 +658,7 @@ export interface RootRouteChildren {
   SwitchRoute: typeof SwitchRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  ApiScanBottleRoute: typeof ApiScanBottleRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
@@ -773,6 +798,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/scan-bottle': {
+      id: '/api/scan-bottle'
+      path: '/api/scan-bottle'
+      fullPath: '/api/scan-bottle'
+      preLoaderRoute: typeof ApiScanBottleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/': {
       id: '/app/'
       path: '/'
@@ -883,6 +915,13 @@ declare module '@tanstack/react-router' {
       path: '/verify'
       fullPath: '/app/verify'
       preLoaderRoute: typeof AppVerifyRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/workspace': {
+      id: '/app/workspace'
+      path: '/workspace'
+      fullPath: '/app/workspace'
+      preLoaderRoute: typeof AppWorkspaceRouteImport
       parentRoute: typeof AppRoute
     }
     '/doctor/': {
@@ -1043,6 +1082,7 @@ interface AppRouteChildren {
   AppSettingsRoute: typeof AppSettingsRoute
   AppTriageRoute: typeof AppTriageRoute
   AppVerifyRoute: typeof AppVerifyRoute
+  AppWorkspaceRoute: typeof AppWorkspaceRoute
   AppIndexRoute: typeof AppIndexRoute
   AppMedicineMedicineIdRoute: typeof AppMedicineMedicineIdRoute
 }
@@ -1063,6 +1103,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSettingsRoute: AppSettingsRoute,
   AppTriageRoute: AppTriageRoute,
   AppVerifyRoute: AppVerifyRoute,
+  AppWorkspaceRoute: AppWorkspaceRoute,
   AppIndexRoute: AppIndexRoute,
   AppMedicineMedicineIdRoute: AppMedicineMedicineIdRoute,
 }
@@ -1123,6 +1164,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  ApiScanBottleRoute: ApiScanBottleRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }

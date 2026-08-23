@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import type {
   Order,
   Reminder,
@@ -26,12 +27,12 @@ export async function syncOrderToPostgres(
       pharmacy_id: order.pharmacyId,
       pharmacy_name: order.pharmacyName,
       placed_at: order.placedAt,
-      items: order.items as unknown as Record<string, unknown>[],
+      items: order.items as unknown as Json,
       total: order.total,
       fulfilment: order.fulfilment,
       prescription_id: order.prescriptionId ?? null,
       status: order.status,
-      timeline: order.timeline as unknown as Record<string, unknown>[],
+      timeline: order.timeline as unknown as Json,
       created_at: order.placedAt,
       updated_at: new Date().toISOString(),
     });
@@ -60,7 +61,7 @@ export async function syncReminderToPostgres(
       instruction: reminder.instruction,
       source_prescription_id: reminder.sourcePrescriptionId ?? null,
       active: reminder.active,
-      log: reminder.log as unknown as Record<string, unknown>[],
+      log: reminder.log as unknown as Json,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     });
@@ -86,7 +87,7 @@ export async function syncPrescriptionToPostgres(
       prescriber_name: rx.prescriberName ?? null,
       status: rx.status,
       patient_name: rx.patientName ?? null,
-      items: rx.items as unknown as Record<string, unknown>[],
+      items: rx.items as unknown as Json,
       created_at: rx.uploadedAt,
       updated_at: new Date().toISOString(),
     });
@@ -110,7 +111,7 @@ export async function syncLabReportToPostgres(
       file_name: report.fileName,
       uploaded_at: report.uploadedAt,
       panel: report.panel,
-      values: report.values as unknown as Record<string, unknown>[],
+      values: report.values as unknown as Json,
       created_at: report.uploadedAt,
     });
     if (error) {
@@ -132,6 +133,7 @@ export async function syncProfileToPostgres(
       full_name: profile.fullName,
       email: profile.email,
       city: profile.city,
+      phone: null,
       updated_at: new Date().toISOString(),
     });
     if (error) {

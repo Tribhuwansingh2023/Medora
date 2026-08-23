@@ -208,7 +208,9 @@ function GoogleWorkspacePage() {
       let count = 0;
       for (const rem of activeReminders) {
         for (const time of rem.times) {
-          const [hours, mins] = time.split(":").map(Number);
+          const parts = time.split(":");
+          const hours = Number(parts[0]) || 8;
+          const mins = Number(parts[1]) || 0;
           const start = new Date();
           start.setHours(hours, mins, 0, 0);
           if (start.getTime() < Date.now()) {

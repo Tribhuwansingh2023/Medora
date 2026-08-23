@@ -40,11 +40,22 @@ export function getGoogleClientId(): string {
   const custom = localStorage.getItem(CLIENT_ID_STORAGE_KEY);
   if (custom && custom.trim().length > 0) return custom.trim();
 
-  return (
-    firebaseConfig.oAuthClientId ||
-    import.meta.env.VITE_GOOGLE_CLIENT_ID ||
-    "460239037850-4rkdouk2510hbplskk4q547153805o0v.apps.googleusercontent.com"
-  );
+  // Priority 1: Vite Environment Variable from .env
+  if (
+    typeof import.meta !== "undefined" &&
+    import.meta.env?.["VITE_GOOGLE_CLIENT_ID"] &&
+    import.meta.env["VITE_GOOGLE_CLIENT_ID"].trim().length > 0
+  ) {
+    return import.meta.env["VITE_GOOGLE_CLIENT_ID"].trim();
+  }
+
+  // Priority 2: Firebase Applet config
+  if (firebaseConfig?.oAuthClientId && firebaseConfig.oAuthClientId.trim().length > 0) {
+    return firebaseConfig.oAuthClientId.trim();
+  }
+
+  // Priority 3: Fallback client ID
+  return "252833058087-10ct0ofql7amsuu7dkl6r6ii2s12kbq9.apps.googleusercontent.com";
 }
 
 export function setStoredGoogleClientId(id: string) {
@@ -161,6 +172,7 @@ export async function fetchGoogleUserInfo(
  */
 export async function requestGoogleOAuthToken(
   scopes?: string[],
+  clientIdOverride?: string,
 ): Promise<string> {
   const existing = getStoredGoogleToken();
   if (existing) return existing;
@@ -179,7 +191,10 @@ export async function requestGoogleOAuthToken(
       return;
     }
 
-    const clientId = getGoogleClientId();
+    const clientId = (clientIdOverride && clientIdOverride.trim().length > 0)
+      ? clientIdOverride.trim()
+      : getGoogleClientId();
+
     const client = google.accounts.oauth2.initTokenClient({
       client_id: clientId,
       scope: (scopes || GOOGLE_SCOPES).join(" "),

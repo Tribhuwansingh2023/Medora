@@ -458,7 +458,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             data: { full_name: fullName, role, ...(city ? { city } : {}) },
           },
         });
-        if (error) return { error: error.message, needsConfirmation: false };
+        if (error) {
+          if (error.message.toLowerCase().includes("confirmation email")) {
+            return {
+              error: "Supabase email delivery failed. Please turn OFF 'Confirm email' in Supabase -> Authentication -> Providers -> Email, or configure SMTP.",
+              needsConfirmation: false,
+            };
+          }
+          return { error: error.message, needsConfirmation: false };
+        }
         return { error: null, needsConfirmation: !data.session };
       },
       signInWithGoogle: async (next, googleOptions) => {

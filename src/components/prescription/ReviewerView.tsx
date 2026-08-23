@@ -34,8 +34,8 @@ import {
 
 export interface ReviewerViewProps {
   prescription: Prescription;
-  fileUrl?: string;
-  fileType?: string;
+  fileUrl?: string | undefined;
+  fileType?: string | undefined;
   onSave: (prescription: Prescription) => void;
   onCancel: () => void;
 }

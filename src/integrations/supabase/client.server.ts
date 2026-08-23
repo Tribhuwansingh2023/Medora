@@ -37,7 +37,9 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 }
 
 export const isSupabaseAdminConfigured = Boolean(
-  process.env["SUPABASE_URL"] && process.env["SUPABASE_SERVICE_ROLE_KEY"],
+  process.env["SUPABASE_URL"] &&
+    (process.env["SUPABASE_SERVICE_ROLE_KEY"] ||
+      process.env["SUPABASE_SECRET_KEY"]),
 );
 
 function createSupabaseAdminClient() {
@@ -45,6 +47,7 @@ function createSupabaseAdminClient() {
     process.env["SUPABASE_URL"] || "https://placeholder-medora.supabase.co";
   const SUPABASE_SERVICE_ROLE_KEY =
     process.env["SUPABASE_SERVICE_ROLE_KEY"] ||
+    process.env["SUPABASE_SECRET_KEY"] ||
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.demo-service-key";
 
   if (!isSupabaseAdminConfigured) {

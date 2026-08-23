@@ -388,9 +388,9 @@ export function DrugInteractionComparisonDashboard() {
               >
                 <Pill className="size-3.5 text-primary" />
                 <span className="font-semibold text-ink">{med}</span>
-                {profile && (
+                {profile && profile.drugClass && (
                   <span className="hidden text-[10px] text-muted-foreground sm:inline">
-                    ({profile.drugClass.split(" ")[0]})
+                    ({(profile.drugClass || "").split(" ")[0]})
                   </span>
                 )}
                 <button

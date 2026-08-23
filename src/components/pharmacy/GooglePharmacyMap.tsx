@@ -87,12 +87,14 @@ export function GooglePharmacyMap({
   };
 
   const getDirectionsUrl = (p: Pharmacy) => {
-    return `https://www.google.com/maps/dir/?api=1&destination=${p.coords.lat},${p.coords.lng}`;
+    const lat = p.coords?.lat ?? 19.076;
+    const lng = p.coords?.lng ?? 72.8777;
+    return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
   };
 
   // Center logic
-  const centerLat = activePharmacy ? activePharmacy.coords.lat : userCoords.lat;
-  const centerLng = activePharmacy ? activePharmacy.coords.lng : userCoords.lng;
+  const centerLat = activePharmacy?.coords?.lat ?? userCoords?.lat ?? 19.076;
+  const centerLng = activePharmacy?.coords?.lng ?? userCoords?.lng ?? 72.8777;
 
   return (
     <div className="flex flex-col rounded-xl overflow-hidden border border-border bg-card">
@@ -166,10 +168,12 @@ export function GooglePharmacyMap({
             {pharmacies.map((p) => {
               const isSelected = activePharmacy?.id === p.id;
               const open = isOpenNow(p);
+              const lat = p.coords?.lat ?? 19.076;
+              const lng = p.coords?.lng ?? 72.8777;
               return (
                 <AdvancedMarker
                   key={p.id}
-                  position={{ lat: p.coords.lat, lng: p.coords.lng }}
+                  position={{ lat, lng }}
                   onClick={() => handleSelect(p)}
                   zIndex={isSelected ? 50 : 10}
                 >

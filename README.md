@@ -166,21 +166,56 @@ scripts/              Static reachability check for store provider mounting
 
 Every guarded group is wrapped in `AppRouteGroup`, which guarantees the global store provider and error boundary are mounted before any child renders.
 
-## The AI pipeline
+## The AI & Multi-Agent XAI Pipeline
+
+Medora features a **Multi-Agent Explainable AI (XAI) Architecture** grounded in Clinical RAG (Retrieval-Augmented Generation) and powered by **Google Gemini** (with deterministic fallback).
 
 ```
-User input
-  → 1. Intent detection        classify the ask
-  → 2. Entity extraction       medicines, symptoms, durations, allergies
-  → 3. Provider selection      pick an adapter that declares this capability
-  → 4. Retrieval               fetch real records; compute match score
-  → 5. Safety validation       block prices, stock, diagnoses, doses, prescribing
-  → 6. Response composition    typed payload + confidence + sources
-  → Envelope                   provider, mode, simulated flag, trace, follow-ups
-  → User feedback              helpful / unhelpful / report
+User Input / Medicine Query
+  │
+  ├── 1. Intent Detection ─── Classify clinical query & extract entities (APIs, dosages, symptoms)
+  │
+  ├── 2. Multi-Agent XAI Network (Collaborative Specialized Agents)
+  │     ├── 🔬 PharmAI Agent   ── Evaluates bioequivalence, molecular composition, and CDSCO status
+  │     ├── 🛡️ Aegis Safety     ── Runs multi-drug CYP450 interactions, allergies & organ precautions
+  │     ├── 📈 EconRx Agent     ── Computes unit price arbitrage, generic alternatives & cost spreads
+  │     └── 🩺 TriageAI Agent   ── Clinical decision support, symptom triage & red-flag detection
+  │
+  ├── 3. Clinical RAG Engine ─ Context grounding against Indian Pharmacopoeia & CDSCO monographs
+  ├── 4. Live Model Routing  ─ Google Gemini 3.7 Flash with verified temperature & token controls
+  ├── 5. Safety Validation   ─ Blocks unverified pricing claims, doses, and speculative diagnoses
+  └── 6. Response Composition─ Typed schema payload + confidence calibration + provenance sources
 ```
 
-Each stage is timed and recorded in the envelope's `trace`, so the UI can show that validation is real rather than decorative. Adding a live LLM, an OCR service or a licensed drug database means implementing `MedoraAiProvider` and registering it — no UI change.
+### The 4 Autonomous Clinical Agents
+
+1. **🔬 PharmAI Agent (Clinical Pharmacology & Bioequivalence)**
+   - Deconstructs pharmaceutical formulations into active pharmaceutical ingredients (APIs).
+   - Verifies bioequivalence across branded vs generic alternatives using CDSCO and IP therapeutic monographs.
+
+2. **🛡️ Aegis Safety Agent (Drug-Drug & Food Interactions)**
+   - Evaluates multi-drug regimens against CYP450 enzyme metabolism and receptor binding interaction matrices.
+   - Flags black box warnings, pregnancy/lactation contraindications, and hepatic/renal dosage precautions.
+
+3. **📈 EconRx Agent (Unit Price Arbitrage & Fair Economics)**
+   - Normalizes pricing across disparate pack sizes and strengths to compute true per-unit therapy costs.
+   - Calculates exact patient savings when substituting high-cost branded drugs with verified bioequivalent generics.
+
+4. **🩺 TriageAI Agent (Clinical Decision Support & Safe Routing)**
+   - Maps symptoms to appropriate care escalation tiers (`emergency`, `same_day`, `routine`, `self_monitor`).
+   - Automatically intercepts red-flag emergencies (chest pain, anaphylaxis, stroke symptoms) with immediate hospital guidance.
+
+### Google Gemini & Clinical RAG Setup
+
+Medora connects directly to **Google Gemini** via verified REST endpoints (`gemini-3.7-flash` with automatic cascade to `gemini-3.6-flash` / `gemini-3.5-flash`).
+
+Configure your Gemini API key in `.env`:
+```env
+VITE_GEMINI_API_KEY=AIzaSy...YourKeyHere
+```
+*Alternatively, users and clinicians can manage and test their Gemini API Key directly inside the web interface on the Medicine Assistant screen via the **🔑 Connect Gemini API Key** modal.*
+
+---
 
 ## Agent / MCP integration
 

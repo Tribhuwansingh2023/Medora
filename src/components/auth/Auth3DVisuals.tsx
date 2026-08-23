@@ -254,10 +254,10 @@ const Floating3DShield: React.FC<{
  */
 export const Auth3DHeroVisual: React.FC<{
   role: Exclude<AppRole, "admin"> | "admin";
-  currentStep?: number;
-  totalSteps?: number;
-  stepTitle?: string;
-  isLogin?: boolean;
+  currentStep?: number | undefined;
+  totalSteps?: number | undefined;
+  stepTitle?: string | undefined;
+  isLogin?: boolean | undefined;
 }> = ({
   role,
   currentStep = 1,

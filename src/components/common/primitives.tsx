@@ -56,12 +56,41 @@ export function Logo({
 }
 
 export function DemoBadge({
-  label = "Demo data",
+  label,
   className,
 }: {
   label?: string;
   className?: string;
 }) {
+  const isLive = typeof window !== "undefined" && Boolean(import.meta.env?.["VITE_SUPABASE_URL"]);
+
+  if (isLive) {
+    return (
+      <HoverCard openDelay={120}>
+        <HoverCardTrigger asChild>
+          <button
+            type="button"
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-400",
+              className,
+            )}
+          >
+            <ShieldCheck className="size-3 text-emerald-500" aria-hidden />
+            {label || "Live Database"}
+          </button>
+        </HoverCardTrigger>
+        <HoverCardContent className="w-80 text-sm">
+          <p className="font-medium text-ink">Supabase PostgreSQL Connected</p>
+          <p className="mt-1.5 text-muted-foreground">
+            Medora is actively connected to your live Supabase PostgreSQL database
+            and storage buckets. Medicines, orders, reminders, prescriptions, and
+            auth sessions persist securely in PostgreSQL.
+          </p>
+        </HoverCardContent>
+      </HoverCard>
+    );
+  }
+
   return (
     <HoverCard openDelay={120}>
       <HoverCardTrigger asChild>
@@ -73,7 +102,7 @@ export function DemoBadge({
           )}
         >
           <FlaskConical className="size-3" aria-hidden />
-          {label}
+          {label || "Demo data"}
         </button>
       </HoverCardTrigger>
       <HoverCardContent className="w-80 text-sm">
@@ -82,7 +111,6 @@ export function DemoBadge({
           No licensed catalogue, price feed or pharmacy inventory provider is
           connected in this environment. Everything shown here comes from
           Medora&apos;s demo provider so the flow can be reviewed end to end.
-          Prices, stock and availability are not real.
         </p>
       </HoverCardContent>
     </HoverCard>

@@ -1501,8 +1501,7 @@ function AuthPage() {
                     </div>
 
                     {/* 1-Click Quick Demo Launcher */}
-                    {auth.isDemoMode && (
-                      <div className="mt-4 rounded-2xl border-2 border-dashed border-border/90 bg-muted/20 p-3.5 space-y-2">
+                    <div className="mt-4 rounded-2xl border-2 border-dashed border-primary/40 bg-primary/5 p-3.5 space-y-2">
                         <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Zap className="size-3 text-amber-500" /> Instant
@@ -1569,7 +1568,6 @@ function AuthPage() {
                           </Button>
                         </div>
                       </div>
-                    )}
                   </div>
                 </div>
               )}

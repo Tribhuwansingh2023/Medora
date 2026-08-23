@@ -39,8 +39,8 @@ import {
 interface GoogleAuthModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  next?: string;
-  defaultRole?: AccountRole;
+  next?: string | undefined;
+  defaultRole?: AccountRole | undefined;
 }
 
 export function GoogleAuthModal({
@@ -103,7 +103,7 @@ export function GoogleAuthModal({
                     const authRes = await auth.signInWithGoogle(next, {
                       email: profile.email,
                       name: profile.name,
-                      avatarUrl: profile.picture,
+                      ...(profile.picture ? { avatarUrl: profile.picture } : {}),
                       role: selectedRole,
                       rememberMe,
                     });
@@ -148,39 +148,44 @@ export function GoogleAuthModal({
   const handleLiveGoogleOAuth = async () => {
     setBusy(true);
     try {
-      const tokenRes = await requestGoogleOAuthToken(
+      if (customClientId && customClientId.trim() !== activeClientId) {
+        setStoredGoogleClientId(customClientId.trim());
+        setActiveClientId(customClientId.trim());
+      }
+
+      const accessToken = await requestGoogleOAuthToken(
+        undefined,
         activeClientId || undefined,
       );
-      if (tokenRes.error) {
-        toast.error(`Google Authorization Error: ${tokenRes.error}`);
+
+      if (!accessToken) {
+        toast.error("Google Authorization Error: No access token returned");
         setBusy(false);
         return;
       }
 
-      if (tokenRes.accessToken) {
-        toast.loading("Retrieving verified Google profile...");
-        const userInfo = await fetchGoogleUserInfo(tokenRes.accessToken);
-        toast.dismiss();
+      toast.loading("Retrieving verified Google profile...");
+      const userInfo = await fetchGoogleUserInfo(accessToken);
+      toast.dismiss();
 
-        if (userInfo?.email) {
-          const authRes = await auth.signInWithGoogle(next, {
-            email: userInfo.email,
-            name: userInfo.name,
-            avatarUrl: userInfo.picture,
-            role: selectedRole,
-            rememberMe,
-          });
+      if (userInfo?.email) {
+        const authRes = await auth.signInWithGoogle(next, {
+          email: userInfo.email,
+          name: userInfo.name,
+          ...(userInfo.picture ? { avatarUrl: userInfo.picture } : {}),
+          role: selectedRole,
+          rememberMe,
+        });
 
-          if (authRes.error) {
-            toast.error(`Sign in error: ${authRes.error}`);
-          } else {
-            toast.success(
-              `Signed in via Google as ${userInfo.name} (${userInfo.email})`,
-            );
-            onOpenChange(false);
-          }
-          return;
+        if (authRes.error) {
+          toast.error(`Sign in error: ${authRes.error}`);
+        } else {
+          toast.success(
+            `Signed in via Google as ${userInfo.name} (${userInfo.email})`,
+          );
+          onOpenChange(false);
         }
+        return;
       }
 
       // Fallback

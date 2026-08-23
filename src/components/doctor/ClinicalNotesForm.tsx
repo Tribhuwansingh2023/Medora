@@ -29,9 +29,9 @@ import type { ClinicalNote } from "@/lib/domain";
 import { cn } from "@/lib/utils";
 
 interface ClinicalNotesFormProps {
-  initialPatientId?: string;
-  onSaved?: (note: ClinicalNote) => void;
-  className?: string;
+  initialPatientId?: string | undefined;
+  onSaved?: ((note: ClinicalNote) => void) | undefined;
+  className?: string | undefined;
 }
 
 export function ClinicalNotesForm({

@@ -19,6 +19,6 @@ export default defineConfig({
     preset: "node-server",
   },
   vite: {
-    plugins: [mcpPlugin()],
+    plugins: process.platform === "win32" ? [] : [mcpPlugin()],
   },
 });

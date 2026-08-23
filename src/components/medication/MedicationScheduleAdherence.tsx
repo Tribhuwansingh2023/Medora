@@ -224,7 +224,8 @@ export function MedicationScheduleAdherence() {
     };
 
     state.reminders.forEach((r) => {
-      const hour = parseInt(r.time.split(":")[0] || "8", 10);
+      const timeStr = (r as { time?: string; times?: string[] }).time || (r.times && r.times[0]) || "08:00";
+      const hour = parseInt(timeStr.split(":")[0] || "8", 10);
       if (hour >= 6 && hour < 12) buckets["Morning (06:00 – 11:59)"].push(r);
       else if (hour >= 12 && hour < 17)
         buckets["Afternoon (12:00 – 16:59)"].push(r);

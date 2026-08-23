@@ -86,8 +86,8 @@ const PRESET_SAMPLES = [
 ];
 
 interface MedicineBottleScannerProps {
-  onScanComplete?: (data: ScannedMedicineData) => void;
-  className?: string;
+  onScanComplete?: ((data: ScannedMedicineData) => void) | undefined;
+  className?: string | undefined;
 }
 
 export function MedicineBottleScanner({

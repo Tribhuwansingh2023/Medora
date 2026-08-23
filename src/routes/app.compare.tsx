@@ -189,10 +189,9 @@ function ComparePage() {
         }
       />
 
-      {/* Side-by-side Active Ingredients & Side Effects Comparative View */}
+      {/* Multi-Medicine Side-by-side Active Ingredients, Uses, Side Effects & Pricing View */}
       <MedicineComparativeView
-        initialMedAId={ids[0] || "med-dolo-650-tab"}
-        initialMedBId={ids[1] || "med-calpol-650-tab"}
+        medicineIds={ids}
       />
 
       {/* Matching criteria — always visible, never implied */}

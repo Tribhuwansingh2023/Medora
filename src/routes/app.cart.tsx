@@ -48,6 +48,7 @@ function CartPage() {
   const [pharmacyId, setPharmacyId] = useState(demoPharmacies[0]?.id ?? "");
   const [fulfilment, setFulfilment] = useState<"pickup" | "delivery">("pickup");
   const [prescriptionId, setPrescriptionId] = useState<string>("none");
+  const [paymentMethod, setPaymentMethod] = useState<string>("upi");
 
   const total = state.cart.reduce((s, i) => s + i.price * i.qty, 0);
   const needsRx = state.cart.some((i) => i.prescriptionOnly);
@@ -206,6 +207,23 @@ function CartPage() {
                   </SelectContent>
                 </Select>
               </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="paymentMethod">Payment & Settlement</Label>
+                <Select
+                  value={paymentMethod}
+                  onValueChange={setPaymentMethod}
+                >
+                  <SelectTrigger id="paymentMethod">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="upi">UPI Instant Transfer (GPay / PhonePe / Paytm)</SelectItem>
+                    <SelectItem value="card">Credit / Debit Card</SelectItem>
+                    <SelectItem value="cod">Pay at Pharmacy / Cash on Delivery</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="space-y-1.5">
                 <Label htmlFor="rx">Attach prescription</Label>
                 <Select

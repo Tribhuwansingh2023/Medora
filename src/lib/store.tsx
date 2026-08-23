@@ -406,7 +406,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           ...p,
           compareSelection: p.compareSelection.includes(id)
             ? p.compareSelection.filter((x) => x !== id)
-            : [...p.compareSelection, id].slice(-4),
+            : [...p.compareSelection, id],
         })),
       clearCompare: () => setState((p) => ({ ...p, compareSelection: [] })),
       addToCart: (item) =>

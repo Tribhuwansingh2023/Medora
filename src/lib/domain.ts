@@ -13,7 +13,7 @@ export interface Provenance {
   updatedAt: string;
   /** Whether the record originates from a connected, verified live provider. */
   verified: boolean;
-  note?: string;
+  note?: string | undefined;
 }
 
 export type DosageForm =
@@ -86,7 +86,7 @@ export interface PrescriptionItem {
   strength: string;
   frequency: string;
   duration: string;
-  notes?: string;
+  notes?: string | undefined;
   confidence: number; // extraction confidence 0..1
   userConfirmed: boolean;
 }
@@ -98,8 +98,8 @@ export interface Prescription {
   prescriberName: string;
   status: "extracted" | "reviewed" | "verified" | "rejected";
   items: PrescriptionItem[];
-  patientName?: string;
-  reviewNote?: string;
+  patientName?: string | undefined;
+  reviewNote?: string | undefined;
 }
 
 export interface Reminder {
@@ -110,7 +110,7 @@ export interface Reminder {
   startDate: string;
   endDate: string;
   instruction: string;
-  sourcePrescriptionId?: string;
+  sourcePrescriptionId?: string | undefined;
   active: boolean;
   log: { date: string; time: string; state: "taken" | "skipped" }[];
 }
@@ -141,7 +141,7 @@ export interface Order {
   items: OrderItem[];
   total: number;
   fulfilment: "pickup" | "delivery";
-  prescriptionId?: string;
+  prescriptionId?: string | undefined;
   status: OrderStatus;
   timeline: { state: OrderStatus; at: string; note: string }[];
 }

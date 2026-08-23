@@ -126,8 +126,10 @@ function SearchPage() {
             </Button>
           </div>
           <MedicineBottleScanner
-            onMedicineIdentified={(med) => {
-              setParam("q", med.brandName);
+            onScanComplete={(med) => {
+              if (med?.brandName) {
+                setParam("q", med.brandName);
+              }
               setShowScanner(false);
             }}
           />

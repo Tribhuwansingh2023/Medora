@@ -308,7 +308,7 @@ export function PatientShell({ children }: { children: ReactNode }) {
                   )}
                 >
                   <item.icon className="size-5" aria-hidden />
-                  {item.label.split(" ")[0]}
+                  {(item.label || "").split(" ")[0]}
                 </Link>
               </li>
             );

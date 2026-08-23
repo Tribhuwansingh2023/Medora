@@ -8,8 +8,9 @@
 import type { AiCapability } from "./schemas";
 import type { MedoraAiProvider } from "./provider-types";
 import { demoAiProvider } from "./providers/demo";
+import { liveGeminiProvider } from "./providers/gemini";
 
-const registry: MedoraAiProvider[] = [demoAiProvider];
+const registry: MedoraAiProvider[] = [liveGeminiProvider, demoAiProvider];
 
 /** Add a live adapter at runtime (e.g. after credentials are configured). */
 export function registerAiProvider(provider: MedoraAiProvider) {

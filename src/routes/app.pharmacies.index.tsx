@@ -206,14 +206,18 @@ function PharmaciesPage() {
 
   const list = (data ?? [])
     .map((p) => {
-      const realDist = calculateDistance(p.coords.lat, p.coords.lng);
+      const pLat = p.coords?.lat ?? 19.076;
+      const pLng = p.coords?.lng ?? 72.8777;
+      const realDist = calculateDistance(pLat, pLng);
       return {
         ...p,
-        distanceKm: realDist !== null ? realDist : p.distanceKm,
+        coords: p.coords || { lat: 19.076, lng: 72.8777 },
+        services: Array.isArray(p.services) ? p.services : [],
+        distanceKm: realDist !== null ? realDist : (p.distanceKm ?? 1.2),
       };
     })
     .filter(
-      (p) => (p) =>
+      (p) =>
         (!openOnly || isOpenNow(p)) &&
         `${p.name} ${p.address} ${p.city} ${p.services.join(" ")}`
           .toLowerCase()
