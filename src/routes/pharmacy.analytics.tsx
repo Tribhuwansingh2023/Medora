@@ -6,9 +6,9 @@ import {
   CheckCircle2,
   Clock,
   CreditCard,
-  DollarSign,
   Download,
   FileSpreadsheet,
+  IndianRupee,
   Layers,
   PackageCheck,
   Percent,
@@ -222,7 +222,7 @@ function AnalyticsPage() {
               <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    <DollarSign className="size-3.5 text-primary" /> Gross Revenue
+                    <IndianRupee className="size-3.5 text-primary" /> Gross Revenue
                   </span>
                   <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600">
                     <ArrowUpRight className="size-3" /> +18.4%

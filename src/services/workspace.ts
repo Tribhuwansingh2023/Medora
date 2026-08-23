@@ -131,8 +131,8 @@ export function useWorkspaceData<K extends WorkspaceResource>(resource: K) {
   });
 }
 
-export const money = (value: number, currency = "USD") =>
-  new Intl.NumberFormat("en-US", {
+export const money = (value: number, currency = "INR") =>
+  new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency,
     maximumFractionDigits: 2,
