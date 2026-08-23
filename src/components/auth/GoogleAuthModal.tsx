@@ -124,14 +124,18 @@ export function GoogleAuthModal({
             });
 
             // Render Google official button if container exists
-            googleBtnContainerRef.current.innerHTML = "";
-            win.google.accounts.id.renderButton(googleBtnContainerRef.current, {
-              theme: "filled_blue",
-              size: "large",
-              text: "continue_with",
-              shape: "rectangular",
-              width: 320,
-            });
+            if (googleBtnContainerRef.current) {
+              while (googleBtnContainerRef.current.firstChild) {
+                googleBtnContainerRef.current.removeChild(googleBtnContainerRef.current.firstChild);
+              }
+              win.google.accounts.id.renderButton(googleBtnContainerRef.current, {
+                theme: "filled_blue",
+                size: "large",
+                text: "continue_with",
+                shape: "rectangular",
+                width: 320,
+              });
+            }
           } catch (e) {
             console.warn("GSI Button Render warning:", e);
           }
@@ -298,17 +302,16 @@ export function GoogleAuthModal({
               </div>
 
               {/* Official Google Identity Button Slot */}
+              {!gsiLoaded && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground py-2">
+                  <Loader2 className="size-4 animate-spin text-primary" />
+                  <span>Connecting to Google Identity Services...</span>
+                </div>
+              )}
               <div
                 ref={googleBtnContainerRef}
                 className="flex items-center justify-center min-h-[44px] w-full"
-              >
-                {!gsiLoaded && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground py-2">
-                    <Loader2 className="size-4 animate-spin text-primary" />
-                    <span>Connecting to Google Identity Services...</span>
-                  </div>
-                )}
-              </div>
+              />
 
               {/* Live OAuth Popup Button */}
               <div className="mt-3 w-full">
