@@ -9,6 +9,7 @@ import {
   Download,
   FileDown,
   FileSpreadsheet,
+  IndianRupee,
   Layers,
   Minus,
   Package,
@@ -411,17 +412,17 @@ function InventoryPage() {
   return (
     <div className="space-y-6 pb-12">
       {/* Pharmacy Onboarding & Verification Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl border-2 border-border/80 bg-gradient-to-br from-primary/10 via-card to-background p-6 shadow-sm backdrop-blur-sm">
+      <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-soft space-y-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/20 px-3 py-0.5 text-xs font-extrabold uppercase tracking-wider text-primary">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary">
                 <Boxes className="size-3.5" />
                 Medora Dispensary Engine
               </span>
               <Badge
                 variant="outline"
-                className="font-mono text-xs font-bold border-emerald-500/40 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                className="font-mono text-xs font-bold border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
               >
                 <ShieldCheck className="mr-1 size-3.5 text-emerald-500" />
                 {profile.licenseNumber} (Verified)
@@ -444,14 +445,14 @@ function InventoryPage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setScannerOpen(true)}
-              className="text-xs font-bold border-primary/30 text-primary hover:bg-primary/5"
+              className="h-9 px-3 text-xs font-bold gap-1.5 rounded-xl border-primary/30 text-primary hover:bg-primary/5"
             >
-              <ScanLine className="mr-1.5 size-3.5" />
+              <ScanLine className="size-3.5" />
               Scan Barcode / SKU
             </Button>
 
@@ -459,9 +460,9 @@ function InventoryPage() {
               variant="outline"
               size="sm"
               onClick={handleExportCsv}
-              className="text-xs font-bold"
+              className="h-9 px-3 text-xs font-bold gap-1.5 rounded-xl"
             >
-              <Download className="mr-1.5 size-3.5" />
+              <Download className="size-3.5" />
               Export CSV
             </Button>
 
@@ -469,9 +470,9 @@ function InventoryPage() {
               variant="outline"
               size="sm"
               onClick={() => setOnboardingOpen(true)}
-              className="text-xs font-bold"
+              className="h-9 px-3 text-xs font-bold gap-1.5 rounded-xl"
             >
-              <ShieldCheck className="mr-1.5 size-3.5 text-primary" />
+              <ShieldCheck className="size-3.5 text-primary" />
               License & Settings
             </Button>
 
@@ -480,77 +481,56 @@ function InventoryPage() {
               size="sm"
               onClick={handleSyncFeed}
               disabled={syncingFeed}
-              className="text-xs font-bold shadow-2xs"
+              className="h-9 px-3 text-xs font-bold gap-1.5 rounded-xl"
             >
-              <RefreshCw className={cn("mr-1.5 size-3.5", syncingFeed && "animate-spin text-primary")} />
+              <RefreshCw className={cn("size-3.5", syncingFeed && "animate-spin text-primary")} />
               {syncingFeed ? "Syncing Feed..." : "Sync POS Feed"}
             </Button>
 
             <Button
               size="sm"
               onClick={() => setAddBatchOpen(true)}
-              className="bg-primary text-primary-foreground font-bold text-xs shadow-md"
+              className="h-9 px-4 bg-primary text-primary-foreground font-bold text-xs gap-1.5 rounded-xl shadow-soft"
             >
-              <PackagePlus className="mr-1.5 size-4" />
+              <PackagePlus className="size-4" />
               + Add Stock Batch
             </Button>
-          </div>
-        </div>
-
-        {/* Live Feed Status Bar */}
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border/80 pt-4 text-xs">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Feed URL: <code className="font-mono text-foreground font-semibold">{profile.apiFeedUrl}</code></span>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Clock className="size-3.5" />
-            <span>Last Reconciled: <strong>{new Date(profile.lastFeedSyncAt).toLocaleTimeString()}</strong></span>
           </div>
         </div>
       </div>
 
       {/* KPI Overview Cards */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <Package className="size-3.5 text-primary" /> Total Active Inventory
-          </span>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-display text-2xl font-extrabold text-ink">{metrics.totalUnits}</span>
-            <span className="text-xs text-muted-foreground">{metrics.count} batch lines</span>
-          </div>
-        </div>
+        <StatTile
+          label="Total Active Inventory"
+          value={String(metrics.totalUnits)}
+          icon={Boxes}
+          hint={`${metrics.count} registered batch lines`}
+        />
 
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <AlertTriangle className="size-3.5 text-amber-500" /> Low Stock Warning
-          </span>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-display text-2xl font-extrabold text-amber-600 dark:text-amber-400">{metrics.lowStockCount}</span>
-            <span className="text-xs text-muted-foreground">Below reorder limit</span>
-          </div>
-        </div>
+        <StatTile
+          label="Low Stock Warnings"
+          value={String(metrics.lowStockCount)}
+          icon={AlertTriangle}
+          tone={metrics.lowStockCount > 0 ? "attention" : "default"}
+          hint="Items below safety reorder limit"
+        />
 
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <Calendar className="size-3.5 text-rose-500" /> Expiring (&lt;60 Days)
-          </span>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-display text-2xl font-extrabold text-rose-600 dark:text-rose-400">{metrics.expiringCount}</span>
-            <span className="text-xs text-muted-foreground">Priority dispense</span>
-          </div>
-        </div>
+        <StatTile
+          label="Expiring (<60 Days)"
+          value={String(metrics.expiringCount)}
+          icon={Calendar}
+          tone={metrics.expiringCount > 0 ? "attention" : "default"}
+          hint="Flagged for priority FIFO dispense"
+        />
 
-        <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <Sparkles className="size-3.5 text-emerald-500" /> Dispensary Valuation
-          </span>
-          <div className="mt-2 flex items-baseline justify-between">
-            <span className="font-display text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">{money(metrics.totalValue)}</span>
-            <span className="text-xs text-muted-foreground">On-shelf value</span>
-          </div>
-        </div>
+        <StatTile
+          label="Dispensary Valuation"
+          value={money(metrics.totalValue)}
+          icon={IndianRupee}
+          tone="positive"
+          hint="Total active on-shelf valuation"
+        />
       </div>
 
       {/* Search & Filter Bar */}
@@ -558,10 +538,10 @@ function InventoryPage() {
         <div className="relative w-full sm:w-80">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            placeholder="Search medicine, batch number, or supplier..."
+            placeholder="Search medicine, batch number, or supplier…"
             value={filterQuery}
             onChange={(e) => setFilterQuery(e.target.value)}
-            className="pl-9 h-10 text-xs sm:text-sm bg-card border-border"
+            className="pl-9 h-10 text-xs sm:text-sm bg-card border-border rounded-xl"
           />
         </div>
 
