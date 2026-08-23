@@ -11,7 +11,7 @@ export const Route = createFileRoute("/app")({
 function PatientLayout() {
   return (
     <AppRouteGroup>
-      <RequireRole allow={["patient", "admin"]}>
+      <RequireRole allow={["patient", "pharmacy", "doctor", "admin"]}>
         <PatientShell>
           <ProviderStatusBanner />
           <Outlet />

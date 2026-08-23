@@ -83,11 +83,14 @@ export function RequireRole({
           {primaryRole ? (
             <Button asChild>
               <Link to={ROLE_HOME[primaryRole] as "/app"}>
-                Go to my workspace
+                Go to {primaryRole} workspace
               </Link>
             </Button>
           ) : null}
           <Button asChild variant="outline">
+            <Link to="/switch">Switch role</Link>
+          </Button>
+          <Button asChild variant="ghost">
             <Link to="/">Back home</Link>
           </Button>
         </div>
