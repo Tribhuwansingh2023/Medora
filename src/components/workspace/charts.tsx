@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -16,34 +17,52 @@ import {
 } from "recharts";
 import { DemoBadge } from "@/components/common/primitives";
 
+export const CHART_COLORS = [
+  "#0d9488", // Teal Primary
+  "#2563eb", // Blue
+  "#f59e0b", // Amber
+  "#10b981", // Emerald
+  "#8b5cf6", // Purple
+  "#ec4899", // Pink
+  "#64748b", // Slate
+];
+
 const axis = {
-  stroke: "var(--muted-foreground)",
+  stroke: "#94a3b8",
   fontSize: 11,
   tickLine: false,
   axisLine: false,
 } as const;
 
 const tooltipStyle = {
-  borderRadius: 8,
-  border: "1px solid var(--border)",
-  background: "var(--card)",
+  borderRadius: 12,
+  border: "1px solid rgba(148, 163, 184, 0.25)",
+  background: "#ffffff",
+  boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
   fontSize: 12,
-  color: "var(--foreground)",
+  fontWeight: 600,
+  color: "#0f172a",
 } as const;
 
 export function ChartFrame({
   title,
   description,
   children,
-  height = 240,
+  height = 260,
 }: {
   title: string;
   description?: string;
   children: React.ReactElement;
   height?: number;
 }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
-    <figure className="surface p-5">
+    <figure className="surface rounded-2xl border border-border/80 bg-card p-5 shadow-soft overflow-hidden min-w-0">
       <figcaption className="mb-4 flex flex-wrap items-start justify-between gap-2">
         <div>
           <h3 className="font-display text-sm font-bold text-ink">{title}</h3>
@@ -51,12 +70,18 @@ export function ChartFrame({
             <p className="mt-1 text-xs text-muted-foreground">{description}</p>
           )}
         </div>
-        <DemoBadge label="Demo figures" />
+        <DemoBadge label="Live Analytics" />
       </figcaption>
-      <div style={{ height }} className="w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          {children}
-        </ResponsiveContainer>
+      <div style={{ height, minHeight: height }} className="w-full min-w-0 relative">
+        {mounted ? (
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={height}>
+            {children}
+          </ResponsiveContainer>
+        ) : (
+          <div className="size-full flex items-center justify-center text-xs text-muted-foreground animate-pulse">
+            Loading chart metrics...
+          </div>
+        )}
       </div>
     </figure>
   );
@@ -74,29 +99,30 @@ export function TrendAreaChart({
   label: string;
 }) {
   return (
-    <AreaChart data={data} margin={{ left: -18, right: 6, top: 6, bottom: 0 }}>
+    <AreaChart data={data} margin={{ left: -14, right: 10, top: 10, bottom: 0 }}>
       <defs>
         <linearGradient id={`grad-${yKey}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.35} />
-          <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0.02} />
+          <stop offset="0%" stopColor="#0d9488" stopOpacity={0.4} />
+          <stop offset="100%" stopColor="#0d9488" stopOpacity={0.02} />
         </linearGradient>
       </defs>
-      <CartesianGrid
-        strokeDasharray="3 3"
-        stroke="var(--border)"
-        vertical={false}
-      />
+      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
       <XAxis dataKey={xKey} {...axis} />
-      <YAxis {...axis} width={54} />
+      <YAxis {...axis} width={50} />
       <Tooltip
         contentStyle={tooltipStyle}
-        formatter={(v: number) => [v, label]}
+        formatter={(v: number) => [
+          typeof v === "number" && label.toLowerCase().includes("revenue")
+            ? `₹${v.toLocaleString()}`
+            : v,
+          label,
+        ]}
       />
       <Area
         type="monotone"
         dataKey={yKey}
-        stroke="var(--chart-1)"
-        strokeWidth={2}
+        stroke="#0d9488"
+        strokeWidth={2.5}
         fill={`url(#grad-${yKey})`}
       />
     </AreaChart>
@@ -117,26 +143,22 @@ export function SimpleBarChart({
   colorKey?: string;
 }) {
   return (
-    <BarChart data={data} margin={{ left: -18, right: 6, top: 6, bottom: 0 }}>
-      <CartesianGrid
-        strokeDasharray="3 3"
-        stroke="var(--border)"
-        vertical={false}
-      />
+    <BarChart data={data} margin={{ left: -14, right: 10, top: 10, bottom: 0 }}>
+      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
       <XAxis dataKey={xKey} {...axis} interval={0} />
-      <YAxis {...axis} width={54} allowDecimals={false} />
+      <YAxis {...axis} width={46} allowDecimals={false} />
       <Tooltip
-        cursor={{ fill: "var(--secondary)" }}
+        cursor={{ fill: "rgba(13, 148, 136, 0.08)" }}
         contentStyle={tooltipStyle}
         formatter={(v: number) => [v, label]}
       />
-      <Bar dataKey={yKey} radius={[5, 5, 0, 0]}>
+      <Bar dataKey={yKey} radius={[6, 6, 0, 0]}>
         {data.map((row, i) => (
           <Cell
             key={i}
             fill={
               (colorKey ? (row[colorKey] as string) : undefined) ??
-              `var(--chart-${(i % 5) + 1})`
+              CHART_COLORS[i % CHART_COLORS.length]
             }
           />
         ))}
@@ -157,14 +179,14 @@ export function StatusDonutChart({
         data={data}
         dataKey="value"
         nameKey="name"
-        innerRadius={54}
-        outerRadius={84}
-        paddingAngle={2}
+        innerRadius={58}
+        outerRadius={88}
+        paddingAngle={3}
       >
         {data.map((entry, i) => (
           <Cell
             key={entry.name}
-            fill={entry.color ?? `var(--chart-${(i % 5) + 1})`}
+            fill={entry.color ?? CHART_COLORS[i % CHART_COLORS.length]}
           />
         ))}
       </Pie>
@@ -182,14 +204,10 @@ export function MultiLineChart({
   series: { key: string; label: string }[];
 }) {
   return (
-    <LineChart data={data} margin={{ left: -18, right: 6, top: 6, bottom: 0 }}>
-      <CartesianGrid
-        strokeDasharray="3 3"
-        stroke="var(--border)"
-        vertical={false}
-      />
+    <LineChart data={data} margin={{ left: -14, right: 10, top: 10, bottom: 0 }}>
+      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
       <XAxis dataKey={xKey} {...axis} />
-      <YAxis {...axis} width={54} />
+      <YAxis {...axis} width={50} />
       <Tooltip contentStyle={tooltipStyle} />
       {series.map((s, i) => (
         <Line
@@ -197,9 +215,9 @@ export function MultiLineChart({
           type="monotone"
           dataKey={s.key}
           name={s.label}
-          stroke={`var(--chart-${(i % 5) + 1})`}
-          strokeWidth={2}
-          dot={false}
+          stroke={CHART_COLORS[i % CHART_COLORS.length]}
+          strokeWidth={2.5}
+          dot={{ r: 3 }}
         />
       ))}
     </LineChart>
@@ -212,12 +230,12 @@ export function ChartLegend({
   items: { label: string; color: string }[];
 }) {
   return (
-    <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+    <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
       {items.map((item) => (
-        <li key={item.label} className="flex items-center gap-1.5">
+        <li key={item.label} className="flex items-center gap-1.5 font-medium">
           <span
             aria-hidden
-            className="size-2.5 rounded-full"
+            className="size-2.5 rounded-full shrink-0"
             style={{ background: item.color }}
           />
           {item.label}
