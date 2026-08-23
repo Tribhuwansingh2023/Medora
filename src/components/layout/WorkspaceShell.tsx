@@ -101,58 +101,76 @@ export function WorkspaceShell({
 
       <div className="lg:pl-[248px]">
         <header className="sticky top-0 z-20 border-b border-border bg-background/85 backdrop-blur">
-          <div className="flex h-16 items-center gap-3 px-4 sm:px-6">
-            <Sheet open={mobileNav} onOpenChange={setMobileNav}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="lg:hidden"
-                  aria-label="Open navigation"
-                >
-                  <Menu className="size-5" aria-hidden />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[280px] p-0">
-                <SheetHeader className="border-b border-border px-5 py-4">
-                  <SheetTitle className="text-left">
-                    <Logo />
-                  </SheetTitle>
-                </SheetHeader>
-                <ScrollArea className="h-[calc(100vh-72px)] px-2 py-5">
-                  <WorkspaceNav
-                    items={items}
-                    onNavigate={() => setMobileNav(false)}
-                  />
-                </ScrollArea>
-              </SheetContent>
-            </Sheet>
+          <div className="flex h-16 items-center justify-between gap-4 px-4 sm:px-6">
+            <div className="flex items-center gap-3">
+              <Sheet open={mobileNav} onOpenChange={setMobileNav}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="lg:hidden"
+                    aria-label="Open navigation"
+                  >
+                    <Menu className="size-5" aria-hidden />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-[280px] p-0">
+                  <SheetHeader className="border-b border-border px-5 py-4">
+                    <SheetTitle className="text-left">
+                      <Logo />
+                    </SheetTitle>
+                  </SheetHeader>
+                  <ScrollArea className="h-[calc(100vh-72px)] px-2 py-5">
+                    <WorkspaceNav
+                      items={items}
+                      onNavigate={() => setMobileNav(false)}
+                    />
+                  </ScrollArea>
+                </SheetContent>
+              </Sheet>
 
-            <Link to="/" className="lg:hidden" aria-label="Medora home">
-              <Logo compact />
-            </Link>
+              <Link to="/" className="lg:hidden" aria-label="Medora home">
+                <Logo compact />
+              </Link>
+            </div>
 
+            {/* Expanded Search Trigger */}
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="ml-auto flex h-9 w-full max-w-sm items-center gap-2 rounded-md border border-input bg-card px-3 text-sm text-muted-foreground transition-colors hover:border-border-strong lg:ml-0"
+              className="hidden sm:flex h-9 w-full max-w-md items-center gap-2 rounded-xl border border-input bg-card px-3 text-sm text-muted-foreground transition-all hover:border-primary/40 hover:bg-card/90 shadow-2xs"
             >
-              <Search className="size-4" aria-hidden />
-              <span className="truncate">Search…</span>
-              <kbd className="ml-auto hidden rounded border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-medium sm:block">
+              <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+              <span className="truncate">Search commands, records, or inventory…</span>
+              <kbd className="ml-auto hidden shrink-0 rounded border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-medium font-mono sm:block">
                 ⌘K
               </kbd>
             </button>
 
-            <div className="ml-auto flex items-center gap-1 lg:ml-0">
+            {/* Right-aligned Header Actions */}
+            <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="sm:hidden"
+                aria-label="Search"
+                onClick={() => setOpen(true)}
+              >
+                <Search className="size-5" aria-hidden />
+              </Button>
               <ThemeToggle showMenu />
-              <Button asChild variant="ghost" size="sm">
+              <Button asChild variant="outline" size="sm" className="h-8 gap-1.5 rounded-lg text-xs font-semibold">
                 <Link to="/switch">
-                  <SlidersHorizontal className="size-4" aria-hidden /> Switch
+                  <SlidersHorizontal className="size-3.5" aria-hidden /> Switch
                 </Link>
               </Button>
-              <Button variant="ghost" size="sm" onClick={() => void signOut()}>
-                <LogOut className="size-4" aria-hidden /> Sign out
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => void signOut()}
+                className="h-8 gap-1.5 rounded-lg text-xs font-semibold text-muted-foreground hover:text-destructive hover:bg-destructive-soft"
+              >
+                <LogOut className="size-3.5" aria-hidden /> Sign out
               </Button>
             </div>
           </div>
