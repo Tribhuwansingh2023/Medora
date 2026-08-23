@@ -88,22 +88,19 @@ export function SafetyStrip({ safety }: { safety: SafetyVerdict }) {
   return (
     <div
       className={cn(
-        "flex items-start gap-2 rounded-lg border px-3 py-2 text-xs",
+        "inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs",
         safety.passed
-          ? "border-border bg-muted/40 text-muted-foreground"
+          ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300"
           : "border-destructive/40 bg-destructive/10 text-destructive",
       )}
     >
       {safety.passed ? (
-        <ShieldCheck className="mt-0.5 size-3.5 shrink-0" aria-hidden />
+        <ShieldCheck className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden />
       ) : (
-        <AlertTriangle className="mt-0.5 size-3.5 shrink-0" aria-hidden />
+        <AlertTriangle className="size-3.5 shrink-0" aria-hidden />
       )}
-      <span>
-        {safety.notice}{" "}
-        <span className="opacity-70">
-          Checks run: {safety.rulesRun.length}.
-        </span>
+      <span className="font-medium">
+        {safety.passed ? "Clinical Safety Validated" : safety.notice} · {safety.rulesRun.length} rules checked
       </span>
     </div>
   );
@@ -112,35 +109,42 @@ export function SafetyStrip({ safety }: { safety: SafetyVerdict }) {
 export function PipelineTrace({ trace }: { trace: PipelineStage[] }) {
   if (!trace.length) return null;
   return (
-    <details className="group rounded-lg border border-border bg-muted/30 px-3 py-2 text-xs">
-      <summary className="flex cursor-pointer list-none items-center gap-2 font-medium text-muted-foreground">
-        <Workflow className="size-3.5" aria-hidden />
-        How this answer was produced
+    <details className="group rounded-xl border border-border/70 bg-card/60 px-3.5 py-2 text-xs transition">
+      <summary className="flex cursor-pointer list-none items-center justify-between font-medium text-muted-foreground hover:text-foreground">
+        <span className="flex items-center gap-2">
+          <Workflow className="size-3.5 text-primary" aria-hidden />
+          Clinical Verification & Reasoning Trace
+        </span>
+        <span className="text-[10px] text-muted-foreground group-open:rotate-180 transition-transform">▼</span>
       </summary>
-      <ol className="mt-3 space-y-2">
+      <ol className="mt-3 divide-y divide-border/40 pt-1 space-y-2">
         {trace.map((stage, i) => (
-          <li key={`${stage.name}-${i}`} className="flex gap-3">
+          <li key={`${stage.name}-${i}`} className="flex gap-3 pt-2">
             <span className="mt-0.5 font-mono text-[10px] text-muted-foreground">
-              {i + 1}
+              0{i + 1}
             </span>
-            <span className="min-w-0">
-              <span className="font-medium text-foreground">{stage.label}</span>
-              <span
-                className={cn(
-                  "ml-2 rounded px-1.5 py-0.5 text-[10px] uppercase",
-                  stage.status === "ok"
-                    ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-                    : stage.status === "blocked"
-                      ? "bg-destructive/10 text-destructive"
-                      : "bg-muted text-muted-foreground",
-                )}
-              >
-                {stage.status}
-              </span>
-              <span className="ml-2 text-[10px] text-muted-foreground">
-                {stage.ms} ms
-              </span>
-              <p className="mt-0.5 text-muted-foreground">{stage.detail}</p>
+            <span className="min-w-0 flex-1">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-foreground text-xs">{stage.label}</span>
+                <div className="flex items-center gap-1.5">
+                  <span
+                    className={cn(
+                      "rounded px-1.5 py-0.5 text-[10px] font-bold uppercase",
+                      stage.status === "ok"
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                        : stage.status === "blocked"
+                          ? "bg-destructive/10 text-destructive"
+                          : "bg-muted text-muted-foreground",
+                    )}
+                  >
+                    {stage.status}
+                  </span>
+                  <span className="font-mono text-[10px] text-muted-foreground">
+                    {stage.ms}ms
+                  </span>
+                </div>
+              </div>
+              <p className="mt-0.5 text-[11px] text-muted-foreground leading-relaxed">{stage.detail}</p>
             </span>
           </li>
         ))}

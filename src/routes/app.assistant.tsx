@@ -184,8 +184,13 @@ function TurnCard({
             {turn.status === "complete" && (
               <>
                 <AiPayloadView payload={envelope.payload} />
-                <SafetyStrip safety={envelope.safety} />
-                <SourceChips sources={envelope.sources} />
+                
+                {/* Unified Verification Bar */}
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/50 pt-2.5">
+                  <SourceChips sources={envelope.sources} />
+                  <SafetyStrip safety={envelope.safety} />
+                </div>
+
                 <PipelineTrace trace={envelope.trace} />
 
                 {envelope.followUps.length > 0 && (
