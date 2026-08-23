@@ -35,6 +35,7 @@ import type { Pharmacy } from "@/lib/domain";
 import { getPharmacies, isOpenNow } from "@/services/medicines";
 import { PharmacySearchGrounding } from "@/components/pharmacy/PharmacySearchGrounding";
 import { GooglePharmacyMap } from "@/components/pharmacy/GooglePharmacyMap";
+import { LeafletPharmacyMap } from "@/components/pharmacy/LeafletPharmacyMap";
 
 export const Route = createFileRoute("/app/pharmacies/")({
   head: () => ({
@@ -340,9 +341,9 @@ function PharmaciesPage() {
               </div>
             </div>
 
-            {/* Unified Map & List View */}
-            <div className="rounded-xl overflow-hidden border border-border bg-card shadow-sm">
-              <GooglePharmacyMap
+            {/* Unified Leaflet GIS Map & Pharmacy List View */}
+            <div className="rounded-2xl overflow-hidden border border-border bg-card shadow-sm">
+              <LeafletPharmacyMap
                 pharmacies={list}
                 selectedPharmacyId={selectedPharmacyId}
                 onSelectPharmacy={(p) => setSelectedPharmacyId(p.id)}
