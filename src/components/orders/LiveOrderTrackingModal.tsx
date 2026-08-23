@@ -48,7 +48,9 @@ export function LiveOrderTrackingModal({
   onOrderUpdated,
 }: LiveOrderTrackingModalProps) {
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
-  const [cancelReason, setCancelReason] = useState("Need delivery sooner from local walk-in");
+  const [cancelReason, setCancelReason] = useState(
+    "Need delivery sooner from local walk-in",
+  );
   const [cancelling, setCancelling] = useState(false);
 
   if (!order) return null;
@@ -86,7 +88,10 @@ export function LiveOrderTrackingModal({
       `Status:        ${order.status.toUpperCase()}`,
       `-------------------------------------------------------------`,
       `ITEMS:`,
-      ...order.items.map((i) => ` - ${i.name.padEnd(35)} x${i.qty}   ₹${(i.price * i.qty).toFixed(2)}`),
+      ...order.items.map(
+        (i) =>
+          ` - ${i.name.padEnd(35)} x${i.qty}   ₹${(i.price * i.qty).toFixed(2)}`,
+      ),
       `-------------------------------------------------------------`,
       `Subtotal:      ₹${order.payment?.gstBreakdown?.subtotal || (order.total * 0.88).toFixed(2)}`,
       `CGST (6%):     ₹${order.payment?.gstBreakdown?.cgst || (order.total * 0.06).toFixed(2)}`,
@@ -118,20 +123,33 @@ export function LiveOrderTrackingModal({
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground shadow-xs">
-                  {isDelivery ? <Truck className="size-4" /> : <Package className="size-4" />}
+                  {isDelivery ? (
+                    <Truck className="size-4" />
+                  ) : (
+                    <Package className="size-4" />
+                  )}
                 </span>
                 <div>
                   <DialogTitle className="font-display text-lg font-extrabold text-ink">
                     Order {order.id} · Live Fulfillment
                   </DialogTitle>
                   <DialogDescription className="text-xs text-muted-foreground">
-                    {order.pharmacyName} · {new Date(order.placedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                    {order.pharmacyName} ·{" "}
+                    {new Date(order.placedAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </DialogDescription>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
-                <Button size="sm" variant="outline" onClick={handleDownloadInvoice} className="text-xs font-semibold h-8 gap-1">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleDownloadInvoice}
+                  className="text-xs font-semibold h-8 gap-1"
+                >
                   <Download className="size-3 text-primary" /> Invoice
                 </Button>
                 {!isCancelled && !isCompleted && (
@@ -167,21 +185,31 @@ export function LiveOrderTrackingModal({
                           {order.delivery?.partner || "Dunzo MedExpress"}
                         </span>
                         <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                          {isOutForDelivery ? "Live On Route" : "Courier Assigned"}
+                          {isOutForDelivery
+                            ? "Live On Route"
+                            : "Courier Assigned"}
                         </span>
                       </div>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        Rider: <span className="font-semibold text-foreground">{order.delivery?.riderName || "Aakash Mehta"}</span> · {order.delivery?.vehicleNumber || "MH 01 DX 3912"}
+                        Rider:{" "}
+                        <span className="font-semibold text-foreground">
+                          {order.delivery?.riderName || "Aakash Mehta"}
+                        </span>{" "}
+                        · {order.delivery?.vehicleNumber || "MH 01 DX 3912"}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 bg-card/90 rounded-xl border border-border p-2.5 sm:px-4">
                     <div className="text-center sm:text-right">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Estimated Arrival</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        Estimated Arrival
+                      </span>
                       <div className="font-display text-base font-extrabold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 justify-center sm:justify-end">
                         <Clock className="size-3.5" />
-                        {isCompleted ? "Delivered" : `${order.delivery?.estimatedMinutes || 12} mins`}
+                        {isCompleted
+                          ? "Delivered"
+                          : `${order.delivery?.estimatedMinutes || 12} mins`}
                       </div>
                     </div>
                     <Button
@@ -189,7 +217,9 @@ export function LiveOrderTrackingModal({
                       variant="outline"
                       className="h-8 text-xs font-bold text-primary gap-1"
                       onClick={() => {
-                        toast.info(`Connecting call to rider ${order.delivery?.riderName || "courier"} (${order.delivery?.riderPhone || "+91 98201 44829"})`);
+                        toast.info(
+                          `Connecting call to rider ${order.delivery?.riderName || "courier"} (${order.delivery?.riderPhone || "+91 98201 44829"})`,
+                        );
                       }}
                     >
                       <Phone className="size-3" /> Call
@@ -200,7 +230,10 @@ export function LiveOrderTrackingModal({
                 <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground border-t border-border/60 pt-3">
                   <div className="flex items-center gap-1.5 truncate">
                     <MapPin className="size-3.5 text-primary shrink-0" />
-                    <span className="truncate">{order.delivery?.deliveryAddress || "402 Sea View Apts, Bandra West, Mumbai"}</span>
+                    <span className="truncate">
+                      {order.delivery?.deliveryAddress ||
+                        "402 Sea View Apts, Bandra West, Mumbai"}
+                    </span>
                   </div>
                   <span className="font-mono font-bold text-foreground shrink-0 ml-2">
                     {order.delivery?.distanceKm || 1.4} km away
@@ -210,34 +243,46 @@ export function LiveOrderTrackingModal({
             )}
 
             {/* Pharmacist Prescription Digital Signature Verification Card */}
-            {order.prescriptionVerification && order.prescriptionVerification.status !== "not_required" && (
-              <div className="rounded-2xl border-2 border-emerald-500/30 bg-emerald-500/5 p-4 space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <FileCheck2 className="size-4 text-emerald-600 dark:text-emerald-400" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
-                      CDSCO Pharmacist Verification & Digital Sign
+            {order.prescriptionVerification &&
+              order.prescriptionVerification.status !== "not_required" && (
+                <div className="rounded-2xl border-2 border-emerald-500/30 bg-emerald-500/5 p-4 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <FileCheck2 className="size-4 text-emerald-600 dark:text-emerald-400" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
+                        CDSCO Pharmacist Verification & Digital Sign
+                      </span>
+                    </div>
+                    <span className="rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                      Verified & Dispensed
                     </span>
                   </div>
-                  <span className="rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                    Verified & Dispensed
-                  </span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground pt-1">
-                  <div>
-                    <span className="font-semibold text-foreground">Pharmacist: </span>
-                    {order.prescriptionVerification.verifiedByPharmacist || "R. Ph. Sandeep Varma"}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground pt-1">
+                    <div>
+                      <span className="font-semibold text-foreground">
+                        Pharmacist:{" "}
+                      </span>
+                      {order.prescriptionVerification.verifiedByPharmacist ||
+                        "R. Ph. Sandeep Varma"}
+                    </div>
+                    <div>
+                      <span className="font-semibold text-foreground">
+                        State Reg No:{" "}
+                      </span>
+                      <span className="font-mono">
+                        {order.prescriptionVerification.pharmacistLicence ||
+                          "MH-PH-849201"}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="font-semibold text-foreground">State Reg No: </span>
-                    <span className="font-mono">{order.prescriptionVerification.pharmacistLicence || "MH-PH-849201"}</span>
-                  </div>
+                  <p className="text-xs text-muted-foreground italic border-t border-emerald-500/20 pt-1.5">
+                    "
+                    {order.prescriptionVerification.verificationNotes ||
+                      "Prescription authenticated against National Pharmacy Registry."}
+                    "
+                  </p>
                 </div>
-                <p className="text-xs text-muted-foreground italic border-t border-emerald-500/20 pt-1.5">
-                  "{order.prescriptionVerification.verificationNotes || "Prescription authenticated against National Pharmacy Registry."}"
-                </p>
-              </div>
-            )}
+              )}
 
             {/* Cancellation & Refund Alert */}
             {isCancelled && (
@@ -253,11 +298,16 @@ export function LiveOrderTrackingModal({
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Reason: <span className="font-semibold text-foreground">{order.cancellation?.reason || "Cancelled by user"}</span>
+                  Reason:{" "}
+                  <span className="font-semibold text-foreground">
+                    {order.cancellation?.reason || "Cancelled by user"}
+                  </span>
                 </p>
                 {order.cancellation?.refundTransactionId && (
                   <p className="text-xs text-emerald-600 dark:text-emerald-400 font-mono font-semibold">
-                    Refund of ₹{order.cancellation.refundAmount?.toFixed(2)} credited to source account ({order.cancellation.refundTransactionId}).
+                    Refund of ₹{order.cancellation.refundAmount?.toFixed(2)}{" "}
+                    credited to source account (
+                    {order.cancellation.refundTransactionId}).
                   </p>
                 )}
               </div>
@@ -265,15 +315,24 @@ export function LiveOrderTrackingModal({
 
             {/* Items Summary */}
             <div className="rounded-2xl border border-border/80 bg-card p-4 space-y-2.5">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Order Items ({order.items.length})</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Order Items ({order.items.length})
+              </h4>
               <div className="divide-y divide-border/50 space-y-2">
                 {order.items.map((it) => (
-                  <div key={it.medicineId} className="flex justify-between items-center pt-2 text-xs">
+                  <div
+                    key={it.medicineId}
+                    className="flex justify-between items-center pt-2 text-xs"
+                  >
                     <div>
                       <p className="font-semibold text-foreground">{it.name}</p>
-                      <p className="text-muted-foreground">Qty: {it.qty} · ₹{it.price.toFixed(2)} each</p>
+                      <p className="text-muted-foreground">
+                        Qty: {it.qty} · ₹{it.price.toFixed(2)} each
+                      </p>
                     </div>
-                    <span className="font-mono font-bold text-foreground">₹{(it.price * it.qty).toFixed(2)}</span>
+                    <span className="font-mono font-bold text-foreground">
+                      ₹{(it.price * it.qty).toFixed(2)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -285,7 +344,9 @@ export function LiveOrderTrackingModal({
 
             {/* Live Progress Timeline */}
             <div className="rounded-2xl border border-border/80 bg-card p-4 sm:p-5 space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Fulfillment Timeline</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Fulfillment Timeline
+              </h4>
               <div className="space-y-3">
                 {order.timeline.map((event, idx) => (
                   <div key={idx} className="flex items-start gap-3 text-xs">
@@ -294,10 +355,19 @@ export function LiveOrderTrackingModal({
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between">
-                        <span className="font-bold text-foreground capitalize">{event.state.replace(/_/g, " ")}</span>
-                        <span className="text-[10px] text-muted-foreground">{new Date(event.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                        <span className="font-bold text-foreground capitalize">
+                          {event.state.replace(/_/g, " ")}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground">
+                          {new Date(event.at).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
                       </div>
-                      <p className="text-muted-foreground leading-relaxed mt-0.5">{event.note}</p>
+                      <p className="text-muted-foreground leading-relaxed mt-0.5">
+                        {event.note}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -312,16 +382,20 @@ export function LiveOrderTrackingModal({
         <DialogContent className="max-w-md rounded-3xl p-6">
           <DialogHeader>
             <DialogTitle className="font-display text-base font-extrabold text-destructive flex items-center gap-2">
-              <AlertTriangle className="size-5 text-destructive" /> Cancel Order & Request Refund
+              <AlertTriangle className="size-5 text-destructive" /> Cancel Order
+              & Request Refund
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Are you sure you want to cancel order {order.id}? If payment was completed, 100% of ₹{order.total} will be instantly refunded.
+              Are you sure you want to cancel order {order.id}? If payment was
+              completed, 100% of ₹{order.total} will be instantly refunded.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Select Reason</Label>
+              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Select Reason
+              </Label>
               <Textarea
                 value={cancelReason}
                 onChange={(e) => setCancelReason(e.target.value)}
@@ -331,11 +405,22 @@ export function LiveOrderTrackingModal({
               />
             </div>
             <div className="flex justify-end gap-2 pt-2">
-              <Button size="sm" variant="outline" onClick={() => setCancelModalOpen(false)}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setCancelModalOpen(false)}
+              >
                 Keep Order
               </Button>
-              <Button size="sm" variant="destructive" onClick={handleCancel} disabled={cancelling}>
-                {cancelling ? "Processing Refund..." : `Cancel & Refund ₹${order.total}`}
+              <Button
+                size="sm"
+                variant="destructive"
+                onClick={handleCancel}
+                disabled={cancelling}
+              >
+                {cancelling
+                  ? "Processing Refund..."
+                  : `Cancel & Refund ₹${order.total}`}
               </Button>
             </div>
           </div>

@@ -46,7 +46,9 @@ export function PaymentGatewayModal({
   pharmacyName,
   onPaymentSuccess,
 }: PaymentGatewayModalProps) {
-  const [method, setMethod] = useState<"upi" | "card" | "netbanking" | "cod">("upi");
+  const [method, setMethod] = useState<"upi" | "card" | "netbanking" | "cod">(
+    "upi",
+  );
   const [processing, setProcessing] = useState(false);
   const [otpStep, setOtpStep] = useState(false);
   const [otp, setOtp] = useState("482910");
@@ -100,7 +102,9 @@ export function PaymentGatewayModal({
             </span>
             <div>
               <DialogTitle className="font-display text-lg font-extrabold text-ink">
-                {otpStep ? "3D Secure OTP Authentication" : "Secure Payment Gateway"}
+                {otpStep
+                  ? "3D Secure OTP Authentication"
+                  : "Secure Payment Gateway"}
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
                 {otpStep
@@ -116,15 +120,21 @@ export function PaymentGatewayModal({
             <div className="rounded-2xl border border-border/80 bg-muted/30 p-4 space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="text-muted-foreground">Merchant:</span>
-                <span className="font-semibold text-foreground">Medora Healthcare / {pharmacyName}</span>
+                <span className="font-semibold text-foreground">
+                  Medora Healthcare / {pharmacyName}
+                </span>
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-muted-foreground">Card Number:</span>
-                <span className="font-mono font-semibold text-foreground">{cardNum}</span>
+                <span className="font-mono font-semibold text-foreground">
+                  {cardNum}
+                </span>
               </div>
               <div className="flex justify-between text-xs border-t border-border/50 pt-2">
                 <span className="text-muted-foreground">Amount:</span>
-                <span className="font-display font-extrabold text-foreground">{formatMoney(total)}</span>
+                <span className="font-display font-extrabold text-foreground">
+                  {formatMoney(total)}
+                </span>
               </div>
             </div>
 
@@ -140,7 +150,10 @@ export function PaymentGatewayModal({
                 placeholder="482910"
               />
               <p className="text-[11px] text-muted-foreground text-center">
-                Demo OTP pre-filled: <span className="font-mono font-bold text-foreground">482910</span>
+                Demo OTP pre-filled:{" "}
+                <span className="font-mono font-bold text-foreground">
+                  482910
+                </span>
               </p>
             </div>
 
@@ -159,7 +172,9 @@ export function PaymentGatewayModal({
                 disabled={processing || !otp}
                 className="font-bold min-w-[140px]"
               >
-                {processing ? "Authorizing..." : `Authorize ${formatMoney(total)}`}
+                {processing
+                  ? "Authorizing..."
+                  : `Authorize ${formatMoney(total)}`}
               </Button>
             </div>
           </div>
@@ -168,13 +183,19 @@ export function PaymentGatewayModal({
             {/* Amount Summary Pill */}
             <div className="flex items-center justify-between rounded-2xl border-2 border-primary/20 bg-primary/5 p-4">
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Total Payable</span>
-                <div className="font-display text-2xl font-black text-ink">{formatMoney(total)}</div>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                  Total Payable
+                </span>
+                <div className="font-display text-2xl font-black text-ink">
+                  {formatMoney(total)}
+                </div>
               </div>
               <div className="text-right text-[11px] text-muted-foreground space-y-0.5">
                 <div>Subtotal: {formatMoney(subtotal)}</div>
                 <div>GST (12%): {formatMoney(gst)}</div>
-                <div className="font-bold text-emerald-600 dark:text-emerald-400">Zero Convenience Fee</div>
+                <div className="font-bold text-emerald-600 dark:text-emerald-400">
+                  Zero Convenience Fee
+                </div>
               </div>
             </div>
 
@@ -195,7 +216,9 @@ export function PaymentGatewayModal({
                 >
                   <Smartphone className="size-5 mb-1 text-primary" />
                   <span className="text-xs">Instant UPI</span>
-                  <span className="text-[9px] text-muted-foreground font-normal">QR & Apps</span>
+                  <span className="text-[9px] text-muted-foreground font-normal">
+                    QR & Apps
+                  </span>
                 </button>
 
                 <button
@@ -209,7 +232,9 @@ export function PaymentGatewayModal({
                 >
                   <CreditCard className="size-5 mb-1 text-primary" />
                   <span className="text-xs">Cards</span>
-                  <span className="text-[9px] text-muted-foreground font-normal">Debit / Credit</span>
+                  <span className="text-[9px] text-muted-foreground font-normal">
+                    Debit / Credit
+                  </span>
                 </button>
 
                 <button
@@ -223,7 +248,9 @@ export function PaymentGatewayModal({
                 >
                   <Building className="size-5 mb-1 text-primary" />
                   <span className="text-xs">NetBanking</span>
-                  <span className="text-[9px] text-muted-foreground font-normal">All Banks</span>
+                  <span className="text-[9px] text-muted-foreground font-normal">
+                    All Banks
+                  </span>
                 </button>
 
                 <button
@@ -237,7 +264,9 @@ export function PaymentGatewayModal({
                 >
                   <Wallet className="size-5 mb-1 text-primary" />
                   <span className="text-xs">Pay on Pickup</span>
-                  <span className="text-[9px] text-muted-foreground font-normal">Cash / Card</span>
+                  <span className="text-[9px] text-muted-foreground font-normal">
+                    Cash / Card
+                  </span>
                 </button>
               </div>
             </div>
@@ -254,7 +283,10 @@ export function PaymentGatewayModal({
                       Scan with any UPI App (GPay / PhonePe / Paytm)
                     </span>
                     <p className="text-xs text-muted-foreground">
-                      UPI VPA: <span className="font-mono font-bold text-foreground">medora.healthcare@icici</span>
+                      UPI VPA:{" "}
+                      <span className="font-mono font-bold text-foreground">
+                        medora.healthcare@icici
+                      </span>
                     </p>
                     <div className="flex gap-1.5 justify-center sm:justify-start pt-1">
                       <Button
@@ -262,7 +294,9 @@ export function PaymentGatewayModal({
                         variant="outline"
                         className="h-7 text-[11px] px-2.5"
                         onClick={() => {
-                          navigator.clipboard.writeText("medora.healthcare@icici");
+                          navigator.clipboard.writeText(
+                            "medora.healthcare@icici",
+                          );
                           toast.success("UPI ID copied to clipboard");
                         }}
                       >
@@ -277,17 +311,40 @@ export function PaymentGatewayModal({
             {method === "card" && (
               <div className="rounded-2xl border border-border/80 bg-card p-4 space-y-3">
                 <div className="space-y-1">
-                  <Label className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold">Card Number</Label>
-                  <Input value={cardNum} onChange={(e) => setCardNum(e.target.value)} placeholder="4532 0000 0000 0000" className="font-mono text-sm" />
+                  <Label className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold">
+                    Card Number
+                  </Label>
+                  <Input
+                    value={cardNum}
+                    onChange={(e) => setCardNum(e.target.value)}
+                    placeholder="4532 0000 0000 0000"
+                    className="font-mono text-sm"
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-2.5">
                   <div className="space-y-1">
-                    <Label className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold">Expiry</Label>
-                    <Input value={cardExp} onChange={(e) => setCardExp(e.target.value)} placeholder="MM/YY" className="font-mono text-sm" />
+                    <Label className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold">
+                      Expiry
+                    </Label>
+                    <Input
+                      value={cardExp}
+                      onChange={(e) => setCardExp(e.target.value)}
+                      placeholder="MM/YY"
+                      className="font-mono text-sm"
+                    />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold">CVV</Label>
-                    <Input value={cardCvv} onChange={(e) => setCardCvv(e.target.value)} type="password" maxLength={3} placeholder="•••" className="font-mono text-sm" />
+                    <Label className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold">
+                      CVV
+                    </Label>
+                    <Input
+                      value={cardCvv}
+                      onChange={(e) => setCardCvv(e.target.value)}
+                      type="password"
+                      maxLength={3}
+                      placeholder="•••"
+                      className="font-mono text-sm"
+                    />
                   </div>
                 </div>
               </div>
@@ -295,15 +352,24 @@ export function PaymentGatewayModal({
 
             {method === "netbanking" && (
               <div className="rounded-2xl border border-border/80 bg-card p-4 space-y-2">
-                <Label className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold">Select Bank</Label>
+                <Label className="text-[11px] uppercase tracking-wider text-muted-foreground font-bold">
+                  Select Bank
+                </Label>
                 <div className="grid grid-cols-2 gap-2">
-                  {["HDFC Bank", "ICICI Bank", "State Bank of India", "Axis Bank"].map((b) => (
+                  {[
+                    "HDFC Bank",
+                    "ICICI Bank",
+                    "State Bank of India",
+                    "Axis Bank",
+                  ].map((b) => (
                     <button
                       key={b}
                       type="button"
                       onClick={() => setSelectedBank(b)}
                       className={`rounded-xl border p-2.5 text-xs text-left font-medium transition ${
-                        selectedBank === b ? "border-primary bg-primary/10 text-primary font-bold" : "border-border/70 text-muted-foreground hover:border-primary/40"
+                        selectedBank === b
+                          ? "border-primary bg-primary/10 text-primary font-bold"
+                          : "border-border/70 text-muted-foreground hover:border-primary/40"
                       }`}
                     >
                       {b}
@@ -316,9 +382,13 @@ export function PaymentGatewayModal({
             {method === "cod" && (
               <div className="rounded-2xl border border-border/80 bg-card p-4 space-y-1.5 text-xs text-muted-foreground">
                 <p className="font-semibold text-foreground flex items-center gap-1.5">
-                  <BadgeCheck className="size-4 text-primary" /> Pay at Counter / on Delivery
+                  <BadgeCheck className="size-4 text-primary" /> Pay at Counter
+                  / on Delivery
                 </p>
-                <p>You can pay via Cash, UPI QR or Card swipe when receiving your medications at {pharmacyName}.</p>
+                <p>
+                  You can pay via Cash, UPI QR or Card swipe when receiving your
+                  medications at {pharmacyName}.
+                </p>
               </div>
             )}
 
@@ -332,7 +402,11 @@ export function PaymentGatewayModal({
                 disabled={processing}
                 className="font-bold min-w-[160px]"
               >
-                {processing ? "Connecting Gateway..." : method === "cod" ? "Confirm Order" : `Pay ${formatMoney(total)}`}
+                {processing
+                  ? "Connecting Gateway..."
+                  : method === "cod"
+                    ? "Confirm Order"
+                    : `Pay ${formatMoney(total)}`}
               </Button>
             </div>
           </div>

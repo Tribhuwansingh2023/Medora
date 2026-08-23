@@ -102,7 +102,9 @@ const DEMO_QUEUE: ConsultQueueItem[] = [
 ];
 
 function DoctorConsultsPage() {
-  const [activeConsult, setActiveConsult] = useState<ConsultQueueItem>(DEMO_QUEUE[0]!);
+  const [activeConsult, setActiveConsult] = useState<ConsultQueueItem>(
+    DEMO_QUEUE[0]!,
+  );
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCamOn, setIsCamOn] = useState(true);
   const [callActive, setCallActive] = useState(true);
@@ -148,7 +150,14 @@ function DoctorConsultsPage() {
       <PageHeader
         title="Teleconsult & Virtual OPD Suite"
         description="Conduct secure video consultations, record structured SOAP clinical notes, and generate digitally signed e-prescriptions."
-        actions={<Badge variant="outline" className="border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold text-xs">WebRTC Telehealth Live</Badge>}
+        actions={
+          <Badge
+            variant="outline"
+            className="border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold text-xs"
+          >
+            WebRTC Telehealth Live
+          </Badge>
+        }
       />
 
       {/* Main Consult Split Screen */}
@@ -176,14 +185,20 @@ function DoctorConsultsPage() {
                   <div className="grid size-20 place-items-center rounded-full bg-primary/20 text-primary border-2 border-primary/30 mb-2">
                     <User className="size-10" />
                   </div>
-                  <h4 className="font-display font-bold text-base text-white">{activeConsult.patientName}</h4>
-                  <p className="text-xs text-zinc-400">Connected via Medora iOS App</p>
+                  <h4 className="font-display font-bold text-base text-white">
+                    {activeConsult.patientName}
+                  </h4>
+                  <p className="text-xs text-zinc-400">
+                    Connected via Medora iOS App
+                  </p>
                 </div>
 
                 {/* Self View Floating Camera (Bottom Right) */}
                 <div className="absolute bottom-16 right-4 size-20 rounded-2xl border border-white/20 bg-zinc-800/90 backdrop-blur overflow-hidden z-10 flex flex-col items-center justify-center">
                   <Stethoscope className="size-6 text-primary" />
-                  <span className="text-[9px] font-bold text-zinc-300 mt-1">Dr. You</span>
+                  <span className="text-[9px] font-bold text-zinc-300 mt-1">
+                    Dr. You
+                  </span>
                 </div>
 
                 {/* Bottom Call Controls */}
@@ -195,7 +210,11 @@ function DoctorConsultsPage() {
                     onClick={() => setIsMicOn(!isMicOn)}
                     title={isMicOn ? "Mute Microphone" : "Unmute Microphone"}
                   >
-                    {isMicOn ? <Mic className="size-4" /> : <MicOff className="size-4" />}
+                    {isMicOn ? (
+                      <Mic className="size-4" />
+                    ) : (
+                      <MicOff className="size-4" />
+                    )}
                   </Button>
 
                   <Button
@@ -205,7 +224,11 @@ function DoctorConsultsPage() {
                     onClick={() => setIsCamOn(!isCamOn)}
                     title={isCamOn ? "Turn Camera Off" : "Turn Camera On"}
                   >
-                    {isCamOn ? <Camera className="size-4" /> : <CameraOff className="size-4" />}
+                    {isCamOn ? (
+                      <Camera className="size-4" />
+                    ) : (
+                      <CameraOff className="size-4" />
+                    )}
                   </Button>
 
                   <Button
@@ -222,11 +245,19 @@ function DoctorConsultsPage() {
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center space-y-3">
                 <CheckCircle2 className="size-12 text-emerald-500" />
-                <h4 className="font-display font-bold text-base text-white">Consultation Concluded</h4>
+                <h4 className="font-display font-bold text-base text-white">
+                  Consultation Concluded
+                </h4>
                 <p className="text-xs text-zinc-400 max-w-xs">
-                  Review the SOAP clinical notes and click below to sign and dispatch the digital prescription.
+                  Review the SOAP clinical notes and click below to sign and
+                  dispatch the digital prescription.
                 </p>
-                <Button size="sm" variant="outline" className="text-xs font-bold" onClick={handleRestartCall}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-xs font-bold"
+                  onClick={handleRestartCall}
+                >
                   Reconnect Call
                 </Button>
               </div>
@@ -236,20 +267,36 @@ function DoctorConsultsPage() {
           {/* Patient Vitals Summary Strip */}
           <div className="grid grid-cols-4 gap-2 rounded-2xl border border-border bg-card p-3 text-center shadow-xs">
             <div>
-              <span className="text-[10px] uppercase font-bold text-muted-foreground">Blood Pressure</span>
-              <p className="text-xs font-black font-display text-foreground mt-0.5">{activeConsult.vitals.bp}</p>
+              <span className="text-[10px] uppercase font-bold text-muted-foreground">
+                Blood Pressure
+              </span>
+              <p className="text-xs font-black font-display text-foreground mt-0.5">
+                {activeConsult.vitals.bp}
+              </p>
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold text-muted-foreground">Heart Rate</span>
-              <p className="text-xs font-black font-display text-foreground mt-0.5">{activeConsult.vitals.pulse} bpm</p>
+              <span className="text-[10px] uppercase font-bold text-muted-foreground">
+                Heart Rate
+              </span>
+              <p className="text-xs font-black font-display text-foreground mt-0.5">
+                {activeConsult.vitals.pulse} bpm
+              </p>
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold text-muted-foreground">SpO2 Oxygen</span>
-              <p className="text-xs font-black font-display text-emerald-600 dark:text-emerald-400 mt-0.5">{activeConsult.vitals.spo2}</p>
+              <span className="text-[10px] uppercase font-bold text-muted-foreground">
+                SpO2 Oxygen
+              </span>
+              <p className="text-xs font-black font-display text-emerald-600 dark:text-emerald-400 mt-0.5">
+                {activeConsult.vitals.spo2}
+              </p>
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold text-muted-foreground">Body Temp</span>
-              <p className="text-xs font-black font-display text-amber-600 dark:text-amber-400 mt-0.5">{activeConsult.vitals.temp}</p>
+              <span className="text-[10px] uppercase font-bold text-muted-foreground">
+                Body Temp
+              </span>
+              <p className="text-xs font-black font-display text-amber-600 dark:text-amber-400 mt-0.5">
+                {activeConsult.vitals.temp}
+              </p>
             </div>
           </div>
 
@@ -257,7 +304,9 @@ function DoctorConsultsPage() {
           <div className="rounded-2xl border border-border bg-card p-4 shadow-xs space-y-3">
             <h4 className="font-display font-bold text-xs text-foreground uppercase tracking-wider flex items-center justify-between">
               <span>Today's Virtual OPD Queue</span>
-              <Badge variant="outline" className="text-[10px] font-bold">{DEMO_QUEUE.length} Patients</Badge>
+              <Badge variant="outline" className="text-[10px] font-bold">
+                {DEMO_QUEUE.length} Patients
+              </Badge>
             </h4>
 
             <div className="space-y-2">
@@ -279,16 +328,26 @@ function DoctorConsultsPage() {
                     )}
                   >
                     <div className="flex items-center gap-2.5">
-                      <div className={cn(
-                        "size-2 rounded-full",
-                        item.status === "in_progress" ? "bg-emerald-500 animate-pulse" : "bg-zinc-400",
-                      )} />
+                      <div
+                        className={cn(
+                          "size-2 rounded-full",
+                          item.status === "in_progress"
+                            ? "bg-emerald-500 animate-pulse"
+                            : "bg-zinc-400",
+                        )}
+                      />
                       <div>
-                        <p className="font-bold text-foreground">{item.patientName}</p>
-                        <p className="text-[11px] text-muted-foreground truncate max-w-[180px]">{item.symptoms}</p>
+                        <p className="font-bold text-foreground">
+                          {item.patientName}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground truncate max-w-[180px]">
+                          {item.symptoms}
+                        </p>
                       </div>
                     </div>
-                    <span className="text-[11px] font-medium text-muted-foreground shrink-0">{item.scheduledTime}</span>
+                    <span className="text-[11px] font-medium text-muted-foreground shrink-0">
+                      {item.scheduledTime}
+                    </span>
                   </div>
                 );
               })}
@@ -301,9 +360,12 @@ function DoctorConsultsPage() {
           <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-4">
               <div>
-                <span className="text-xs font-mono font-bold text-primary uppercase">EHR Encounter Record</span>
+                <span className="text-xs font-mono font-bold text-primary uppercase">
+                  EHR Encounter Record
+                </span>
                 <h3 className="font-display text-base font-extrabold text-foreground mt-0.5">
-                  Clinical SOAP Note — {activeConsult.patientName} ({activeConsult.patientAge}y, {activeConsult.gender})
+                  Clinical SOAP Note — {activeConsult.patientName} (
+                  {activeConsult.patientAge}y, {activeConsult.gender})
                 </h3>
               </div>
 
@@ -320,7 +382,9 @@ function DoctorConsultsPage() {
             {/* SOAP Section 1: Subjective */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                <span className="size-4 grid place-items-center rounded bg-primary/10 text-primary text-[10px] font-black">S</span>
+                <span className="size-4 grid place-items-center rounded bg-primary/10 text-primary text-[10px] font-black">
+                  S
+                </span>
                 Subjective (Chief Complaint & History)
               </Label>
               <Textarea
@@ -334,7 +398,9 @@ function DoctorConsultsPage() {
             {/* SOAP Section 2: Objective */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                <span className="size-4 grid place-items-center rounded bg-primary/10 text-primary text-[10px] font-black">O</span>
+                <span className="size-4 grid place-items-center rounded bg-primary/10 text-primary text-[10px] font-black">
+                  O
+                </span>
                 Objective (Physical Findings & Vitals)
               </Label>
               <Textarea
@@ -348,7 +414,9 @@ function DoctorConsultsPage() {
             {/* SOAP Section 3: Assessment */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                <span className="size-4 grid place-items-center rounded bg-primary/10 text-primary text-[10px] font-black">A</span>
+                <span className="size-4 grid place-items-center rounded bg-primary/10 text-primary text-[10px] font-black">
+                  A
+                </span>
                 Assessment (ICD-10 Clinical Diagnosis)
               </Label>
               <Input
@@ -361,7 +429,9 @@ function DoctorConsultsPage() {
             {/* SOAP Section 4: Plan & Rx */}
             <div className="space-y-1.5">
               <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                <span className="size-4 grid place-items-center rounded bg-primary/10 text-primary text-[10px] font-black">P</span>
+                <span className="size-4 grid place-items-center rounded bg-primary/10 text-primary text-[10px] font-black">
+                  P
+                </span>
                 Plan & Digital Prescription Regimen
               </Label>
               <Textarea
@@ -376,7 +446,9 @@ function DoctorConsultsPage() {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-border">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <ShieldCheck className="size-4 text-emerald-500" />
-                <span>Digitally Signed with Medical Council Registry ID #KMC-84920</span>
+                <span>
+                  Digitally Signed with Medical Council Registry ID #KMC-84920
+                </span>
               </div>
 
               <div className="flex items-center gap-2 w-full sm:w-auto">

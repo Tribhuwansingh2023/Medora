@@ -23,6 +23,10 @@ describe("Leaflet Map Medical Stores Integration", () => {
   it("identifies 24x7 emergency medical store nodes", () => {
     const emergencyStores = demoPharmacies.filter((p) => p.open24h);
     expect(emergencyStores.length).toBeGreaterThan(2);
-    expect(emergencyStores.some((s) => s.name.includes("24x7") || s.name.includes("24h"))).toBe(true);
+    expect(
+      emergencyStores.some(
+        (s) => s.name.includes("24x7") || s.name.includes("24h"),
+      ),
+    ).toBe(true);
   });
 });

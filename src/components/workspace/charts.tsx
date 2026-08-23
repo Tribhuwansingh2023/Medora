@@ -31,7 +31,10 @@ export function ChartFrame({
           )}
         </div>
       </figcaption>
-      <div style={{ height, minHeight: height }} className="w-full min-w-0 relative">
+      <div
+        style={{ height, minHeight: height }}
+        className="w-full min-w-0 relative"
+      >
         {children}
       </div>
     </figure>
@@ -81,8 +84,17 @@ export function TrendAreaChart({
   // Calculate coordinates
   const points = chartData.map((d, i) => {
     const x = paddingX + (i / Math.max(chartData.length - 1, 1)) * graphWidth;
-    const y = height - paddingY - ((Number(d[yKey]) - minVal) / (maxVal - minVal)) * graphHeight;
-    return { x, y, data: d, val: Number(d[yKey]) || 0, label: String(d[xKey] || "") };
+    const y =
+      height -
+      paddingY -
+      ((Number(d[yKey]) - minVal) / (maxVal - minVal)) * graphHeight;
+    return {
+      x,
+      y,
+      data: d,
+      val: Number(d[yKey]) || 0,
+      label: String(d[xKey] || ""),
+    };
   });
 
   // Build smooth cubic bezier SVG curve
@@ -110,7 +122,8 @@ export function TrendAreaChart({
     return `${pathD} L ${last.x} ${bottom} L ${first.x} ${bottom} Z`;
   }, [pathD, points, height, paddingY]);
 
-  const activePoint = activeIdx !== null ? points[activeIdx] : points[points.length - 1];
+  const activePoint =
+    activeIdx !== null ? points[activeIdx] : points[points.length - 1];
 
   return (
     <div className="size-full flex flex-col justify-between select-none relative">
@@ -139,7 +152,8 @@ export function TrendAreaChart({
         {[0, 0.33, 0.66, 1].map((ratio, idx) => {
           const y = height - paddingY - ratio * graphHeight;
           const val = Math.round(minVal + ratio * (maxVal - minVal));
-          const labelText = val >= 1000 ? `₹${(val / 1000).toFixed(0)}k` : `₹${val}`;
+          const labelText =
+            val >= 1000 ? `₹${(val / 1000).toFixed(0)}k` : `₹${val}`;
           return (
             <g key={idx}>
               <line
@@ -179,7 +193,8 @@ export function TrendAreaChart({
 
         {/* Data points & Interactive Hover Zones */}
         {points.map((pt, i) => {
-          const isActive = activeIdx === i || (activeIdx === null && i === points.length - 1);
+          const isActive =
+            activeIdx === i || (activeIdx === null && i === points.length - 1);
           return (
             <g
               key={i}
@@ -233,9 +248,14 @@ export function TrendAreaChart({
       {activePoint && (
         <div className="absolute top-1 right-2 rounded-xl border border-primary/20 bg-background/90 backdrop-blur-md px-3 py-1.5 shadow-soft flex items-center gap-2">
           <span className="size-2 rounded-full bg-primary animate-pulse" />
-          <span className="text-[11px] font-medium text-muted-foreground">{activePoint.label}:</span>
+          <span className="text-[11px] font-medium text-muted-foreground">
+            {activePoint.label}:
+          </span>
           <span className="font-mono text-xs font-bold text-ink">
-            ₹{activePoint.val.toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+            ₹
+            {activePoint.val.toLocaleString("en-IN", {
+              maximumFractionDigits: 2,
+            })}
           </span>
         </div>
       )}
@@ -263,7 +283,8 @@ export function SimpleBarChart({
     return SAMPLE_TREND;
   }, [data]);
 
-  const maxVal = Math.max(...chartData.map((d) => Number(d[yKey]) || 0), 10) * 1.15;
+  const maxVal =
+    Math.max(...chartData.map((d) => Number(d[yKey]) || 0), 10) * 1.15;
 
   return (
     <div className="size-full flex flex-col justify-between pt-2 pb-1 relative select-none">
@@ -273,7 +294,8 @@ export function SimpleBarChart({
           const val = Number(item[yKey]) || 0;
           const heightPct = Math.max(8, (val / maxVal) * 100);
           const isHovered = hoveredIdx === idx;
-          const barColor = item[colorKey || ""] || CHART_COLORS[idx % CHART_COLORS.length];
+          const barColor =
+            item[colorKey || ""] || CHART_COLORS[idx % CHART_COLORS.length];
 
           return (
             <div
@@ -408,7 +430,9 @@ export function StatusDonutChart({
             </>
           ) : (
             <>
-              <span className="font-display text-2xl font-black text-ink">{total}</span>
+              <span className="font-display text-2xl font-black text-ink">
+                {total}
+              </span>
               <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">
                 Prescriptions
               </span>
@@ -429,7 +453,14 @@ export function MultiLineChart({
   xKey: string;
   series: { key: string; label: string }[];
 }) {
-  return <TrendAreaChart data={data} xKey={xKey} yKey={series[0]?.key || "revenue"} label={series[0]?.label || "Value"} />;
+  return (
+    <TrendAreaChart
+      data={data}
+      xKey={xKey}
+      yKey={series[0]?.key || "revenue"}
+      label={series[0]?.label || "Value"}
+    />
+  );
 }
 
 export function ChartLegend({

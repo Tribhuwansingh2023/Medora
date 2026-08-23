@@ -331,15 +331,38 @@ export async function runAssistantPipeline(
       question,
     )) as ProviderOutput<AiPayload> | null;
   } else if (intent.intent === "medicine_comparison") {
-    const stopWords = new Set(["compare", "vs", "versus", "and", "between", "difference", "differences", "which", "better", "is", "the", "what", "how", "does", "differ", "from"]);
-    const rawTokens = question.replace(/[^\w\s]/g, " ").split(/\s+/).filter((w) => w.length > 2 && !stopWords.has(w.toLowerCase()));
-    const comparisonList = e.medicineIds.length > 0
-      ? e.medicineIds
-      : e.medicineNames.length > 0
-        ? e.medicineNames
-        : rawTokens;
+    const stopWords = new Set([
+      "compare",
+      "vs",
+      "versus",
+      "and",
+      "between",
+      "difference",
+      "differences",
+      "which",
+      "better",
+      "is",
+      "the",
+      "what",
+      "how",
+      "does",
+      "differ",
+      "from",
+    ]);
+    const rawTokens = question
+      .replace(/[^\w\s]/g, " ")
+      .split(/\s+/)
+      .filter((w) => w.length > 2 && !stopWords.has(w.toLowerCase()));
+    const comparisonList =
+      e.medicineIds.length > 0
+        ? e.medicineIds
+        : e.medicineNames.length > 0
+          ? e.medicineNames
+          : rawTokens;
     output = (await provider.compareMedicines(
-      comparisonList.length >= 1 ? comparisonList : ["paracetamol", "ibuprofen"],
+      comparisonList.length >= 1
+        ? comparisonList
+        : ["paracetamol", "ibuprofen"],
     )) as ProviderOutput<AiPayload> | null;
   } else if (
     intent.intent === "interaction_check" ||

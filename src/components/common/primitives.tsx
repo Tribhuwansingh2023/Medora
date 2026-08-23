@@ -114,8 +114,10 @@ export function SafetyNotice({
       role={tone === "emergency" ? "alert" : "note"}
       className={cn(
         "flex items-start gap-3.5 rounded-2xl border p-4 text-sm shadow-2xs transition-all",
-        tone === "emergency" && "border-destructive/30 bg-destructive-soft/60 text-destructive-foreground",
-        tone === "warning" && "border-amber-500/30 bg-amber-500/10 text-amber-950 dark:text-amber-100",
+        tone === "emergency" &&
+          "border-destructive/30 bg-destructive-soft/60 text-destructive-foreground",
+        tone === "warning" &&
+          "border-amber-500/30 bg-amber-500/10 text-amber-950 dark:text-amber-100",
         tone === "info" && "border-primary/20 bg-primary/5 text-foreground",
         className,
       )}
@@ -124,7 +126,8 @@ export function SafetyNotice({
         className={cn(
           "grid size-8 shrink-0 place-items-center rounded-xl",
           tone === "emergency" && "bg-destructive/20 text-destructive",
-          tone === "warning" && "bg-amber-500/20 text-amber-600 dark:text-amber-400",
+          tone === "warning" &&
+            "bg-amber-500/20 text-amber-600 dark:text-amber-400",
           tone === "info" && "bg-primary/20 text-primary",
         )}
       >

@@ -144,16 +144,19 @@ Output strictly valid JSON.`;
           const result = await response.json();
           const rawText =
             result.candidates?.[0]?.content?.parts?.[0]?.text || "";
-          const cleanJson = rawText
-            .replace(/```json\n?|\n?```/g, "")
-            .trim();
+          const cleanJson = rawText.replace(/```json\n?|\n?```/g, "").trim();
           const parsed = JSON.parse(cleanJson);
 
-          if (parsed.items && Array.isArray(parsed.items) && parsed.items.length > 0) {
+          if (
+            parsed.items &&
+            Array.isArray(parsed.items) &&
+            parsed.items.length > 0
+          ) {
             return {
               prescription: {
                 fileName: file.name.slice(0, 80),
-                prescriberName: parsed.prescriberName || "Extracted via Gemini Vision",
+                prescriberName:
+                  parsed.prescriberName || "Extracted via Gemini Vision",
                 patientName: parsed.patientName || undefined,
               },
               items: (parsed.items as ExtractedItemRaw[]).map((i) => ({
@@ -162,13 +165,17 @@ Output strictly valid JSON.`;
                 frequency: String(i.frequency || "Once daily"),
                 duration: String(i.duration || "As advised"),
                 notes: i.notes ? String(i.notes) : undefined,
-                confidence: typeof i.confidence === "number" ? i.confidence : 0.9,
+                confidence:
+                  typeof i.confidence === "number" ? i.confidence : 0.9,
               })),
             };
           }
         }
       } catch (err) {
-        console.warn("[OCR] Live Gemini Vision encountered an issue, falling back to template extraction:", err);
+        console.warn(
+          "[OCR] Live Gemini Vision encountered an issue, falling back to template extraction:",
+          err,
+        );
       }
     }
 

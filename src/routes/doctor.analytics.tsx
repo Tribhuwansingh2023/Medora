@@ -61,17 +61,52 @@ const PATIENT_VOLUME_SERIES = [
 const TOP_CONDITIONS = [
   { name: "Type 2 Diabetes Mellitus", count: 398, share: 32, trend: "+4%" },
   { name: "Essential Hypertension", count: 348, share: 28, trend: "+2%" },
-  { name: "Upper Respiratory Infections (URTI)", count: 198, share: 16, trend: "+12%" },
-  { name: "Dyslipidemia & Hypercholesterolemia", count: 174, share: 14, trend: "-1%" },
+  {
+    name: "Upper Respiratory Infections (URTI)",
+    count: 198,
+    share: 16,
+    trend: "+12%",
+  },
+  {
+    name: "Dyslipidemia & Hypercholesterolemia",
+    count: 174,
+    share: 14,
+    trend: "-1%",
+  },
   { name: "Hypothyroidism & Endocrine", count: 124, share: 10, trend: "+3%" },
 ];
 
 const TOP_DRUGS_PRESCRIBED = [
-  { name: "Metformin Hydrochloride 500mg SR", category: "Antidiabetic", count: 312, genericRate: "100%" },
-  { name: "Telmisartan 40mg", category: "Antihypertensive", count: 284, genericRate: "98%" },
-  { name: "Atorvastatin 20mg", category: "Lipid Lowering", count: 242, genericRate: "96%" },
-  { name: "Paracetamol 650mg", category: "Analgesic / Antipyretic", count: 198, genericRate: "100%" },
-  { name: "Amoxicillin + Clavulanic Acid 625mg", category: "Antibiotic (AWaRe)", count: 86, genericRate: "94%" },
+  {
+    name: "Metformin Hydrochloride 500mg SR",
+    category: "Antidiabetic",
+    count: 312,
+    genericRate: "100%",
+  },
+  {
+    name: "Telmisartan 40mg",
+    category: "Antihypertensive",
+    count: 284,
+    genericRate: "98%",
+  },
+  {
+    name: "Atorvastatin 20mg",
+    category: "Lipid Lowering",
+    count: 242,
+    genericRate: "96%",
+  },
+  {
+    name: "Paracetamol 650mg",
+    category: "Analgesic / Antipyretic",
+    count: 198,
+    genericRate: "100%",
+  },
+  {
+    name: "Amoxicillin + Clavulanic Acid 625mg",
+    category: "Antibiotic (AWaRe)",
+    count: 86,
+    genericRate: "94%",
+  },
 ];
 
 function DoctorAnalyticsPage() {
@@ -90,7 +125,12 @@ function DoctorAnalyticsPage() {
           title="Practice Analytics & Quality Metrics"
           description="Track patient footfall trends, diagnostic disease distribution, generic drug prescribing compliance, and clinical outcome indices."
         />
-        <Button size="sm" variant="outline" className="h-9 font-bold text-xs gap-1.5 self-start sm:self-auto rounded-xl" onClick={handleExportReport}>
+        <Button
+          size="sm"
+          variant="outline"
+          className="h-9 font-bold text-xs gap-1.5 self-start sm:self-auto rounded-xl"
+          onClick={handleExportReport}
+        >
           <Download className="size-3.5" /> Export Monthly Report
         </Button>
       </div>
@@ -147,41 +187,65 @@ function DoctorAnalyticsPage() {
         {/* Quality & Stewardship Scores (1 Col) */}
         <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-5">
           <h3 className="font-display font-extrabold text-sm text-foreground flex items-center gap-2">
-            <Award className="size-4 text-primary" /> Clinical Quality Accreditations
+            <Award className="size-4 text-primary" /> Clinical Quality
+            Accreditations
           </h3>
 
           <div className="space-y-4 text-xs">
             <div className="rounded-2xl border border-border bg-muted/20 p-3.5 space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-foreground">ICMR Antibiotic Stewardship</span>
-                <span className="font-black text-emerald-600 dark:text-emerald-400">96.2%</span>
+                <span className="font-bold text-foreground">
+                  ICMR Antibiotic Stewardship
+                </span>
+                <span className="font-black text-emerald-600 dark:text-emerald-400">
+                  96.2%
+                </span>
               </div>
               <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                <div className="h-full bg-emerald-500 rounded-full" style={{ width: "96.2%" }} />
+                <div
+                  className="h-full bg-emerald-500 rounded-full"
+                  style={{ width: "96.2%" }}
+                />
               </div>
-              <p className="text-[10px] text-muted-foreground mt-1">Rational antibiotic use without over-prescribing.</p>
+              <p className="text-[10px] text-muted-foreground mt-1">
+                Rational antibiotic use without over-prescribing.
+              </p>
             </div>
 
             <div className="rounded-2xl border border-border bg-muted/20 p-3.5 space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-foreground">Patient Recovery Index</span>
+                <span className="font-bold text-foreground">
+                  Patient Recovery Index
+                </span>
                 <span className="font-black text-primary">94.8%</span>
               </div>
               <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                <div className="h-full bg-primary rounded-full" style={{ width: "94.8%" }} />
+                <div
+                  className="h-full bg-primary rounded-full"
+                  style={{ width: "94.8%" }}
+                />
               </div>
-              <p className="text-[10px] text-muted-foreground mt-1">Symptom resolution within standard therapeutic window.</p>
+              <p className="text-[10px] text-muted-foreground mt-1">
+                Symptom resolution within standard therapeutic window.
+              </p>
             </div>
 
             <div className="rounded-2xl border border-border bg-muted/20 p-3.5 space-y-1.5">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-foreground">Digital Rx Delivery Rate</span>
+                <span className="font-bold text-foreground">
+                  Digital Rx Delivery Rate
+                </span>
                 <span className="font-black text-sky-600">99.1%</span>
               </div>
               <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                <div className="h-full bg-sky-500 rounded-full" style={{ width: "99.1%" }} />
+                <div
+                  className="h-full bg-sky-500 rounded-full"
+                  style={{ width: "99.1%" }}
+                />
               </div>
-              <p className="text-[10px] text-muted-foreground mt-1">Zero prescription loss via automated SMS/App sync.</p>
+              <p className="text-[10px] text-muted-foreground mt-1">
+                Zero prescription loss via automated SMS/App sync.
+              </p>
             </div>
           </div>
         </div>
@@ -193,9 +257,12 @@ function DoctorAnalyticsPage() {
         <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-4">
           <h3 className="font-display font-extrabold text-sm text-foreground flex items-center justify-between">
             <span className="flex items-center gap-2">
-              <HeartPulse className="size-4 text-primary" /> Top Diagnosed Clinical Conditions
+              <HeartPulse className="size-4 text-primary" /> Top Diagnosed
+              Clinical Conditions
             </span>
-            <span className="text-xs text-muted-foreground font-normal">This Month</span>
+            <span className="text-xs text-muted-foreground font-normal">
+              This Month
+            </span>
           </h3>
 
           <div className="space-y-3">
@@ -203,10 +270,15 @@ function DoctorAnalyticsPage() {
               <div key={c.name} className="space-y-1 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-foreground">{c.name}</span>
-                  <span className="font-medium text-muted-foreground">{c.count} cases ({c.share}%)</span>
+                  <span className="font-medium text-muted-foreground">
+                    {c.count} cases ({c.share}%)
+                  </span>
                 </div>
                 <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                  <div className="h-full bg-primary/80 rounded-full" style={{ width: `${c.share * 2.5}%` }} />
+                  <div
+                    className="h-full bg-primary/80 rounded-full"
+                    style={{ width: `${c.share * 2.5}%` }}
+                  />
                 </div>
               </div>
             ))}
@@ -217,21 +289,33 @@ function DoctorAnalyticsPage() {
         <div className="rounded-3xl border border-border bg-card p-6 shadow-xs space-y-4">
           <h3 className="font-display font-extrabold text-sm text-foreground flex items-center justify-between">
             <span className="flex items-center gap-2">
-              <Pill className="size-4 text-primary" /> Top Prescribed Therapeutics
+              <Pill className="size-4 text-primary" /> Top Prescribed
+              Therapeutics
             </span>
-            <Badge variant="outline" className="text-[10px] font-bold">NLEM 2024</Badge>
+            <Badge variant="outline" className="text-[10px] font-bold">
+              NLEM 2024
+            </Badge>
           </h3>
 
           <div className="divide-y divide-border/60">
             {TOP_DRUGS_PRESCRIBED.map((d) => (
-              <div key={d.name} className="py-2.5 flex items-center justify-between text-xs">
+              <div
+                key={d.name}
+                className="py-2.5 flex items-center justify-between text-xs"
+              >
                 <div>
                   <p className="font-bold text-foreground">{d.name}</p>
-                  <p className="text-[11px] text-muted-foreground">{d.category}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {d.category}
+                  </p>
                 </div>
                 <div className="text-right">
-                  <span className="font-bold text-foreground">{d.count} Rxs</span>
-                  <p className="text-[10px] text-emerald-600 font-semibold">{d.genericRate} generic</p>
+                  <span className="font-bold text-foreground">
+                    {d.count} Rxs
+                  </span>
+                  <p className="text-[10px] text-emerald-600 font-semibold">
+                    {d.genericRate} generic
+                  </p>
                 </div>
               </div>
             ))}

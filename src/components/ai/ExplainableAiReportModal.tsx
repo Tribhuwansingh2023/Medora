@@ -49,7 +49,9 @@ export function ExplainableAiReportModal({
   open,
   onOpenChange,
 }: ExplainableAiReportModalProps) {
-  const [activeTab, setActiveTab] = useState<"summary" | "chain" | "agents" | "pharmacology">("summary");
+  const [activeTab, setActiveTab] = useState<
+    "summary" | "chain" | "agents" | "pharmacology"
+  >("summary");
   const [expandedStep, setExpandedStep] = useState<number | null>(1);
 
   if (!report) return null;
@@ -78,7 +80,8 @@ export function ExplainableAiReportModal({
                 {report.primaryTitle}
               </DialogTitle>
               <DialogDescription className="text-xs sm:text-sm text-muted-foreground">
-                Deterministic multi-agent reasoning with full chain-of-thought provenance and clinical citations.
+                Deterministic multi-agent reasoning with full chain-of-thought
+                provenance and clinical citations.
               </DialogDescription>
             </div>
           </div>
@@ -94,27 +97,46 @@ export function ExplainableAiReportModal({
                 {report.overallConfidence}/100 High Certainty
               </span>
             </div>
-            <Progress value={report.overallConfidence} className="h-2 bg-muted" />
+            <Progress
+              value={report.overallConfidence}
+              className="h-2 bg-muted"
+            />
           </div>
         </div>
 
         {/* Navigation Tabs */}
         <div className="p-6 sm:p-8 space-y-6">
-          <Tabs value={activeTab} onValueChange={(v: any) => setActiveTab(v)} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={(v: any) => setActiveTab(v)}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-4 h-11 p-1 bg-muted/50 rounded-xl border border-border">
-              <TabsTrigger value="summary" className="text-xs font-bold rounded-lg">
+              <TabsTrigger
+                value="summary"
+                className="text-xs font-bold rounded-lg"
+              >
                 <Lightbulb className="mr-1.5 size-3.5" />
                 Executive Summary
               </TabsTrigger>
-              <TabsTrigger value="chain" className="text-xs font-bold rounded-lg">
+              <TabsTrigger
+                value="chain"
+                className="text-xs font-bold rounded-lg"
+              >
                 <Layers className="mr-1.5 size-3.5" />
                 Reasoning Chain ({report.decisionChain.length})
               </TabsTrigger>
-              <TabsTrigger value="agents" className="text-xs font-bold rounded-lg">
+              <TabsTrigger
+                value="agents"
+                className="text-xs font-bold rounded-lg"
+              >
                 <Bot className="mr-1.5 size-3.5" />
                 Agent Votes (4)
               </TabsTrigger>
-              <TabsTrigger value="pharmacology" className="text-xs font-bold rounded-lg">
+              <TabsTrigger
+                value="pharmacology"
+                className="text-xs font-bold rounded-lg"
+              >
                 <Microscope className="mr-1.5 size-3.5" />
                 Clinical Deep Dive
               </TabsTrigger>
@@ -160,19 +182,33 @@ export function ExplainableAiReportModal({
                   </div>
                   <div className="grid gap-3 sm:grid-cols-3">
                     <div className="rounded-xl border border-border bg-card p-3">
-                      <span className="text-[10px] font-semibold text-muted-foreground uppercase">Cheapest Brand</span>
-                      <div className="font-display text-base font-bold text-ink truncate">{report.economicSavingsInsight.cheapestBrand}</div>
-                    </div>
-                    <div className="rounded-xl border border-border bg-card p-3">
-                      <span className="text-[10px] font-semibold text-muted-foreground uppercase">Pack Saving</span>
-                      <div className="font-display text-base font-bold text-emerald-600 dark:text-emerald-400">
-                        {formatMoney(report.economicSavingsInsight.savingsPerPack)} ({report.economicSavingsInsight.savingsPercentage}% off)
+                      <span className="text-[10px] font-semibold text-muted-foreground uppercase">
+                        Cheapest Brand
+                      </span>
+                      <div className="font-display text-base font-bold text-ink truncate">
+                        {report.economicSavingsInsight.cheapestBrand}
                       </div>
                     </div>
                     <div className="rounded-xl border border-border bg-card p-3">
-                      <span className="text-[10px] font-semibold text-muted-foreground uppercase">Annualized Savings</span>
+                      <span className="text-[10px] font-semibold text-muted-foreground uppercase">
+                        Pack Saving
+                      </span>
+                      <div className="font-display text-base font-bold text-emerald-600 dark:text-emerald-400">
+                        {formatMoney(
+                          report.economicSavingsInsight.savingsPerPack,
+                        )}{" "}
+                        ({report.economicSavingsInsight.savingsPercentage}% off)
+                      </div>
+                    </div>
+                    <div className="rounded-xl border border-border bg-card p-3">
+                      <span className="text-[10px] font-semibold text-muted-foreground uppercase">
+                        Annualized Savings
+                      </span>
                       <div className="font-display text-base font-bold text-primary">
-                        {formatMoney(report.economicSavingsInsight.annualizedSavings)} / year
+                        {formatMoney(
+                          report.economicSavingsInsight.annualizedSavings,
+                        )}{" "}
+                        / year
                       </div>
                     </div>
                   </div>
@@ -187,7 +223,10 @@ export function ExplainableAiReportModal({
                 </h4>
                 <div className="space-y-2">
                   {report.counterfactuals.map((cf, i) => (
-                    <div key={i} className="flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 p-3 text-xs leading-relaxed text-foreground">
+                    <div
+                      key={i}
+                      className="flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 p-3 text-xs leading-relaxed text-foreground"
+                    >
                       <span className="grid size-5 shrink-0 place-items-center rounded-full bg-muted font-bold text-[10px] text-muted-foreground">
                         {i + 1}
                       </span>
@@ -201,7 +240,8 @@ export function ExplainableAiReportModal({
             {/* TAB 2: REASONING CHAIN (Step-by-Step CoT) */}
             <TabsContent value="chain" className="space-y-4 pt-4">
               <p className="text-xs text-muted-foreground">
-                Traceable step-by-step reasoning executed across the clinical pipeline:
+                Traceable step-by-step reasoning executed across the clinical
+                pipeline:
               </p>
               <div className="space-y-3">
                 {report.decisionChain.map((step) => {
@@ -211,12 +251,16 @@ export function ExplainableAiReportModal({
                       key={step.step}
                       className={cn(
                         "rounded-2xl border-2 transition-all",
-                        isExpanded ? "border-primary/50 bg-card shadow-sm" : "border-border bg-card/60 hover:border-border/80",
+                        isExpanded
+                          ? "border-primary/50 bg-card shadow-sm"
+                          : "border-border bg-card/60 hover:border-border/80",
                       )}
                     >
                       <button
                         type="button"
-                        onClick={() => setExpandedStep(isExpanded ? null : step.step)}
+                        onClick={() =>
+                          setExpandedStep(isExpanded ? null : step.step)
+                        }
                         className="flex w-full items-center justify-between p-4 text-left"
                       >
                         <div className="flex items-center gap-3">
@@ -225,27 +269,42 @@ export function ExplainableAiReportModal({
                           </span>
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="font-display text-sm font-bold text-ink">{step.title}</span>
-                              <Badge variant="outline" className="text-[10px] uppercase font-mono">
+                              <span className="font-display text-sm font-bold text-ink">
+                                {step.title}
+                              </span>
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] uppercase font-mono"
+                              >
                                 {step.agentName.split(" ")[0]}
                               </Badge>
                             </div>
-                            <span className="text-[11px] text-muted-foreground">{step.agentName}</span>
+                            <span className="text-[11px] text-muted-foreground">
+                              {step.agentName}
+                            </span>
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
                           <Badge
                             className={cn(
                               "text-[10px] font-bold uppercase",
-                              step.riskLevel === "optimal" && "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
-                              step.riskLevel === "info" && "bg-blue-500/10 text-blue-600 border-blue-500/30",
-                              step.riskLevel === "caution" && "bg-amber-500/10 text-amber-600 border-amber-500/30",
-                              step.riskLevel === "warning" && "bg-rose-500/10 text-rose-600 border-rose-500/30",
+                              step.riskLevel === "optimal" &&
+                                "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
+                              step.riskLevel === "info" &&
+                                "bg-blue-500/10 text-blue-600 border-blue-500/30",
+                              step.riskLevel === "caution" &&
+                                "bg-amber-500/10 text-amber-600 border-amber-500/30",
+                              step.riskLevel === "warning" &&
+                                "bg-rose-500/10 text-rose-600 border-rose-500/30",
                             )}
                           >
                             {step.confidence}% Confidence
                           </Badge>
-                          {isExpanded ? <ChevronDown className="size-4 text-muted-foreground" /> : <ChevronRight className="size-4 text-muted-foreground" />}
+                          {isExpanded ? (
+                            <ChevronDown className="size-4 text-muted-foreground" />
+                          ) : (
+                            <ChevronRight className="size-4 text-muted-foreground" />
+                          )}
                         </div>
                       </button>
 
@@ -270,11 +329,15 @@ export function ExplainableAiReportModal({
             {/* TAB 3: AGENT VOTES */}
             <TabsContent value="agents" className="space-y-4 pt-4">
               <p className="text-xs text-muted-foreground">
-                Consensus and confidence metrics reported by each specialized autonomous agent:
+                Consensus and confidence metrics reported by each specialized
+                autonomous agent:
               </p>
               <div className="grid gap-4 sm:grid-cols-2">
                 {Object.entries(report.agentVotes).map(([role, vote]) => (
-                  <div key={role} className="rounded-2xl border-2 border-border bg-card p-4 space-y-2">
+                  <div
+                    key={role}
+                    className="rounded-2xl border-2 border-border bg-card p-4 space-y-2"
+                  >
                     <div className="flex items-center justify-between">
                       <span className="font-display text-sm font-bold capitalize text-ink">
                         {role === "pharmacology" && "🔬 Pharmacology Agent"}
@@ -282,14 +345,23 @@ export function ExplainableAiReportModal({
                         {role === "economics" && "📈 Economics & Pricing Agent"}
                         {role === "triage" && "🩺 Clinical Triage Agent"}
                       </span>
-                      <Badge variant={vote.approved ? "default" : "destructive"} className="text-[10px] font-bold uppercase">
+                      <Badge
+                        variant={vote.approved ? "default" : "destructive"}
+                        className="text-[10px] font-bold uppercase"
+                      >
                         {vote.approved ? "Approved" : "Flagged"}
                       </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground font-medium">{vote.comment}</p>
+                    <p className="text-xs text-muted-foreground font-medium">
+                      {vote.comment}
+                    </p>
                     <div className="pt-1 flex items-center justify-between text-[11px]">
-                      <span className="text-muted-foreground">Agent Confidence:</span>
-                      <span className="font-mono font-bold text-primary">{vote.score}%</span>
+                      <span className="text-muted-foreground">
+                        Agent Confidence:
+                      </span>
+                      <span className="font-mono font-bold text-primary">
+                        {vote.score}%
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -308,7 +380,8 @@ export function ExplainableAiReportModal({
                 </p>
                 <div className="text-[11px] text-muted-foreground flex items-center gap-1.5 pt-1">
                   <Info className="size-3.5 text-primary" />
-                  Validated against CDSCO Indian Pharmacopoeia and WHO Bioequivalence guidelines.
+                  Validated against CDSCO Indian Pharmacopoeia and WHO
+                  Bioequivalence guidelines.
                 </div>
               </div>
             </TabsContent>

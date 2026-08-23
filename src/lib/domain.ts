@@ -150,16 +150,22 @@ export interface PaymentDetails {
   receiptNumber?: string | undefined;
   paidAt?: string | undefined;
   amount: number;
-  gstBreakdown?: {
-    subtotal: number;
-    cgst: number;
-    sgst: number;
-    total: number;
-  } | undefined;
+  gstBreakdown?:
+    | {
+        subtotal: number;
+        cgst: number;
+        sgst: number;
+        total: number;
+      }
+    | undefined;
 }
 
 export interface DeliveryDetails {
-  partner: "Dunzo MedExpress" | "Shadowfax Health Logistics" | "Porter Clinical" | "Local Express";
+  partner:
+    | "Dunzo MedExpress"
+    | "Shadowfax Health Logistics"
+    | "Porter Clinical"
+    | "Local Express";
   riderName?: string | undefined;
   riderPhone?: string | undefined;
   vehicleNumber?: string | undefined;
@@ -249,12 +255,14 @@ export interface NotificationItem {
   channels?: ("in_app" | "push" | "email" | "sms")[] | undefined;
   actionUrl?: string | undefined;
   actionLabel?: string | undefined;
-  meta?: {
-    orderId?: string | undefined;
-    medicineId?: string | undefined;
-    severity?: "info" | "warning" | "critical" | undefined;
-    priceDropPercent?: number | undefined;
-  } | undefined;
+  meta?:
+    | {
+        orderId?: string | undefined;
+        medicineId?: string | undefined;
+        severity?: "info" | "warning" | "critical" | undefined;
+        priceDropPercent?: number | undefined;
+      }
+    | undefined;
 }
 
 export interface InventoryItem {

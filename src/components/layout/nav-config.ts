@@ -13,6 +13,7 @@ import {
   FlaskConical,
   Gauge,
   Handshake,
+  HeartPulse,
   History,
   LayoutDashboard,
   MapPin,
@@ -198,6 +199,13 @@ export const pharmacyNav: NavItem[] = [
 
 export const doctorNav: NavItem[] = [
   { to: "/doctor", label: "Patients", icon: Users, group: "Practice" },
+  {
+    to: "/doctor/patients",
+    label: "Patient health metrics",
+    icon: HeartPulse,
+    group: "Practice",
+    description: "Longitudinal health metrics and vital trends",
+  },
   {
     to: "/doctor/prescriptions",
     label: "Prescription review",

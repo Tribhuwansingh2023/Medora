@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   AlertTriangle,
   ArrowLeft,
+  Globe,
   MapPin,
   Package,
   ShoppingCart,
@@ -12,6 +13,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LiveGoogleSearchGrounding } from "@/components/ai/LiveGoogleSearchGrounding";
 import {
   AvailabilityPill,
   ClinicalDisclaimer,
@@ -151,10 +153,31 @@ function MedicineDetail() {
       </header>
 
       <Tabs defaultValue="about">
-        <TabsList>
-          <TabsTrigger value="about">About</TabsTrigger>
-          <TabsTrigger value="prices">Local prices</TabsTrigger>
-          <TabsTrigger value="equivalents">Equivalents</TabsTrigger>
+        <TabsList className="grid grid-cols-2 sm:grid-cols-4 max-w-xl h-auto p-1 rounded-xl bg-muted/60 gap-1">
+          <TabsTrigger
+            value="about"
+            className="rounded-lg text-xs font-semibold py-2"
+          >
+            About
+          </TabsTrigger>
+          <TabsTrigger
+            value="prices"
+            className="rounded-lg text-xs font-semibold py-2"
+          >
+            Local prices
+          </TabsTrigger>
+          <TabsTrigger
+            value="equivalents"
+            className="rounded-lg text-xs font-semibold py-2"
+          >
+            Equivalents
+          </TabsTrigger>
+          <TabsTrigger
+            value="grounding"
+            className="rounded-lg text-xs font-bold py-2 gap-1 text-primary data-[state=active]:text-primary"
+          >
+            <Globe className="size-3.5" /> Live Search
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="about" className="mt-6 space-y-5">
@@ -283,6 +306,14 @@ function MedicineDetail() {
               description="Nothing else shares this exact composition key."
             />
           )}
+        </TabsContent>
+
+        <TabsContent value="grounding" className="mt-6 space-y-4">
+          <LiveGoogleSearchGrounding
+            initialQuery={`${medicine.brandName} (${medicine.genericName}) latest safety alerts, clinical indications and NPPA ceiling price India`}
+            initialContextType="drug_safety"
+            patientContext={`Product: ${medicine.brandName} (${medicine.genericName}) by ${medicine.manufacturer}. Composition: ${medicine.compositionKey}. Schedule: ${medicine.prescriptionOnly ? "Prescription Only (Schedule H/H1)" : "OTC"}.`}
+          />
         </TabsContent>
       </Tabs>
 

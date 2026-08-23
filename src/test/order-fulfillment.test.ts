@@ -56,7 +56,9 @@ describe("Real Order + Payment + Fulfillment Engine", () => {
 
     expect(verified?.status).toBe("accepted");
     expect(verified?.prescriptionVerification?.status).toBe("approved");
-    expect(verified?.prescriptionVerification?.verifiedByPharmacist).toBe("R. Ph. Sandeep Varma");
+    expect(verified?.prescriptionVerification?.verifiedByPharmacist).toBe(
+      "R. Ph. Sandeep Varma",
+    );
     expect(verified?.prescriptionVerification?.digitalSignature).toBeDefined();
   });
 
@@ -77,7 +79,11 @@ describe("Real Order + Payment + Fulfillment Engine", () => {
       paymentMethod: "upi",
     });
 
-    const dispatched = orderService.updateOrderStatus(order.id, "out_for_delivery", "Rider dispatched");
+    const dispatched = orderService.updateOrderStatus(
+      order.id,
+      "out_for_delivery",
+      "Rider dispatched",
+    );
     expect(dispatched?.status).toBe("out_for_delivery");
     expect(dispatched?.delivery?.estimatedMinutes).toBe(10);
   });

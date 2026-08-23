@@ -461,7 +461,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (error) {
           if (error.message.toLowerCase().includes("confirmation email")) {
             return {
-              error: "Supabase email delivery failed. Please turn OFF 'Confirm email' in Supabase -> Authentication -> Providers -> Email, or configure SMTP.",
+              error:
+                "Supabase email delivery failed. Please turn OFF 'Confirm email' in Supabase -> Authentication -> Providers -> Email, or configure SMTP.",
               needsConfirmation: false,
             };
           }

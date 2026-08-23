@@ -54,9 +54,12 @@ export function LeafletPharmacyMap({
 }: LeafletPharmacyMapProps) {
   const userCoords = rawUserCoords ?? { lat: 12.9716, lng: 77.5946 };
   const [activePharmacy, setActivePharmacy] = useState<Pharmacy | null>(
-    pharmacies.find((p) => p.id === selectedPharmacyId) || pharmacies[0] || null,
+    pharmacies.find((p) => p.id === selectedPharmacyId) ||
+      pharmacies[0] ||
+      null,
   );
-  const [currentLayer, setCurrentLayer] = useState<keyof typeof TILE_LAYERS>("voyager");
+  const [currentLayer, setCurrentLayer] =
+    useState<keyof typeof TILE_LAYERS>("voyager");
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -261,20 +264,22 @@ export function LeafletPharmacyMap({
         <div className="flex items-center gap-2">
           {/* Layer Style Switcher */}
           <div className="flex items-center rounded-lg border border-border bg-card p-0.5">
-            {(Object.keys(TILE_LAYERS) as (keyof typeof TILE_LAYERS)[]).map((key) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setCurrentLayer(key)}
-                className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition ${
-                  currentLayer === key
-                    ? "bg-primary text-primary-foreground shadow-xs"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {TILE_LAYERS[key].name}
-              </button>
-            ))}
+            {(Object.keys(TILE_LAYERS) as (keyof typeof TILE_LAYERS)[]).map(
+              (key) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setCurrentLayer(key)}
+                  className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition ${
+                    currentLayer === key
+                      ? "bg-primary text-primary-foreground shadow-xs"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {TILE_LAYERS[key].name}
+                </button>
+              ),
+            )}
           </div>
 
           <div className="h-4 w-px bg-border mx-0.5" />
@@ -374,7 +379,9 @@ export function LeafletPharmacyMap({
             <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Medical Stores & Chemists ({pharmacies.length})
             </h3>
-            <span className="text-[10px] font-bold text-primary">Live GIS Grounding</span>
+            <span className="text-[10px] font-bold text-primary">
+              Live GIS Grounding
+            </span>
           </div>
 
           <div
@@ -405,7 +412,9 @@ export function LeafletPharmacyMap({
                           open ? "bg-emerald-500" : "bg-zinc-400"
                         }`}
                       />
-                      <h4 className="font-display font-bold text-ink truncate">{p.name}</h4>
+                      <h4 className="font-display font-bold text-ink truncate">
+                        {p.name}
+                      </h4>
                     </div>
                     <span
                       className={`rounded-full px-2 py-0.5 text-[10px] font-bold shrink-0 ${
@@ -423,7 +432,9 @@ export function LeafletPharmacyMap({
                   </p>
 
                   <div className="mt-2 flex items-center justify-between text-muted-foreground pt-1 border-t border-border/40 pl-3.5">
-                    <span className="font-semibold text-foreground">{p.distanceKm} km away</span>
+                    <span className="font-semibold text-foreground">
+                      {p.distanceKm} km away
+                    </span>
                     <span className="flex items-center gap-1 font-bold text-ink">
                       <Star className="size-3 fill-amber-400 text-amber-400" />
                       {p.rating}

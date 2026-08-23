@@ -32,7 +32,10 @@ import { Badge } from "@/components/ui/badge";
 import { demoMedicines, demoPrices } from "@/data/demo-catalog";
 import { useStore } from "@/lib/store";
 import { formatMoney, getMedicineSync } from "@/services/medicines";
-import { explainableAi, type XAiMultiAgentReport } from "@/ai/agents/xai-engine";
+import {
+  explainableAi,
+  type XAiMultiAgentReport,
+} from "@/ai/agents/xai-engine";
 import { ExplainableAiReportModal } from "@/components/ai/ExplainableAiReportModal";
 import type { Medicine } from "@/lib/domain";
 import { cn } from "@/lib/utils";
@@ -62,7 +65,8 @@ export function MedicineComparativeView({
     }
     const list: string[] = [];
     if (initialMedAId) list.push(initialMedAId);
-    if (initialMedBId && initialMedBId !== initialMedAId) list.push(initialMedBId);
+    if (initialMedBId && initialMedBId !== initialMedAId)
+      list.push(initialMedBId);
     if (list.length === 0) {
       return ["med-dolo-650-tab", "med-calpol-650-tab", "med-crocin-650-tab"];
     }
@@ -79,7 +83,9 @@ export function MedicineComparativeView({
   // Resolve full medicine objects
   const medicines: Medicine[] = useMemo(() => {
     return selectedIds
-      .map((id) => getMedicineSync(id) || demoMedicines.find((m) => m.id === id))
+      .map(
+        (id) => getMedicineSync(id) || demoMedicines.find((m) => m.id === id),
+      )
       .filter((m): m is Medicine => Boolean(m));
   }, [selectedIds]);
 
@@ -122,7 +128,11 @@ export function MedicineComparativeView({
   // Equivalence analysis across all selected medicines
   const equivalenceAnalysis = useMemo(() => {
     if (medicines.length <= 1) {
-      return { isEquivalent: true, composition: medicines[0]?.compositionKey || "", count: medicines.length };
+      return {
+        isEquivalent: true,
+        composition: medicines[0]?.compositionKey || "",
+        count: medicines.length,
+      };
     }
     const firstKey = medicines[0]?.compositionKey;
     const allSame = medicines.every((m) => m.compositionKey === firstKey);
@@ -176,12 +186,16 @@ export function MedicineComparativeView({
               <div>
                 <h2 className="font-display text-lg font-bold tracking-tight text-ink flex items-center gap-2">
                   <span>Multi-Medicine Comparison Matrix</span>
-                  <Badge variant="outline" className="font-mono text-xs font-bold border-primary/30 text-primary bg-primary/5">
+                  <Badge
+                    variant="outline"
+                    className="font-mono text-xs font-bold border-primary/30 text-primary bg-primary/5"
+                  >
                     {medicines.length} Products Active
                   </Badge>
                 </h2>
                 <p className="text-xs text-muted-foreground">
-                  Side-by-side active ingredients, clinical indications, therapeutic bioequivalence, and dispensary unit economics.
+                  Side-by-side active ingredients, clinical indications,
+                  therapeutic bioequivalence, and dispensary unit economics.
                 </p>
               </div>
             </div>
@@ -211,7 +225,12 @@ export function MedicineComparativeView({
                 className="h-9 rounded-lg border border-border bg-muted/40 px-3 text-xs font-semibold text-foreground focus:border-primary focus:outline-none"
               >
                 <option value="" disabled>
-                  + Add another ({allAvailable.filter((m) => !selectedIds.includes(m.id)).length} available)...
+                  + Add another (
+                  {
+                    allAvailable.filter((m) => !selectedIds.includes(m.id))
+                      .length
+                  }{" "}
+                  available)...
                 </option>
                 {allAvailable
                   .filter((m) => !selectedIds.includes(m.id))
@@ -261,15 +280,21 @@ export function MedicineComparativeView({
             <p className="text-xs opacity-90 leading-relaxed">
               {equivalenceAnalysis.isEquivalent ? (
                 <>
-                  All <strong>{medicines.length} selected medicines</strong> share the identical active chemical composition (
+                  All <strong>{medicines.length} selected medicines</strong>{" "}
+                  share the identical active chemical composition (
                   <code className="font-mono font-semibold bg-emerald-500/20 px-1 py-0.5 rounded text-[11px]">
                     {equivalenceAnalysis.composition}
                   </code>
-                  ). They deliver the same therapeutic efficacy and can be substituted safely for cost savings.
+                  ). They deliver the same therapeutic efficacy and can be
+                  substituted safely for cost savings.
                 </>
               ) : (
                 <>
-                  The selected medicines contain differing active ingredients, strengths, or drug classes. They are <strong>not direct substitutes</strong> and have distinct clinical indications. Always consult a physician or pharmacist.
+                  The selected medicines contain differing active ingredients,
+                  strengths, or drug classes. They are{" "}
+                  <strong>not direct substitutes</strong> and have distinct
+                  clinical indications. Always consult a physician or
+                  pharmacist.
                 </>
               )}
             </p>
@@ -285,7 +310,8 @@ export function MedicineComparativeView({
           medicines.length === 2 && "grid-cols-1 md:grid-cols-2",
           medicines.length === 3 && "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
           medicines.length === 4 && "grid-cols-1 md:grid-cols-2 xl:grid-cols-4",
-          medicines.length >= 5 && "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5",
+          medicines.length >= 5 &&
+            "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5",
         )}
       >
         {medicines.map((med, idx) => {
@@ -335,7 +361,9 @@ export function MedicineComparativeView({
                 <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
                   <div className="flex items-center gap-1 text-muted-foreground">
                     <Building2 className="size-3.5" />
-                    <span className="font-medium truncate max-w-[130px]">{med.manufacturer}</span>
+                    <span className="font-medium truncate max-w-[130px]">
+                      {med.manufacturer}
+                    </span>
                   </div>
                   <Badge
                     variant={med.prescriptionOnly ? "destructive" : "secondary"}
@@ -353,7 +381,9 @@ export function MedicineComparativeView({
                         Best Pack Price
                       </span>
                       <div className="font-display text-xl font-extrabold text-emerald-600 dark:text-emerald-400">
-                        {lowestPrice !== null ? formatMoney(lowestPrice) : "₹--"}
+                        {lowestPrice !== null
+                          ? formatMoney(lowestPrice)
+                          : "₹--"}
                       </div>
                     </div>
                     {unitPrice && (
@@ -381,7 +411,9 @@ export function MedicineComparativeView({
                         key={i}
                         className="flex items-center justify-between rounded-lg border border-primary/20 bg-primary/5 px-2.5 py-1.5 text-xs font-medium"
                       >
-                        <span className="text-ink font-semibold">{ing.name}</span>
+                        <span className="text-ink font-semibold">
+                          {ing.name}
+                        </span>
                         <span className="font-mono text-xs font-bold text-primary">
                           {ing.strength}
                         </span>
@@ -397,7 +429,8 @@ export function MedicineComparativeView({
                     Clinical Indications & Uses
                   </h4>
                   <p className="rounded-lg border border-border bg-background p-2.5 text-xs leading-relaxed text-foreground font-medium">
-                    {med.usesSummary || "Indicated for fever reduction, mild-to-moderate analgesia, and symptomatic relief."}
+                    {med.usesSummary ||
+                      "Indicated for fever reduction, mild-to-moderate analgesia, and symptomatic relief."}
                   </p>
                 </div>
 
@@ -448,9 +481,7 @@ export function MedicineComparativeView({
                   size="sm"
                   className="w-full text-xs font-bold"
                 >
-                  <Link to="/app/search">
-                    Find at Nearby Pharmacies
-                  </Link>
+                  <Link to="/app/search">Find at Nearby Pharmacies</Link>
                 </Button>
               </div>
             </div>

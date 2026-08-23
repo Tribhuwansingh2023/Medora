@@ -82,7 +82,10 @@ function persistProfile(profile: PharmacyProfile) {
   cachedProfile = profile;
   if (typeof window !== "undefined") {
     try {
-      window.localStorage.setItem(PHARMACY_PROFILE_KEY, JSON.stringify(profile));
+      window.localStorage.setItem(
+        PHARMACY_PROFILE_KEY,
+        JSON.stringify(profile),
+      );
     } catch {}
   }
 }
@@ -120,7 +123,10 @@ export const pharmacyInventoryService = {
   },
 
   // Update stock quantity for a specific item
-  async updateStock(itemId: string, newStock: number): Promise<InventoryItem | null> {
+  async updateStock(
+    itemId: string,
+    newStock: number,
+  ): Promise<InventoryItem | null> {
     const qty = Math.max(0, Math.round(newStock));
     const items = [...cachedInventory];
     const idx = items.findIndex((i) => i.id === itemId);
@@ -138,22 +144,25 @@ export const pharmacyInventoryService = {
     // Sync to Supabase if configured
     if (isSupabaseConfigured) {
       try {
-        await (supabase as any)
-          .from("inventory_items")
-          .upsert({
-            id: updated.id,
-            medicine_id: updated.medicineId,
-            name: updated.name,
-            batch: updated.batch,
-            stock: updated.stock,
-            reorder_level: updated.reorderLevel,
-            price: updated.price,
-            expiry: updated.expiry,
-            supplier: updated.supplier,
-          });
+        await (supabase as any).from("inventory_items").upsert({
+          id: updated.id,
+          medicine_id: updated.medicineId,
+          name: updated.name,
+          batch: updated.batch,
+          stock: updated.stock,
+          reorder_level: updated.reorderLevel,
+          price: updated.price,
+          expiry: updated.expiry,
+          supplier: updated.supplier,
+        });
 
         // Also update price_listings availability
-        const availability = qty === 0 ? "out_of_stock" : qty <= updated.reorderLevel ? "low_stock" : "in_stock";
+        const availability =
+          qty === 0
+            ? "out_of_stock"
+            : qty <= updated.reorderLevel
+              ? "low_stock"
+              : "in_stock";
         await (supabase as any)
           .from("price_listings")
           .update({ availability })

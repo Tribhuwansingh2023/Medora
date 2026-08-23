@@ -140,8 +140,13 @@ export function WorkspaceShell({
               onClick={() => setOpen(true)}
               className="hidden sm:flex h-9 w-full max-w-md items-center gap-2 rounded-xl border border-input bg-card px-3 text-sm text-muted-foreground transition-all hover:border-primary/40 hover:bg-card/90 shadow-2xs"
             >
-              <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden />
-              <span className="truncate">Search commands, records, or inventory…</span>
+              <Search
+                className="size-4 shrink-0 text-muted-foreground"
+                aria-hidden
+              />
+              <span className="truncate">
+                Search commands, records, or inventory…
+              </span>
               <kbd className="ml-auto hidden shrink-0 rounded border border-border bg-secondary px-1.5 py-0.5 text-[10px] font-medium font-mono sm:block">
                 ⌘K
               </kbd>
@@ -159,7 +164,12 @@ export function WorkspaceShell({
                 <Search className="size-5" aria-hidden />
               </Button>
               <ThemeToggle showMenu />
-              <Button asChild variant="outline" size="sm" className="h-8 gap-1.5 rounded-lg text-xs font-semibold">
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="h-8 gap-1.5 rounded-lg text-xs font-semibold"
+              >
                 <Link to="/switch">
                   <SlidersHorizontal className="size-3.5" aria-hidden /> Switch
                 </Link>

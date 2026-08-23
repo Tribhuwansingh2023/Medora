@@ -12,10 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import {
-  EmptyState,
-  PageHeader,
-} from "@/components/common/primitives";
+import { EmptyState, PageHeader } from "@/components/common/primitives";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -36,7 +33,8 @@ export const Route = createFileRoute("/app/orders")({
       { property: "og:title", content: "Orders & Live Fulfillment — Medora" },
       {
         property: "og:description",
-        content: "Real-time prescription verification, payment tracking, and live courier map.",
+        content:
+          "Real-time prescription verification, payment tracking, and live courier map.",
       },
     ],
   }),
@@ -101,13 +99,20 @@ function OrderCard({
             </span>
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">
-            {new Date(order.placedAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })} ·{" "}
+            {new Date(order.placedAt).toLocaleString([], {
+              dateStyle: "medium",
+              timeStyle: "short",
+            })}{" "}
+            ·{" "}
             <span className="font-semibold text-foreground">
               {isDelivery ? "⚡ Dunzo / Shadowfax Express" : "🏪 Store Pickup"}
             </span>
           </p>
         </div>
-        <Badge variant="outline" className={`rounded-full px-3 py-1 text-xs ${meta.cls}`}>
+        <Badge
+          variant="outline"
+          className={`rounded-full px-3 py-1 text-xs ${meta.cls}`}
+        >
           {meta.label}
         </Badge>
       </header>
@@ -118,7 +123,8 @@ function OrderCard({
           <div className="flex items-center gap-2">
             <Navigation className="size-4 text-emerald-600 animate-pulse" />
             <span className="font-semibold text-foreground">
-              Rider {order.delivery?.riderName || "Aakash Mehta"} is {order.delivery?.distanceKm || 1.2} km away
+              Rider {order.delivery?.riderName || "Aakash Mehta"} is{" "}
+              {order.delivery?.distanceKm || 1.2} km away
             </span>
           </div>
           <span className="font-bold text-emerald-600 dark:text-emerald-400">
@@ -145,7 +151,9 @@ function OrderCard({
       <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-3">
         <div className="flex items-center gap-2 text-xs">
           <span className="text-muted-foreground">Total:</span>
-          <span className="font-display text-base font-extrabold text-ink">{formatMoney(order.total)}</span>
+          <span className="font-display text-base font-extrabold text-ink">
+            {formatMoney(order.total)}
+          </span>
           {order.payment && (
             <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary uppercase">
               {order.payment.method} · {order.payment.status}
@@ -225,13 +233,22 @@ function OrdersPage() {
             <TabsTrigger value="all" className="rounded-xl text-xs font-bold">
               All Orders ({orders.length})
             </TabsTrigger>
-            <TabsTrigger value="active" className="rounded-xl text-xs font-bold">
+            <TabsTrigger
+              value="active"
+              className="rounded-xl text-xs font-bold"
+            >
               ⚡ In-Transit & Active ({activeOrders.length})
             </TabsTrigger>
-            <TabsTrigger value="completed" className="rounded-xl text-xs font-bold">
+            <TabsTrigger
+              value="completed"
+              className="rounded-xl text-xs font-bold"
+            >
               ✓ Completed ({completedOrders.length})
             </TabsTrigger>
-            <TabsTrigger value="cancelled" className="rounded-xl text-xs font-bold">
+            <TabsTrigger
+              value="cancelled"
+              className="rounded-xl text-xs font-bold"
+            >
               Cancelled ({cancelledOrders.length})
             </TabsTrigger>
           </TabsList>
@@ -244,7 +261,9 @@ function OrdersPage() {
 
           <TabsContent value="active" className="space-y-4">
             {activeOrders.length === 0 ? (
-              <p className="text-xs text-muted-foreground py-6 text-center">No active orders right now.</p>
+              <p className="text-xs text-muted-foreground py-6 text-center">
+                No active orders right now.
+              </p>
             ) : (
               activeOrders.map((o) => (
                 <OrderCard key={o.id} order={o} onTrack={handleOpenTrack} />
@@ -254,7 +273,9 @@ function OrdersPage() {
 
           <TabsContent value="completed" className="space-y-4">
             {completedOrders.length === 0 ? (
-              <p className="text-xs text-muted-foreground py-6 text-center">No completed orders yet.</p>
+              <p className="text-xs text-muted-foreground py-6 text-center">
+                No completed orders yet.
+              </p>
             ) : (
               completedOrders.map((o) => (
                 <OrderCard key={o.id} order={o} onTrack={handleOpenTrack} />
@@ -264,7 +285,9 @@ function OrdersPage() {
 
           <TabsContent value="cancelled" className="space-y-4">
             {cancelledOrders.length === 0 ? (
-              <p className="text-xs text-muted-foreground py-6 text-center">No cancelled orders.</p>
+              <p className="text-xs text-muted-foreground py-6 text-center">
+                No cancelled orders.
+              </p>
             ) : (
               cancelledOrders.map((o) => (
                 <OrderCard key={o.id} order={o} onTrack={handleOpenTrack} />

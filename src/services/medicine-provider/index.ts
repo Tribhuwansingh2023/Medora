@@ -6,7 +6,9 @@ import { isSupabaseConfigured } from "@/integrations/supabase/client";
 export const demoProvider = new DemoMedicineProvider();
 export const liveProvider = new LiveMedicineProvider();
 
-let activeProvider: IMedicineProvider = isSupabaseConfigured ? liveProvider : demoProvider;
+let activeProvider: IMedicineProvider = isSupabaseConfigured
+  ? liveProvider
+  : demoProvider;
 
 export const setProvider = (useLive: boolean) => {
   activeProvider = useLive ? liveProvider : demoProvider;

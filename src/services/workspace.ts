@@ -35,7 +35,10 @@ export const workspaceLoaders = {
   doctorPatients: async () => {
     if (isSupabaseConfigured) {
       try {
-        const { data, error } = await supabase.from("profiles").select("*").limit(20);
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .limit(20);
         if (!error && data && data.length > 0) {
           return data as unknown as typeof demoDoctorPatients;
         }
@@ -48,7 +51,10 @@ export const workspaceLoaders = {
   appointments: async () => {
     if (isSupabaseConfigured) {
       try {
-        const { data, error } = await supabase.from("reminders").select("*").limit(20);
+        const { data, error } = await supabase
+          .from("reminders")
+          .select("*")
+          .limit(20);
         if (!error && data && data.length > 0) {
           return data as unknown as typeof demoAppointments;
         }
@@ -62,7 +68,10 @@ export const workspaceLoaders = {
   prescriptionDrafts: async () => {
     if (isSupabaseConfigured) {
       try {
-        const { data, error } = await supabase.from("prescriptions").select("*").limit(20);
+        const { data, error } = await supabase
+          .from("prescriptions")
+          .select("*")
+          .limit(20);
         if (!error && data && data.length > 0) {
           return data as unknown as typeof demoPrescriptionDrafts;
         }
@@ -81,7 +90,10 @@ export const workspaceLoaders = {
   pharmacyOrders: async () => {
     if (isSupabaseConfigured) {
       try {
-        const { data, error } = await supabase.from("orders").select("*").limit(20);
+        const { data, error } = await supabase
+          .from("orders")
+          .select("*")
+          .limit(20);
         if (!error && data && data.length > 0) {
           return data as unknown as typeof demoPharmacyOrders;
         }
@@ -99,7 +111,10 @@ export const workspaceLoaders = {
   platformUsers: async () => {
     if (isSupabaseConfigured) {
       try {
-        const { data, error } = await supabase.from("profiles").select("*").limit(20);
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .limit(20);
         if (!error && data && data.length > 0) {
           return data as unknown as typeof demoPlatformUsers;
         }

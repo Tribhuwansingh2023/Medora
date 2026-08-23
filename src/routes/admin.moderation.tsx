@@ -45,7 +45,11 @@ import {
   StatusPill,
   WorkspaceSection,
 } from "@/components/workspace/parts";
-import { shortDate, shortDateTime, useWorkspaceData } from "@/services/workspace";
+import {
+  shortDate,
+  shortDateTime,
+  useWorkspaceData,
+} from "@/services/workspace";
 import type { ModerationReport } from "@/data/workspace-demo";
 
 export const Route = createFileRoute("/admin/moderation")({
@@ -60,7 +64,8 @@ export const Route = createFileRoute("/admin/moderation")({
       { property: "og:title", content: "Moderation — Medora Admin Workspace" },
       {
         property: "og:description",
-        content: "Platform moderation, safety escalation reviews, and compliance enforcement.",
+        content:
+          "Platform moderation, safety escalation reviews, and compliance enforcement.",
       },
     ],
   }),
@@ -75,9 +80,18 @@ const statusMeta = {
 };
 
 const severityMeta = {
-  high: { label: "High Risk", cls: "bg-destructive-soft text-destructive border-destructive/40" },
-  medium: { label: "Medium", cls: "bg-warning-soft text-warning-foreground border-warning/40" },
-  low: { label: "Low", cls: "bg-secondary text-muted-foreground border-border" },
+  high: {
+    label: "High Risk",
+    cls: "bg-destructive-soft text-destructive border-destructive/40",
+  },
+  medium: {
+    label: "Medium",
+    cls: "bg-warning-soft text-warning-foreground border-warning/40",
+  },
+  low: {
+    label: "Low",
+    cls: "bg-secondary text-muted-foreground border-border",
+  },
 };
 
 export function AdminModerationPage() {
@@ -86,7 +100,9 @@ export function AdminModerationPage() {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterSeverity, setFilterSeverity] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedReport, setSelectedReport] = useState<ModerationReport | null>(null);
+  const [selectedReport, setSelectedReport] = useState<ModerationReport | null>(
+    null,
+  );
   const [resolutionNote, setResolutionNote] = useState("");
 
   // Sync initial loaded reports
@@ -96,7 +112,11 @@ export function AdminModerationPage() {
     }
   }, [moderationQuery.data, reports.length]);
 
-  const updateStatus = (id: string, newStatus: ModerationReport["status"], note?: string) => {
+  const updateStatus = (
+    id: string,
+    newStatus: ModerationReport["status"],
+    note?: string,
+  ) => {
     setReports((prev) =>
       prev.map((rep) => (rep.id === id ? { ...rep, status: newStatus } : rep)),
     );
@@ -104,7 +124,9 @@ export function AdminModerationPage() {
       description: note ? `Note: "${note}"` : undefined,
     });
     if (selectedReport?.id === id) {
-      setSelectedReport((prev) => (prev ? { ...prev, status: newStatus } : null));
+      setSelectedReport((prev) =>
+        prev ? { ...prev, status: newStatus } : null,
+      );
     }
     setResolutionNote("");
   };
@@ -112,7 +134,8 @@ export function AdminModerationPage() {
   const filteredReports = useMemo(() => {
     return reports.filter((rep) => {
       const matchStatus = filterStatus === "all" || rep.status === filterStatus;
-      const matchSeverity = filterSeverity === "all" || rep.severity === filterSeverity;
+      const matchSeverity =
+        filterSeverity === "all" || rep.severity === filterSeverity;
       const matchQuery =
         !searchQuery.trim() ||
         rep.target.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -124,7 +147,9 @@ export function AdminModerationPage() {
 
   const totalReports = reports.length;
   const openReports = reports.filter((r) => r.status === "open").length;
-  const investigatingReports = reports.filter((r) => r.status === "investigating").length;
+  const investigatingReports = reports.filter(
+    (r) => r.status === "investigating",
+  ).length;
   const resolvedReports = reports.filter((r) => r.status === "actioned").length;
 
   const columns: DataColumn<ModerationReport>[] = [
@@ -135,7 +160,9 @@ export function AdminModerationPage() {
       render: (r) => (
         <div>
           <p className="font-semibold text-ink">{r.target}</p>
-          <p className="text-xs text-muted-foreground capitalize">Surface: {r.surface}</p>
+          <p className="text-xs text-muted-foreground capitalize">
+            Surface: {r.surface}
+          </p>
         </div>
       ),
     },
@@ -152,7 +179,9 @@ export function AdminModerationPage() {
       render: (r) => {
         const meta = severityMeta[r.severity];
         return (
-          <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-semibold ${meta.cls}`}>
+          <span
+            className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-semibold ${meta.cls}`}
+          >
             {r.severity === "high" && <AlertOctagon className="size-3" />}
             {meta.label}
           </span>
@@ -164,7 +193,9 @@ export function AdminModerationPage() {
       header: "Reporter",
       hideBelow: "md",
       sortValue: (r) => r.reporter,
-      render: (r) => <span className="text-xs text-muted-foreground">{r.reporter}</span>,
+      render: (r) => (
+        <span className="text-xs text-muted-foreground">{r.reporter}</span>
+      ),
     },
     {
       key: "at",
@@ -174,7 +205,9 @@ export function AdminModerationPage() {
       render: (r) => (
         <div>
           <p className="text-xs text-ink">{shortDate(r.at)}</p>
-          <p className="text-[10px] text-muted-foreground">{shortDateTime(r.at)}</p>
+          <p className="text-[10px] text-muted-foreground">
+            {shortDateTime(r.at)}
+          </p>
         </div>
       ),
     },
@@ -192,18 +225,35 @@ export function AdminModerationPage() {
       header: "Actions",
       align: "right",
       render: (r) => (
-        <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex items-center justify-end gap-1.5"
+          onClick={(e) => e.stopPropagation()}
+        >
           {r.status === "open" && (
-            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => updateStatus(r.id, "investigating")}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 text-xs"
+              onClick={() => updateStatus(r.id, "investigating")}
+            >
               Investigate
             </Button>
           )}
           {r.status === "investigating" && (
-            <Button size="sm" className="h-7 text-xs bg-primary text-primary-foreground" onClick={() => updateStatus(r.id, "actioned")}>
+            <Button
+              size="sm"
+              className="h-7 text-xs bg-primary text-primary-foreground"
+              onClick={() => updateStatus(r.id, "actioned")}
+            >
               Action & Resolve
             </Button>
           )}
-          <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setSelectedReport(r)}>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 text-xs"
+            onClick={() => setSelectedReport(r)}
+          >
             Inspect
           </Button>
         </div>
@@ -221,10 +271,26 @@ export function AdminModerationPage() {
 
       {/* KPI Stats */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile label="Total Reports" value={totalReports.toString()} hint="Historical moderation tickets" />
-        <StatTile label="Open Safety Flags" value={openReports.toString()} hint="Requires immediate triage" />
-        <StatTile label="Under Investigation" value={investigatingReports.toString()} hint="Active compliance reviews" />
-        <StatTile label="Enforced & Resolved" value={resolvedReports.toString()} hint="Sanctions or corrections applied" />
+        <StatTile
+          label="Total Reports"
+          value={totalReports.toString()}
+          hint="Historical moderation tickets"
+        />
+        <StatTile
+          label="Open Safety Flags"
+          value={openReports.toString()}
+          hint="Requires immediate triage"
+        />
+        <StatTile
+          label="Under Investigation"
+          value={investigatingReports.toString()}
+          hint="Active compliance reviews"
+        />
+        <StatTile
+          label="Enforced & Resolved"
+          value={resolvedReports.toString()}
+          hint="Sanctions or corrections applied"
+        />
       </div>
 
       {/* Main Moderation Table */}
@@ -280,7 +346,9 @@ export function AdminModerationPage() {
               rows={filteredReports}
               columns={columns}
               getId={(r) => r.id}
-              searchText={(r) => `${r.id} ${r.reporter} ${r.target} ${r.reason} ${r.surface}`}
+              searchText={(r) =>
+                `${r.id} ${r.reporter} ${r.target} ${r.reason} ${r.surface}`
+              }
               searchPlaceholder="Search ticket ID, reporter, target or reason…"
               onRowClick={(r) => setSelectedReport(r)}
             />
@@ -289,7 +357,10 @@ export function AdminModerationPage() {
       </WorkspaceSection>
 
       {/* Moderation Detail & Action Dialog */}
-      <Dialog open={Boolean(selectedReport)} onOpenChange={(open) => !open && setSelectedReport(null)}>
+      <Dialog
+        open={Boolean(selectedReport)}
+        onOpenChange={(open) => !open && setSelectedReport(null)}
+      >
         {selectedReport && (
           <DialogContent className="max-w-lg">
             <DialogHeader>
@@ -298,7 +369,11 @@ export function AdminModerationPage() {
                 Moderation Ticket #{selectedReport.id}
               </DialogTitle>
               <DialogDescription>
-                Filed by <span className="font-medium text-ink">{selectedReport.reporter}</span> on {shortDateTime(selectedReport.at)}
+                Filed by{" "}
+                <span className="font-medium text-ink">
+                  {selectedReport.reporter}
+                </span>{" "}
+                on {shortDateTime(selectedReport.at)}
               </DialogDescription>
             </DialogHeader>
 
@@ -306,15 +381,21 @@ export function AdminModerationPage() {
               <div className="rounded-lg border border-border bg-card p-3 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Target Entity:</span>
-                  <span className="font-semibold text-ink">{selectedReport.target}</span>
+                  <span className="font-semibold text-ink">
+                    {selectedReport.target}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Surface:</span>
-                  <Badge variant="outline" className="capitalize">{selectedReport.surface}</Badge>
+                  <Badge variant="outline" className="capitalize">
+                    {selectedReport.surface}
+                  </Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Risk Severity:</span>
-                  <span className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-semibold ${severityMeta[selectedReport.severity].cls}`}>
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-semibold ${severityMeta[selectedReport.severity].cls}`}
+                  >
                     {severityMeta[selectedReport.severity].label}
                   </span>
                 </div>
@@ -328,14 +409,19 @@ export function AdminModerationPage() {
               </div>
 
               <div>
-                <Label className="text-xs font-semibold text-muted-foreground">Violation & Reason Details</Label>
+                <Label className="text-xs font-semibold text-muted-foreground">
+                  Violation & Reason Details
+                </Label>
                 <div className="mt-1 rounded-md border border-border bg-muted/40 p-3 text-ink leading-relaxed">
                   {selectedReport.reason}
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="resolutionNote" className="text-xs font-semibold text-muted-foreground">
+                <Label
+                  htmlFor="resolutionNote"
+                  className="text-xs font-semibold text-muted-foreground"
+                >
                   Administrator Enforcement Note / Audit Memo
                 </Label>
                 <Textarea
@@ -356,7 +442,13 @@ export function AdminModerationPage() {
                     variant="ghost"
                     size="sm"
                     className="text-muted-foreground hover:text-foreground"
-                    onClick={() => updateStatus(selectedReport.id, "dismissed", resolutionNote)}
+                    onClick={() =>
+                      updateStatus(
+                        selectedReport.id,
+                        "dismissed",
+                        resolutionNote,
+                      )
+                    }
                   >
                     <XCircle className="size-4 mr-1" /> Dismiss Ticket
                   </Button>
@@ -367,7 +459,13 @@ export function AdminModerationPage() {
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => updateStatus(selectedReport.id, "investigating", resolutionNote)}
+                    onClick={() =>
+                      updateStatus(
+                        selectedReport.id,
+                        "investigating",
+                        resolutionNote,
+                      )
+                    }
                   >
                     Mark Investigating
                   </Button>
@@ -376,7 +474,14 @@ export function AdminModerationPage() {
                   <Button
                     size="sm"
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    onClick={() => updateStatus(selectedReport.id, "actioned", resolutionNote || "Sanction or content removal enforced.")}
+                    onClick={() =>
+                      updateStatus(
+                        selectedReport.id,
+                        "actioned",
+                        resolutionNote ||
+                          "Sanction or content removal enforced.",
+                      )
+                    }
                   >
                     <FileCheck className="size-4 mr-1" /> Enforce & Resolve
                   </Button>

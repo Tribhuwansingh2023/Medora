@@ -160,7 +160,8 @@ export function NotificationPreferencesModal({
                 Multi-Channel Notification Center
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
-                Configure real Web Push, Transactional Email, SMS Carrier gateways, and sound chimes.
+                Configure real Web Push, Transactional Email, SMS Carrier
+                gateways, and sound chimes.
               </DialogDescription>
             </div>
           </div>
@@ -168,7 +169,10 @@ export function NotificationPreferencesModal({
 
         <Tabs defaultValue="channels" className="space-y-4 py-2">
           <TabsList className="rounded-2xl p-1 bg-muted/50 border border-border/60">
-            <TabsTrigger value="channels" className="rounded-xl text-xs font-bold">
+            <TabsTrigger
+              value="channels"
+              className="rounded-xl text-xs font-bold"
+            >
               Dispatch Channels
             </TabsTrigger>
             <TabsTrigger value="test" className="rounded-xl text-xs font-bold">
@@ -190,7 +194,9 @@ export function NotificationPreferencesModal({
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h4 className="font-display text-sm font-bold text-ink">HTML5 Browser Web Push</h4>
+                      <h4 className="font-display text-sm font-bold text-ink">
+                        HTML5 Browser Web Push
+                      </h4>
                       <span
                         className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
                           pushStatus === "granted"
@@ -198,11 +204,14 @@ export function NotificationPreferencesModal({
                             : "bg-amber-500/20 text-amber-600 dark:text-amber-400"
                         }`}
                       >
-                        {pushStatus === "granted" ? "Active · Granted" : pushStatus}
+                        {pushStatus === "granted"
+                          ? "Active · Granted"
+                          : pushStatus}
                       </span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      Receive instant desktop & lock-screen popups for order deliveries and dose times.
+                      Receive instant desktop & lock-screen popups for order
+                      deliveries and dose times.
                     </p>
                   </div>
                 </div>
@@ -212,7 +221,9 @@ export function NotificationPreferencesModal({
                   onClick={handleRequestPush}
                   className="font-bold text-xs shrink-0 rounded-xl"
                 >
-                  {pushStatus === "granted" ? "Re-Authorize Push" : "Enable Push Notifications"}
+                  {pushStatus === "granted"
+                    ? "Re-Authorize Push"
+                    : "Enable Push Notifications"}
                 </Button>
               </div>
             </div>
@@ -236,7 +247,9 @@ export function NotificationPreferencesModal({
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-[11px] text-muted-foreground">Recipient Email Address</Label>
+                  <Label className="text-[11px] text-muted-foreground">
+                    Recipient Email Address
+                  </Label>
                   <Input
                     value={prefs.emailAddress}
                     onChange={(e) =>
@@ -265,7 +278,9 @@ export function NotificationPreferencesModal({
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-[11px] text-muted-foreground">Mobile Phone Number</Label>
+                  <Label className="text-[11px] text-muted-foreground">
+                    Mobile Phone Number
+                  </Label>
                   <Input
                     value={prefs.phoneNumber}
                     onChange={(e) =>
@@ -288,8 +303,12 @@ export function NotificationPreferencesModal({
                     <VolumeX className="size-4 text-muted-foreground" />
                   )}
                   <div>
-                    <span className="text-xs font-bold text-foreground">Audio Chime Synthesis</span>
-                    <p className="text-[11px] text-muted-foreground">Synthesizes Web Audio tone on arrival</p>
+                    <span className="text-xs font-bold text-foreground">
+                      Audio Chime Synthesis
+                    </span>
+                    <p className="text-[11px] text-muted-foreground">
+                      Synthesizes Web Audio tone on arrival
+                    </p>
                   </div>
                 </div>
                 <Switch
@@ -328,7 +347,11 @@ export function NotificationPreferencesModal({
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
-              <Button variant="outline" size="sm" onClick={() => onOpenChange(false)}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onOpenChange(false)}
+              >
                 Cancel
               </Button>
               <Button size="sm" onClick={handleSave} className="font-bold">
@@ -340,17 +363,28 @@ export function NotificationPreferencesModal({
           {/* Test Triggers Tab */}
           <TabsContent value="test" className="space-y-4">
             <p className="text-xs text-muted-foreground">
-              Trigger simulated multi-channel notifications to test real-time browser popups, transactional email logs, and SMS receipts.
+              Trigger simulated multi-channel notifications to test real-time
+              browser popups, transactional email logs, and SMS receipts.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="rounded-2xl border border-border/80 bg-card p-4 space-y-2">
                 <div className="flex items-center gap-2">
                   <Mail className="size-4 text-primary" />
-                  <span className="text-xs font-bold text-foreground">Transactional Email Test</span>
+                  <span className="text-xs font-bold text-foreground">
+                    Transactional Email Test
+                  </span>
                 </div>
-                <p className="text-xs text-muted-foreground">Sends an order receipt confirmation email to {prefs.emailAddress}.</p>
-                <Button size="sm" variant="outline" onClick={handleTestEmail} className="w-full text-xs font-bold gap-1.5 mt-1">
+                <p className="text-xs text-muted-foreground">
+                  Sends an order receipt confirmation email to{" "}
+                  {prefs.emailAddress}.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleTestEmail}
+                  className="w-full text-xs font-bold gap-1.5 mt-1"
+                >
                   <Send className="size-3" /> Test Email Gateway
                 </Button>
               </div>
@@ -358,10 +392,19 @@ export function NotificationPreferencesModal({
               <div className="rounded-2xl border border-border/80 bg-card p-4 space-y-2">
                 <div className="flex items-center gap-2">
                   <Smartphone className="size-4 text-primary" />
-                  <span className="text-xs font-bold text-foreground">SMS Carrier Test</span>
+                  <span className="text-xs font-bold text-foreground">
+                    SMS Carrier Test
+                  </span>
                 </div>
-                <p className="text-xs text-muted-foreground">Dispatches live delivery dispatch SMS to {prefs.phoneNumber}.</p>
-                <Button size="sm" variant="outline" onClick={handleTestSms} className="w-full text-xs font-bold gap-1.5 mt-1">
+                <p className="text-xs text-muted-foreground">
+                  Dispatches live delivery dispatch SMS to {prefs.phoneNumber}.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleTestSms}
+                  className="w-full text-xs font-bold gap-1.5 mt-1"
+                >
                   <MessageSquare className="size-3" /> Test SMS Delivery
                 </Button>
               </div>
@@ -369,10 +412,20 @@ export function NotificationPreferencesModal({
               <div className="rounded-2xl border border-border/80 bg-card p-4 space-y-2">
                 <div className="flex items-center gap-2">
                   <Clock className="size-4 text-primary" />
-                  <span className="text-xs font-bold text-foreground">Medicine Dose Reminder</span>
+                  <span className="text-xs font-bold text-foreground">
+                    Medicine Dose Reminder
+                  </span>
                 </div>
-                <p className="text-xs text-muted-foreground">Fires an interactive dose notification with 1-click adherence logging.</p>
-                <Button size="sm" variant="outline" onClick={handleTestDose} className="w-full text-xs font-bold gap-1.5 mt-1">
+                <p className="text-xs text-muted-foreground">
+                  Fires an interactive dose notification with 1-click adherence
+                  logging.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleTestDose}
+                  className="w-full text-xs font-bold gap-1.5 mt-1"
+                >
                   <Play className="size-3" /> Trigger Dose Reminder
                 </Button>
               </div>
@@ -380,10 +433,20 @@ export function NotificationPreferencesModal({
               <div className="rounded-2xl border border-border/80 bg-card p-4 space-y-2">
                 <div className="flex items-center gap-2">
                   <Tag className="size-4 text-primary" />
-                  <span className="text-xs font-bold text-foreground">Price Drop Notification</span>
+                  <span className="text-xs font-bold text-foreground">
+                    Price Drop Notification
+                  </span>
                 </div>
-                <p className="text-xs text-muted-foreground">Simulates a 18% price drop alert on Glycomet 500mg SR at nearby pharmacies.</p>
-                <Button size="sm" variant="outline" onClick={handleTestPriceDrop} className="w-full text-xs font-bold gap-1.5 mt-1">
+                <p className="text-xs text-muted-foreground">
+                  Simulates a 18% price drop alert on Glycomet 500mg SR at
+                  nearby pharmacies.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleTestPriceDrop}
+                  className="w-full text-xs font-bold gap-1.5 mt-1"
+                >
                   <Tag className="size-3" /> Trigger Price Drop Alert
                 </Button>
               </div>
@@ -391,10 +454,20 @@ export function NotificationPreferencesModal({
               <div className="rounded-2xl border border-rose-500/30 bg-rose-500/5 p-4 space-y-2 sm:col-span-2">
                 <div className="flex items-center gap-2">
                   <ShieldAlert className="size-4 text-rose-600" />
-                  <span className="text-xs font-bold text-rose-700 dark:text-rose-300">CDSCO Clinical Safety Advisory</span>
+                  <span className="text-xs font-bold text-rose-700 dark:text-rose-300">
+                    CDSCO Clinical Safety Advisory
+                  </span>
                 </div>
-                <p className="text-xs text-muted-foreground">Broadcasts high-priority drug interaction and black-box safety notification.</p>
-                <Button size="sm" variant="outline" onClick={handleTestSafety} className="w-full text-xs font-bold gap-1.5 mt-1 text-rose-600 hover:bg-rose-500/10">
+                <p className="text-xs text-muted-foreground">
+                  Broadcasts high-priority drug interaction and black-box safety
+                  notification.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={handleTestSafety}
+                  className="w-full text-xs font-bold gap-1.5 mt-1 text-rose-600 hover:bg-rose-500/10"
+                >
                   <ShieldAlert className="size-3" /> Trigger Safety Alert
                 </Button>
               </div>
@@ -404,11 +477,14 @@ export function NotificationPreferencesModal({
           {/* Delivery Audit Logs Tab */}
           <TabsContent value="logs" className="space-y-3">
             <p className="text-xs text-muted-foreground">
-              Real-time audit log of all multi-channel dispatches (In-App, HTML5 Push, SMTP Email, Fast2SMS / Twilio).
+              Real-time audit log of all multi-channel dispatches (In-App, HTML5
+              Push, SMTP Email, Fast2SMS / Twilio).
             </p>
 
             {logs.length === 0 ? (
-              <p className="text-xs text-muted-foreground py-6 text-center">No delivery logs recorded yet.</p>
+              <p className="text-xs text-muted-foreground py-6 text-center">
+                No delivery logs recorded yet.
+              </p>
             ) : (
               <div className="divide-y divide-border/50 max-h-[340px] overflow-y-auto pr-1">
                 {logs.map((log) => (
@@ -433,7 +509,11 @@ export function NotificationPreferencesModal({
                         </span>
                       </div>
                       <span className="font-mono text-[10px] text-muted-foreground">
-                        {new Date(log.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                        {new Date(log.timestamp).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                        })}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-muted-foreground">

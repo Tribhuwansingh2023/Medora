@@ -1502,72 +1502,66 @@ function AuthPage() {
 
                     {/* 1-Click Quick Demo Launcher */}
                     <div className="mt-4 rounded-2xl border-2 border-dashed border-primary/40 bg-primary/5 p-3.5 space-y-2">
-                        <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Zap className="size-3 text-amber-500" /> Instant
-                            Demo Access
-                          </span>
-                          <span className="text-[10px] text-muted-foreground font-normal">
-                            No password needed
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-1.5">
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() =>
-                              void auth.signInWithDemoRole(
-                                "patient",
-                                rememberMe,
-                              )
-                            }
-                            className="h-8 justify-start text-xs font-semibold bg-background"
-                          >
-                            <User className="mr-1.5 size-3.5 text-primary" />{" "}
-                            Patient Hub
-                          </Button>
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() =>
-                              void auth.signInWithDemoRole(
-                                "pharmacy",
-                                rememberMe,
-                              )
-                            }
-                            className="h-8 justify-start text-xs font-semibold bg-background"
-                          >
-                            <Building2 className="mr-1.5 size-3.5 text-primary" />{" "}
-                            Pharmacy Deck
-                          </Button>
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() =>
-                              void auth.signInWithDemoRole("doctor", rememberMe)
-                            }
-                            className="h-8 justify-start text-xs font-semibold bg-background"
-                          >
-                            <Stethoscope className="mr-1.5 size-3.5 text-primary" />{" "}
-                            Clinician Desk
-                          </Button>
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() =>
-                              void auth.signInWithDemoRole("admin", rememberMe)
-                            }
-                            className="h-8 justify-start text-xs font-semibold bg-background"
-                          >
-                            <ShieldCheck className="mr-1.5 size-3.5 text-primary" />{" "}
-                            Admin Panel
-                          </Button>
-                        </div>
+                      <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                        <span className="flex items-center gap-1">
+                          <Zap className="size-3 text-amber-500" /> Instant Demo
+                          Access
+                        </span>
+                        <span className="text-[10px] text-muted-foreground font-normal">
+                          No password needed
+                        </span>
                       </div>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            void auth.signInWithDemoRole("patient", rememberMe)
+                          }
+                          className="h-8 justify-start text-xs font-semibold bg-background"
+                        >
+                          <User className="mr-1.5 size-3.5 text-primary" />{" "}
+                          Patient Hub
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            void auth.signInWithDemoRole("pharmacy", rememberMe)
+                          }
+                          className="h-8 justify-start text-xs font-semibold bg-background"
+                        >
+                          <Building2 className="mr-1.5 size-3.5 text-primary" />{" "}
+                          Pharmacy Deck
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            void auth.signInWithDemoRole("doctor", rememberMe)
+                          }
+                          className="h-8 justify-start text-xs font-semibold bg-background"
+                        >
+                          <Stethoscope className="mr-1.5 size-3.5 text-primary" />{" "}
+                          Clinician Desk
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            void auth.signInWithDemoRole("admin", rememberMe)
+                          }
+                          className="h-8 justify-start text-xs font-semibold bg-background"
+                        >
+                          <ShieldCheck className="mr-1.5 size-3.5 text-primary" />{" "}
+                          Admin Panel
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

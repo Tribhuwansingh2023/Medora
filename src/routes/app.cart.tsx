@@ -1,5 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { CheckCircle2, Lock, Minus, Plus, ShieldCheck, ShoppingBag, Trash2, Truck } from "lucide-react";
+import {
+  CheckCircle2,
+  Lock,
+  Minus,
+  Plus,
+  ShieldCheck,
+  ShoppingBag,
+  Trash2,
+  Truck,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -35,7 +44,8 @@ export const Route = createFileRoute("/app/cart")({
       { property: "og:title", content: "Basket & Real Checkout — Medora" },
       {
         property: "og:description",
-        content: "Complete pharmacy orders with live fulfillment and instant digital payment.",
+        content:
+          "Complete pharmacy orders with live fulfillment and instant digital payment.",
       },
     ],
   }),
@@ -46,7 +56,9 @@ function CartPage() {
   const { state, setCartQty, removeFromCart, pushNotification } = useStore();
   const navigate = useNavigate();
   const [pharmacyId, setPharmacyId] = useState(demoPharmacies[0]?.id ?? "");
-  const [fulfilment, setFulfilment] = useState<"pickup" | "delivery">("delivery");
+  const [fulfilment, setFulfilment] = useState<"pickup" | "delivery">(
+    "delivery",
+  );
   const [prescriptionId, setPrescriptionId] = useState<string>("none");
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
 
@@ -61,12 +73,14 @@ function CartPage() {
   const rxSelected = prescriptionId !== "none";
   const blocked = needsRx && !rxSelected;
 
-  const pharmacy = demoPharmacies.find((p) => p.id === pharmacyId) || demoPharmacies[0]!;
+  const pharmacy =
+    demoPharmacies.find((p) => p.id === pharmacyId) || demoPharmacies[0]!;
 
   const handleCheckoutClick = () => {
     if (blocked) {
       toast.error("Prescription Required", {
-        description: "One or more items in your cart require a valid prescription. Please select an uploaded prescription or upload a new one.",
+        description:
+          "One or more items in your cart require a valid prescription. Please select an uploaded prescription or upload a new one.",
       });
       return;
     }
@@ -93,7 +107,8 @@ function CartPage() {
       fulfilment,
       prescriptionId: rxSelected ? prescriptionId : undefined,
       paymentMethod: method,
-      deliveryAddress: "Flat 402, Sea Breeze Apartments, Hill Road, Bandra West, Mumbai 400050",
+      deliveryAddress:
+        "Flat 402, Sea Breeze Apartments, Hill Road, Bandra West, Mumbai 400050",
     });
 
     // Clear cart
@@ -156,9 +171,13 @@ function CartPage() {
                   </Link>
                   <p className="text-xs text-muted-foreground mt-0.5">
                     {item.prescriptionOnly ? (
-                      <span className="text-amber-600 dark:text-amber-400 font-semibold">⚠️ Prescription Required</span>
+                      <span className="text-amber-600 dark:text-amber-400 font-semibold">
+                        ⚠️ Prescription Required
+                      </span>
                     ) : (
-                      <span className="text-emerald-600 dark:text-emerald-400 font-semibold">✓ Over the counter</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                        ✓ Over the counter
+                      </span>
                     )}{" "}
                     · {formatMoney(item.price)} per pack
                   </p>
@@ -173,7 +192,9 @@ function CartPage() {
                   >
                     <Minus className="size-3.5" />
                   </Button>
-                  <span className="font-mono text-sm font-bold w-6 text-center">{item.qty}</span>
+                  <span className="font-mono text-sm font-bold w-6 text-center">
+                    {item.qty}
+                  </span>
                   <Button
                     size="icon"
                     variant="outline"
@@ -196,17 +217,24 @@ function CartPage() {
 
             {needsRx && (
               <SafetyNotice title="Prescription Gating Active" tone="info">
-                Your basket contains scheduled medications. Medora enforces CDSCO regulations: an approved digital or scanned prescription must be attached before dispatch.
+                Your basket contains scheduled medications. Medora enforces
+                CDSCO regulations: an approved digital or scanned prescription
+                must be attached before dispatch.
               </SafetyNotice>
             )}
           </section>
 
           <aside className="space-y-4">
             <div className="surface space-y-4 p-5 sm:p-6 rounded-3xl border-2 border-primary/20 shadow-sm">
-              <h3 className="font-display text-base font-extrabold text-ink">Fulfillment & Summary</h3>
+              <h3 className="font-display text-base font-extrabold text-ink">
+                Fulfillment & Summary
+              </h3>
 
               <div className="space-y-1.5">
-                <Label htmlFor="pharmacy" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <Label
+                  htmlFor="pharmacy"
+                  className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
                   Dispensing Pharmacy
                 </Label>
                 <Select value={pharmacyId} onValueChange={setPharmacyId}>
@@ -224,34 +252,51 @@ function CartPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="fulfilment" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <Label
+                  htmlFor="fulfilment"
+                  className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
                   Fulfillment Mode
                 </Label>
                 <Select
                   value={fulfilment}
-                  onValueChange={(v) => setFulfilment(v as "pickup" | "delivery")}
+                  onValueChange={(v) =>
+                    setFulfilment(v as "pickup" | "delivery")
+                  }
                 >
                   <SelectTrigger id="fulfilment" className="rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
-                    <SelectItem value="delivery">⚡ Dunzo / Shadowfax Delivery (~30 mins · ₹35)</SelectItem>
-                    <SelectItem value="pickup">🏪 Counter Pickup (Free · Ready in 15 mins)</SelectItem>
+                    <SelectItem value="delivery">
+                      ⚡ Dunzo / Shadowfax Delivery (~30 mins · ₹35)
+                    </SelectItem>
+                    <SelectItem value="pickup">
+                      🏪 Counter Pickup (Free · Ready in 15 mins)
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="rx" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <Label
+                  htmlFor="rx"
+                  className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
                   Attach Prescription
                 </Label>
-                <Select value={prescriptionId} onValueChange={setPrescriptionId}>
+                <Select
+                  value={prescriptionId}
+                  onValueChange={setPrescriptionId}
+                >
                   <SelectTrigger id="rx" className="rounded-xl">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
                     <SelectItem value="none">
-                      {needsRx ? "⚠️ Select a verified prescription" : "No prescription required"}
+                      {needsRx
+                        ? "⚠️ Select a verified prescription"
+                        : "No prescription required"}
                     </SelectItem>
                     {verifiedRx.map((rx) => (
                       <SelectItem key={rx.id} value={rx.id}>
@@ -263,7 +308,10 @@ function CartPage() {
                 {needsRx && (
                   <p className="text-[11px] text-muted-foreground">
                     Need to upload?{" "}
-                    <Link to="/app/prescriptions" className="text-primary font-bold underline">
+                    <Link
+                      to="/app/prescriptions"
+                      className="text-primary font-bold underline"
+                    >
                       Upload Prescription
                     </Link>
                   </p>
@@ -275,21 +323,29 @@ function CartPage() {
               <div className="space-y-2 text-xs">
                 <div className="flex justify-between text-muted-foreground">
                   <span>Items Subtotal</span>
-                  <span className="font-mono font-bold text-foreground">{formatMoney(rawTotal)}</span>
+                  <span className="font-mono font-bold text-foreground">
+                    {formatMoney(rawTotal)}
+                  </span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Delivery & Packing</span>
                   <span className="font-mono font-bold text-foreground">
-                    {fulfilment === "delivery" ? formatMoney(deliveryFee) : "FREE"}
+                    {fulfilment === "delivery"
+                      ? formatMoney(deliveryFee)
+                      : "FREE"}
                   </span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Estimated GST (12%)</span>
-                  <span className="font-mono font-bold text-foreground">{formatMoney(rawTotal * 0.12)}</span>
+                  <span className="font-mono font-bold text-foreground">
+                    {formatMoney(rawTotal * 0.12)}
+                  </span>
                 </div>
                 <div className="flex justify-between border-t border-border pt-2 text-base font-extrabold text-foreground">
                   <span>Total Amount</span>
-                  <span className="font-display font-black text-ink">{formatMoney(finalTotal)}</span>
+                  <span className="font-display font-black text-ink">
+                    {formatMoney(finalTotal)}
+                  </span>
                 </div>
               </div>
 

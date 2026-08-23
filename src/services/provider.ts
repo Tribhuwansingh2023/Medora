@@ -29,16 +29,22 @@ export interface IntegrationDescriptor {
   liveDescription: string;
 }
 
-export const getIntegrations = (): Record<IntegrationKey, IntegrationDescriptor> => {
+export const getIntegrations = (): Record<
+  IntegrationKey,
+  IntegrationDescriptor
+> => {
   const env = typeof import.meta !== "undefined" ? import.meta.env : undefined;
   const hasSupabase = Boolean(
-    env?.["VITE_SUPABASE_URL"] || (typeof process !== "undefined" && process.env?.["SUPABASE_URL"]),
+    env?.["VITE_SUPABASE_URL"] ||
+    (typeof process !== "undefined" && process.env?.["SUPABASE_URL"]),
   );
   const hasGemini = Boolean(
-    env?.["VITE_GEMINI_API_KEY"] || (typeof process !== "undefined" && process.env?.["GEMINI_API_KEY"]),
+    env?.["VITE_GEMINI_API_KEY"] ||
+    (typeof process !== "undefined" && process.env?.["GEMINI_API_KEY"]),
   );
   const hasMaps = Boolean(
-    env?.["VITE_GOOGLE_MAPS_API_KEY"] || (typeof process !== "undefined" && process.env?.["GOOGLE_MAPS_API_KEY"]),
+    env?.["VITE_GOOGLE_MAPS_API_KEY"] ||
+    (typeof process !== "undefined" && process.env?.["GOOGLE_MAPS_API_KEY"]),
   );
 
   return {

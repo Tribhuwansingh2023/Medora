@@ -38,8 +38,8 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 
 export const isSupabaseAdminConfigured = Boolean(
   process.env["SUPABASE_URL"] &&
-    (process.env["SUPABASE_SERVICE_ROLE_KEY"] ||
-      process.env["SUPABASE_SECRET_KEY"]),
+  (process.env["SUPABASE_SERVICE_ROLE_KEY"] ||
+    process.env["SUPABASE_SECRET_KEY"]),
 );
 
 function createSupabaseAdminClient() {

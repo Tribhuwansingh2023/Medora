@@ -133,7 +133,8 @@ export const demoConsultNotes: ConsultNote[] = [
     at: "2026-08-13T11:02:00.000Z",
     author: "Patient (Aria Mehta)",
     kind: "message",
-    summary: "Updated clinical allergy profile to record penicillin sensitivity.",
+    summary:
+      "Updated clinical allergy profile to record penicillin sensitivity.",
   },
   {
     id: "cn-2",
@@ -177,7 +178,8 @@ export const demoConsultNotes: ConsultNote[] = [
     at: "2026-08-01T10:00:00.000Z",
     author: "Patient (Priya Patel)",
     kind: "message",
-    summary: "Requested pharmacist clarification on Levocetirizine vs Bilastine daytime drowsiness.",
+    summary:
+      "Requested pharmacist clarification on Levocetirizine vs Bilastine daytime drowsiness.",
   },
   {
     id: "cn-7",
@@ -252,7 +254,8 @@ export const demoPrescriptionDrafts: DoctorPrescriptionDraft[] = [
       },
     ],
     aiFlags: [],
-    clinicianNote: "Signed after cardiology review on 9 August (Apollo Clinic Indiranagar).",
+    clinicianNote:
+      "Signed after cardiology review on 9 August (Apollo Clinic Indiranagar).",
   },
   {
     id: "dr-4",
@@ -272,7 +275,8 @@ export const demoPrescriptionDrafts: DoctorPrescriptionDraft[] = [
     aiFlags: [
       "Schedule H1 Restricted Antibiotic. In-person clinical assessment required to prevent antimicrobial resistance.",
     ],
-    clinicianNote: "Declined: Antibiotic stewardship protocol requires in-person chest examination first.",
+    clinicianNote:
+      "Declined: Antibiotic stewardship protocol requires in-person chest examination first.",
   },
 ];
 
@@ -1049,7 +1053,8 @@ export const demoModerationReports: ModerationReport[] = [
     at: "2026-08-15T12:20:00.000Z",
     surface: "assistant answer",
     target: "Assistant answer #a-4412",
-    reason: "Antibiotic dosage inquiry flagged for clinical prescription gating",
+    reason:
+      "Antibiotic dosage inquiry flagged for clinical prescription gating",
     reporter: "system audit",
     severity: "high",
     status: "actioned",

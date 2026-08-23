@@ -35,7 +35,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PageHeader, SafetyNotice, StatTile } from "@/components/common/primitives";
+import {
+  PageHeader,
+  SafetyNotice,
+  StatTile,
+} from "@/components/common/primitives";
 import { WorkspaceSection, StatusPill } from "@/components/workspace/parts";
 
 export const Route = createFileRoute("/admin/system")({
@@ -58,7 +62,8 @@ export const Route = createFileRoute("/admin/system")({
 
 interface ServiceStatus {
   name: string;
-  category: "AI & ML" | "Database" | "Government API" | "Logistics" | "Communications";
+  category:
+    "AI & ML" | "Database" | "Government API" | "Logistics" | "Communications";
   latency: number;
   uptime: string;
   status: "operational" | "degraded" | "standby";
@@ -72,7 +77,8 @@ const SERVICES: ServiceStatus[] = [
     latency: 124,
     uptime: "99.98%",
     status: "operational",
-    details: "Zero toxicity flags, strict medical disclaimer guardrails active.",
+    details:
+      "Zero toxicity flags, strict medical disclaimer guardrails active.",
   },
   {
     name: "CDSCO National Formulary Connector",
@@ -109,16 +115,40 @@ const SERVICES: ServiceStatus[] = [
 ];
 
 const COLD_CHAIN_SENSORS = [
-  { location: "Apollo Chemist — Bandra West (Mumbai)", temp: 4.2, target: "2°C - 8°C", status: "optimal" },
-  { location: "MedPlus Central Hub — Koramangala (Bengaluru)", temp: 3.8, target: "2°C - 8°C", status: "optimal" },
-  { location: "Manipal Hospital Cold Storage (Bengaluru)", temp: 5.1, target: "2°C - 8°C", status: "optimal" },
-  { location: "Cipla Distribution Depot (New Delhi)", temp: 4.6, target: "2°C - 8°C", status: "optimal" },
+  {
+    location: "Apollo Chemist — Bandra West (Mumbai)",
+    temp: 4.2,
+    target: "2°C - 8°C",
+    status: "optimal",
+  },
+  {
+    location: "MedPlus Central Hub — Koramangala (Bengaluru)",
+    temp: 3.8,
+    target: "2°C - 8°C",
+    status: "optimal",
+  },
+  {
+    location: "Manipal Hospital Cold Storage (Bengaluru)",
+    temp: 5.1,
+    target: "2°C - 8°C",
+    status: "optimal",
+  },
+  {
+    location: "Cipla Distribution Depot (New Delhi)",
+    temp: 4.6,
+    target: "2°C - 8°C",
+    status: "optimal",
+  },
 ];
 
 function SystemAdminPage() {
   const [broadcastOpen, setBroadcastOpen] = useState(false);
-  const [broadcastTitle, setBroadcastTitle] = useState("CDSCO Schedule H1 Regulatory Notice");
-  const [broadcastBody, setBroadcastBody] = useState("Immediate review requested for new antimicrobial stewardship dosage ceiling mandates.");
+  const [broadcastTitle, setBroadcastTitle] = useState(
+    "CDSCO Schedule H1 Regulatory Notice",
+  );
+  const [broadcastBody, setBroadcastBody] = useState(
+    "Immediate review requested for new antimicrobial stewardship dosage ceiling mandates.",
+  );
   const [clearingCache, setClearingCache] = useState(false);
 
   const handleClearCache = () => {
@@ -126,7 +156,8 @@ function SystemAdminPage() {
     setTimeout(() => {
       setClearingCache(false);
       toast.success("Global Edge & Query Cache Flushed", {
-        description: "All client query workers and catalog memory invalidated successfully.",
+        description:
+          "All client query workers and catalog memory invalidated successfully.",
       });
     }, 600);
   };
@@ -186,7 +217,9 @@ function SystemAdminPage() {
         tone="info"
         title="Automated Regulatory Guardrail Protocols Active"
       >
-        All AI medical consultations and pharmacist vision OCR jobs are subject to automated CDSCO compliance checks, National Medical Commission prescriber verification, and DPDP Act zero-data retention policies.
+        All AI medical consultations and pharmacist vision OCR jobs are subject
+        to automated CDSCO compliance checks, National Medical Commission
+        prescriber verification, and DPDP Act zero-data retention policies.
       </SafetyNotice>
 
       {/* Action Control Panel */}
@@ -197,7 +230,8 @@ function SystemAdminPage() {
             Administrative System Control Center
           </h3>
           <p className="text-xs text-muted-foreground">
-            Execute global administrative actions across all connected clinical and pharmacy nodes.
+            Execute global administrative actions across all connected clinical
+            and pharmacy nodes.
           </p>
         </div>
 
@@ -209,7 +243,9 @@ function SystemAdminPage() {
             disabled={clearingCache}
             className="h-9 font-bold text-xs gap-1.5 rounded-xl"
           >
-            <RefreshCw className={`size-3.5 ${clearingCache ? "animate-spin text-primary" : ""}`} />
+            <RefreshCw
+              className={`size-3.5 ${clearingCache ? "animate-spin text-primary" : ""}`}
+            />
             {clearingCache ? "Flushing Cache..." : "Flush Global Cache"}
           </Button>
 
@@ -243,7 +279,9 @@ function SystemAdminPage() {
                     </span>
                     <div>
                       <h4 className="font-bold text-sm text-ink">{svc.name}</h4>
-                      <p className="text-[11px] text-muted-foreground">{svc.category}</p>
+                      <p className="text-[11px] text-muted-foreground">
+                        {svc.category}
+                      </p>
                     </div>
                   </div>
 
@@ -283,7 +321,10 @@ function SystemAdminPage() {
                       <Thermometer className="size-3.5 text-blue-500 shrink-0" />
                       {s.location}
                     </span>
-                    <Badge variant="outline" className="font-mono text-xs font-extrabold bg-blue-500/10 text-blue-600 border-blue-500/30">
+                    <Badge
+                      variant="outline"
+                      className="font-mono text-xs font-extrabold bg-blue-500/10 text-blue-600 border-blue-500/30"
+                    >
                       {s.temp}°C
                     </Badge>
                   </div>
@@ -307,15 +348,21 @@ function SystemAdminPage() {
             <div className="space-y-2 text-xs text-muted-foreground">
               <div className="flex items-center justify-between p-2 rounded-xl bg-muted/30">
                 <span>OCR Character Confidence Floor</span>
-                <span className="font-mono font-bold text-foreground">85.0%</span>
+                <span className="font-mono font-bold text-foreground">
+                  85.0%
+                </span>
               </div>
               <div className="flex items-center justify-between p-2 rounded-xl bg-muted/30">
                 <span>Drug-Drug Interaction Alert Strictness</span>
-                <span className="font-mono font-bold text-foreground">Level 1 (Critical Block)</span>
+                <span className="font-mono font-bold text-foreground">
+                  Level 1 (Critical Block)
+                </span>
               </div>
               <div className="flex items-center justify-between p-2 rounded-xl bg-muted/30">
                 <span>Prescription Expiry Max Window</span>
-                <span className="font-mono font-bold text-foreground">180 Days</span>
+                <span className="font-mono font-bold text-foreground">
+                  180 Days
+                </span>
               </div>
             </div>
           </div>
@@ -331,7 +378,8 @@ function SystemAdminPage() {
               Dispatch Emergency Broadcast
             </DialogTitle>
             <DialogDescription>
-              Sends an immediate high-priority clinical or regulatory banner to all active pharmacy dispensaries and doctor workspaces.
+              Sends an immediate high-priority clinical or regulatory banner to
+              all active pharmacy dispensaries and doctor workspaces.
             </DialogDescription>
           </DialogHeader>
 

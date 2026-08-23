@@ -33,10 +33,10 @@ export function ProviderStatusBanner() {
   return (
     <div className="bg-warning/20 border-b border-warning/50 px-4 py-2 text-sm text-warning-foreground flex items-center justify-center gap-2">
       <ServerOff className="size-4" aria-hidden />
-      <span className="font-medium">
-        Live medicine database offline.
+      <span className="font-medium">Live medicine database offline.</span>
+      <span className="opacity-80">
+        Falling back to local cached catalogue.
       </span>
-      <span className="opacity-80">Falling back to local cached catalogue.</span>
     </div>
   );
 }

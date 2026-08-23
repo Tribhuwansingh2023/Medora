@@ -45,7 +45,12 @@ describe("Real Multi-Channel Notification System", () => {
   });
 
   it("triggers price drop alert with percentage calculation", () => {
-    notificationService.notifyPriceAlert("Metformin 500mg", 18, 42.0, "Apollo Pharmacy");
+    notificationService.notifyPriceAlert(
+      "Metformin 500mg",
+      18,
+      42.0,
+      "Apollo Pharmacy",
+    );
     const items = notificationService.getNotifications();
     const priceNotif = items.find((i) => i.title.includes("Price Dropped 18%"));
     expect(priceNotif).toBeDefined();
@@ -53,9 +58,15 @@ describe("Real Multi-Channel Notification System", () => {
   });
 
   it("triggers CDSCO clinical safety advisory alert", () => {
-    notificationService.notifySafetyAlert("Paracetamol Daily Maximum", "Do not exceed 4000mg in 24 hours.", "warning");
+    notificationService.notifySafetyAlert(
+      "Paracetamol Daily Maximum",
+      "Do not exceed 4000mg in 24 hours.",
+      "warning",
+    );
     const items = notificationService.getNotifications();
-    const safetyNotif = items.find((i) => i.title.includes("Paracetamol Daily Maximum"));
+    const safetyNotif = items.find((i) =>
+      i.title.includes("Paracetamol Daily Maximum"),
+    );
     expect(safetyNotif).toBeDefined();
     expect(safetyNotif?.kind).toBe("safety");
   });

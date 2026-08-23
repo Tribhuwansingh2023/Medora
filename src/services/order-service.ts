@@ -86,7 +86,8 @@ function getInitialDemoOrders(): Order[] {
         pharmacistLicence: "MH-PH-849201",
         digitalSignature: "SIG-CDSCO-9481-V1",
         verifiedAt: new Date(now - 1000 * 60 * 35).toISOString(),
-        verificationNotes: "Prescription valid for Metformin 500mg SR. Dosage instructions verified.",
+        verificationNotes:
+          "Prescription valid for Metformin 500mg SR. Dosage instructions verified.",
       },
       delivery: {
         partner: "Dunzo MedExpress",
@@ -98,15 +99,40 @@ function getInitialDemoOrders(): Order[] {
         currentLng: 72.8295,
         distanceKm: 1.2,
         estimatedMinutes: 8,
-        deliveryAddress: "Flat 402, Sea Breeze Apts, Hill Road, Bandra West, Mumbai 400050",
+        deliveryAddress:
+          "Flat 402, Sea Breeze Apts, Hill Road, Bandra West, Mumbai 400050",
       },
       timeline: [
-        { state: "awaiting_prescription", at: new Date(now - 1000 * 60 * 45).toISOString(), note: "Order initiated and payment verified via UPI." },
-        { state: "verifying", at: new Date(now - 1000 * 60 * 40).toISOString(), note: "Prescription submitted for licensed pharmacist clinical safety check." },
-        { state: "accepted", at: new Date(now - 1000 * 60 * 35).toISOString(), note: "Prescription verified by R. Ph. Sandeep Varma (MH-PH-849201)." },
-        { state: "preparing", at: new Date(now - 1000 * 60 * 25).toISOString(), note: "Order packed in tamper-proof temperature-monitored medical packaging." },
-        { state: "ready", at: new Date(now - 1000 * 60 * 15).toISOString(), note: "Package handed over to Dunzo MedExpress courier." },
-        { state: "out_for_delivery", at: new Date(now - 1000 * 60 * 10).toISOString(), note: "Rider Kavish Sharma is en route to your delivery location." },
+        {
+          state: "awaiting_prescription",
+          at: new Date(now - 1000 * 60 * 45).toISOString(),
+          note: "Order initiated and payment verified via UPI.",
+        },
+        {
+          state: "verifying",
+          at: new Date(now - 1000 * 60 * 40).toISOString(),
+          note: "Prescription submitted for licensed pharmacist clinical safety check.",
+        },
+        {
+          state: "accepted",
+          at: new Date(now - 1000 * 60 * 35).toISOString(),
+          note: "Prescription verified by R. Ph. Sandeep Varma (MH-PH-849201).",
+        },
+        {
+          state: "preparing",
+          at: new Date(now - 1000 * 60 * 25).toISOString(),
+          note: "Order packed in tamper-proof temperature-monitored medical packaging.",
+        },
+        {
+          state: "ready",
+          at: new Date(now - 1000 * 60 * 15).toISOString(),
+          note: "Package handed over to Dunzo MedExpress courier.",
+        },
+        {
+          state: "out_for_delivery",
+          at: new Date(now - 1000 * 60 * 10).toISOString(),
+          note: "Rider Kavish Sharma is en route to your delivery location.",
+        },
       ],
     },
     {
@@ -141,9 +167,21 @@ function getInitialDemoOrders(): Order[] {
         },
       },
       timeline: [
-        { state: "accepted", at: new Date(now - 1000 * 60 * 120).toISOString(), note: "Counter reservation confirmed." },
-        { state: "ready", at: new Date(now - 1000 * 60 * 90).toISOString(), note: "Ready for pickup at counter." },
-        { state: "completed", at: new Date(now - 1000 * 60 * 30).toISOString(), note: "Picked up by patient." },
+        {
+          state: "accepted",
+          at: new Date(now - 1000 * 60 * 120).toISOString(),
+          note: "Counter reservation confirmed.",
+        },
+        {
+          state: "ready",
+          at: new Date(now - 1000 * 60 * 90).toISOString(),
+          note: "Ready for pickup at counter.",
+        },
+        {
+          state: "completed",
+          at: new Date(now - 1000 * 60 * 30).toISOString(),
+          note: "Picked up by patient.",
+        },
       ],
     },
   ];
@@ -190,16 +228,19 @@ class OrderService {
       // Optional background sync to Supabase table if provisioned
       const recent = orders[0];
       if (recent) {
-        await (supabase as any).from("orders").upsert({
-          id: recent.id,
-          pharmacy_id: recent.pharmacyId,
-          pharmacy_name: recent.pharmacyName,
-          status: recent.status,
-          total: recent.total,
-          fulfilment: recent.fulfilment,
-          placed_at: recent.placedAt,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: "id" });
+        await (supabase as any).from("orders").upsert(
+          {
+            id: recent.id,
+            pharmacy_id: recent.pharmacyId,
+            pharmacy_name: recent.pharmacyName,
+            status: recent.status,
+            total: recent.total,
+            fulfilment: recent.fulfilment,
+            placed_at: recent.placedAt,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "id" },
+        );
       }
     } catch {
       // Graceful offline fallback
@@ -239,16 +280,20 @@ class OrderService {
     const cgst = Math.round(((total - subtotal) / 2) * 100) / 100;
     const sgst = Math.round((total - subtotal - cgst) * 100) / 100;
 
-    const initialStatus: OrderStatus = hasRx && !params.prescriptionId
-      ? "awaiting_prescription"
-      : hasRx
-        ? "verifying"
-        : "accepted";
+    const initialStatus: OrderStatus =
+      hasRx && !params.prescriptionId
+        ? "awaiting_prescription"
+        : hasRx
+          ? "verifying"
+          : "accepted";
 
     const payment: PaymentDetails = {
       method: params.paymentMethod,
       status: params.paymentMethod === "cod" ? "pending" : "completed",
-      transactionId: params.paymentMethod === "cod" ? undefined : `TXN-${params.paymentMethod.toUpperCase()}-${Date.now().toString().slice(-6)}`,
+      transactionId:
+        params.paymentMethod === "cod"
+          ? undefined
+          : `TXN-${params.paymentMethod.toUpperCase()}-${Date.now().toString().slice(-6)}`,
       receiptNumber: `REC-${new Date().getFullYear()}-${orderId.replace("ORD-", "")}`,
       paidAt: params.paymentMethod === "cod" ? undefined : now,
       amount: total,
@@ -260,18 +305,23 @@ class OrderService {
       },
     };
 
-    const delivery: DeliveryDetails | undefined = params.fulfilment === "delivery" ? {
-      partner: "Dunzo MedExpress",
-      riderName: "Aakash Mehta",
-      riderPhone: "+91 98334 19283",
-      vehicleNumber: "MH 01 DX 3912",
-      trackingNumber: `TRK-MED-${Math.floor(100000 + Math.random() * 900000)}`,
-      currentLat: 19.0600,
-      currentLng: 72.8300,
-      distanceKm: 2.4,
-      estimatedMinutes: 18,
-      deliveryAddress: params.deliveryAddress || "402 Sea View Apartments, Bandra West, Mumbai 400050",
-    } : undefined;
+    const delivery: DeliveryDetails | undefined =
+      params.fulfilment === "delivery"
+        ? {
+            partner: "Dunzo MedExpress",
+            riderName: "Aakash Mehta",
+            riderPhone: "+91 98334 19283",
+            vehicleNumber: "MH 01 DX 3912",
+            trackingNumber: `TRK-MED-${Math.floor(100000 + Math.random() * 900000)}`,
+            currentLat: 19.06,
+            currentLng: 72.83,
+            distanceKm: 2.4,
+            estimatedMinutes: 18,
+            deliveryAddress:
+              params.deliveryAddress ||
+              "402 Sea View Apartments, Bandra West, Mumbai 400050",
+          }
+        : undefined;
 
     const newOrder: Order = {
       id: orderId,
@@ -285,19 +335,22 @@ class OrderService {
       status: initialStatus,
       payment,
       delivery,
-      prescriptionVerification: hasRx ? {
-        status: params.prescriptionId ? "pending" : "not_required",
-        verificationNotes: "Queued for clinical pharmacist validation.",
-      } : {
-        status: "not_required",
-      },
+      prescriptionVerification: hasRx
+        ? {
+            status: params.prescriptionId ? "pending" : "not_required",
+            verificationNotes: "Queued for clinical pharmacist validation.",
+          }
+        : {
+            status: "not_required",
+          },
       timeline: [
         {
           state: initialStatus,
           at: now,
-          note: params.paymentMethod === "cod"
-            ? "Order placed (Cash on Delivery). Awaiting verification."
-            : `Order confirmed & paid ₹${total} via ${params.paymentMethod.toUpperCase()} (${payment.transactionId}).`,
+          note:
+            params.paymentMethod === "cod"
+              ? "Order placed (Cash on Delivery). Awaiting verification."
+              : `Order confirmed & paid ₹${total} via ${params.paymentMethod.toUpperCase()} (${payment.transactionId}).`,
         },
       ],
     };
@@ -316,7 +369,11 @@ class OrderService {
     return newOrder;
   }
 
-  public updateOrderStatus(orderId: string, nextStatus: OrderStatus, note?: string): Order | null {
+  public updateOrderStatus(
+    orderId: string,
+    nextStatus: OrderStatus,
+    note?: string,
+  ): Order | null {
     const orders = this.loadOrders();
     const idx = orders.findIndex((o) => o.id === orderId);
     if (idx === -1) return null;
@@ -369,7 +426,12 @@ class OrderService {
 
   public verifyPrescription(
     orderId: string,
-    pharmacist: { name: string; licence: string; approved: boolean; notes: string },
+    pharmacist: {
+      name: string;
+      licence: string;
+      approved: boolean;
+      notes: string;
+    },
   ): Order | null {
     const orders = this.loadOrders();
     const idx = orders.findIndex((o) => o.id === orderId);
@@ -387,7 +449,9 @@ class OrderService {
       verificationNotes: pharmacist.notes,
     };
 
-    const nextStatus: OrderStatus = pharmacist.approved ? "accepted" : "cancelled";
+    const nextStatus: OrderStatus = pharmacist.approved
+      ? "accepted"
+      : "cancelled";
 
     const updatedTimeline = [
       ...current.timeline,
@@ -433,13 +497,19 @@ class OrderService {
       reason,
       refundStatus: isPaid ? "refunded" : "not_applicable",
       refundAmount: isPaid ? current.total : 0,
-      refundTransactionId: isPaid ? `REF-${Date.now().toString().slice(-6)}` : undefined,
+      refundTransactionId: isPaid
+        ? `REF-${Date.now().toString().slice(-6)}`
+        : undefined,
     };
 
-    const updatedPayment = current.payment ? {
-      ...current.payment,
-      status: (isPaid ? "refunded" : current.payment.status) as PaymentDetails["status"],
-    } : undefined;
+    const updatedPayment = current.payment
+      ? {
+          ...current.payment,
+          status: (isPaid
+            ? "refunded"
+            : current.payment.status) as PaymentDetails["status"],
+        }
+      : undefined;
 
     const updatedTimeline = [
       ...current.timeline,

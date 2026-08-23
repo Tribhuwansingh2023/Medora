@@ -284,7 +284,8 @@ function OverviewPage() {
                                 Recent Clinical Alerts & Safety Notices
                               </h3>
                               <p className="text-xs text-muted-foreground">
-                                Real-time clinical warnings, drug interaction flags, and cold-chain telemetry.
+                                Real-time clinical warnings, drug interaction
+                                flags, and cold-chain telemetry.
                               </p>
                             </div>
                           </div>
@@ -292,7 +293,8 @@ function OverviewPage() {
                             variant="outline"
                             className="w-fit border-destructive/30 bg-destructive-soft/50 text-destructive text-xs font-bold px-2.5 py-0.5 rounded-full"
                           >
-                            {RECENT_CLINICAL_ALERTS.length} Active Safety Notices
+                            {RECENT_CLINICAL_ALERTS.length} Active Safety
+                            Notices
                           </Badge>
                         </div>
 
@@ -303,9 +305,12 @@ function OverviewPage() {
                               id={alert.id}
                               className={cn(
                                 "group rounded-xl border p-4 shadow-2xs transition-all duration-200 hover:shadow-soft hover:-translate-y-0.5 flex flex-col justify-between",
-                                alert.severity === "high" && "border-destructive/30 bg-gradient-to-br from-destructive/5 via-card to-card hover:border-destructive/50",
-                                alert.severity === "medium" && "border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-card to-card hover:border-amber-500/50",
-                                alert.severity === "low" && "border-primary/30 bg-gradient-to-br from-primary/5 via-card to-card hover:border-primary/50",
+                                alert.severity === "high" &&
+                                  "border-destructive/30 bg-gradient-to-br from-destructive/5 via-card to-card hover:border-destructive/50",
+                                alert.severity === "medium" &&
+                                  "border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-card to-card hover:border-amber-500/50",
+                                alert.severity === "low" &&
+                                  "border-primary/30 bg-gradient-to-br from-primary/5 via-card to-card hover:border-primary/50",
                               )}
                             >
                               <div>
@@ -333,7 +338,8 @@ function OverviewPage() {
 
                               <div className="mt-3.5 pt-3 border-t border-border/60 flex items-center justify-between text-xs">
                                 <span className="font-semibold text-[11px] text-ink/80 flex items-center gap-1">
-                                  <Pill className="size-3 text-primary" /> {alert.affectedLine}
+                                  <Pill className="size-3 text-primary" />{" "}
+                                  {alert.affectedLine}
                                 </span>
                                 <Link
                                   to={alert.actionUrl}
@@ -560,12 +566,17 @@ function OverviewPage() {
                                     <TrendingUp className="size-3.5 text-emerald-500" />
                                     Paracetamol 650mg & ORS
                                   </span>
-                                  <Badge variant="outline" className="border-emerald-500/30 bg-emerald-500/10 text-emerald-600 text-[10px] font-bold">
+                                  <Badge
+                                    variant="outline"
+                                    className="border-emerald-500/30 bg-emerald-500/10 text-emerald-600 text-[10px] font-bold"
+                                  >
                                     +45% Surge
                                   </Badge>
                                 </div>
                                 <p className="text-[11px] text-muted-foreground">
-                                  Monsoon seasonal viral fever surge detected across regional postal code clusters. Recommended safety buffer: +120 units.
+                                  Monsoon seasonal viral fever surge detected
+                                  across regional postal code clusters.
+                                  Recommended safety buffer: +120 units.
                                 </p>
                               </div>
 
@@ -575,19 +586,30 @@ function OverviewPage() {
                                     <TrendingUp className="size-3.5 text-blue-500" />
                                     Montelukast + Levocetirizine
                                   </span>
-                                  <Badge variant="outline" className="border-blue-500/30 bg-blue-500/10 text-blue-600 text-[10px] font-bold">
+                                  <Badge
+                                    variant="outline"
+                                    className="border-blue-500/30 bg-blue-500/10 text-blue-600 text-[10px] font-bold"
+                                  >
                                     +32% Surge
                                   </Badge>
                                 </div>
                                 <p className="text-[11px] text-muted-foreground">
-                                  Allergic rhinitis seasonal spike forecasted. Auto-generated PO ready for distributor dispatch.
+                                  Allergic rhinitis seasonal spike forecasted.
+                                  Auto-generated PO ready for distributor
+                                  dispatch.
                                 </p>
                               </div>
                             </div>
 
                             <div className="mt-3.5 pt-3 border-t border-border/60 flex items-center justify-between">
-                              <span className="text-[11px] text-muted-foreground">Reorder Lead Time: ~24 hrs</span>
-                              <Button size="sm" asChild className="h-7 text-xs font-bold gap-1 rounded-xl">
+                              <span className="text-[11px] text-muted-foreground">
+                                Reorder Lead Time: ~24 hrs
+                              </span>
+                              <Button
+                                size="sm"
+                                asChild
+                                className="h-7 text-xs font-bold gap-1 rounded-xl"
+                              >
                                 <Link to="/pharmacy/suppliers">
                                   <Zap className="size-3" /> Auto-Generate PO
                                 </Link>
@@ -611,7 +633,10 @@ function OverviewPage() {
                                   </p>
                                 </div>
                               </div>
-                              <Badge variant="outline" className="font-mono text-xs font-bold border-emerald-500/30 bg-emerald-500/10 text-emerald-600">
+                              <Badge
+                                variant="outline"
+                                className="font-mono text-xs font-bold border-emerald-500/30 bg-emerald-500/10 text-emerald-600"
+                              >
                                 +4.2°C (Optimal)
                               </Badge>
                             </div>
@@ -619,15 +644,21 @@ function OverviewPage() {
                             <div className="mt-3 space-y-2 text-xs">
                               <div className="flex items-center justify-between py-1 border-b border-border/40 text-muted-foreground">
                                 <span>Unit B1 (Insulin & Vaccines):</span>
-                                <strong className="text-emerald-600 font-mono">+3.8°C · Nominal</strong>
+                                <strong className="text-emerald-600 font-mono">
+                                  +3.8°C · Nominal
+                                </strong>
                               </div>
                               <div className="flex items-center justify-between py-1 border-b border-border/40 text-muted-foreground">
                                 <span>Unit B2 (Injectables):</span>
-                                <strong className="text-emerald-600 font-mono">+4.6°C · Nominal</strong>
+                                <strong className="text-emerald-600 font-mono">
+                                  +4.6°C · Nominal
+                                </strong>
                               </div>
                               <div className="flex items-center justify-between py-1 text-muted-foreground">
                                 <span>Compliance Envelope:</span>
-                                <strong className="text-ink font-mono">+2.0°C to +8.0°C (100%)</strong>
+                                <strong className="text-ink font-mono">
+                                  +2.0°C to +8.0°C (100%)
+                                </strong>
                               </div>
                             </div>
                           </div>

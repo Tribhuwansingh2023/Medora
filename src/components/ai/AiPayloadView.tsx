@@ -25,7 +25,9 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
       {payload.kind === "escalation" && (
         <div className="space-y-3">
           <EmergencyCallout />
-          <p className="text-sm font-medium text-destructive">{payload.action}</p>
+          <p className="text-sm font-medium text-destructive">
+            {payload.action}
+          </p>
         </div>
       )}
 
@@ -33,30 +35,49 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             <div className="rounded-xl border border-border/70 bg-card p-3 shadow-xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Active Drug</span>
-              <p className="mt-0.5 text-xs font-semibold text-foreground">{payload.activeIngredient}</p>
-            </div>
-            <div className="rounded-xl border border-border/70 bg-card p-3 shadow-xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Strength</span>
-              <p className="mt-0.5 text-xs font-semibold text-foreground">{payload.strength}</p>
-            </div>
-            <div className="rounded-xl border border-border/70 bg-card p-3 shadow-xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Form</span>
-              <p className="mt-0.5 text-xs font-semibold text-foreground">{payload.form}</p>
-            </div>
-            <div className="rounded-xl border border-border/70 bg-card p-3 shadow-xs">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Classification</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Active Drug
+              </span>
               <p className="mt-0.5 text-xs font-semibold text-foreground">
-                {payload.supply === "prescription_only" ? "Prescription Only" : "Over The Counter"}
+                {payload.activeIngredient}
+              </p>
+            </div>
+            <div className="rounded-xl border border-border/70 bg-card p-3 shadow-xs">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Strength
+              </span>
+              <p className="mt-0.5 text-xs font-semibold text-foreground">
+                {payload.strength}
+              </p>
+            </div>
+            <div className="rounded-xl border border-border/70 bg-card p-3 shadow-xs">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Form
+              </span>
+              <p className="mt-0.5 text-xs font-semibold text-foreground">
+                {payload.form}
+              </p>
+            </div>
+            <div className="rounded-xl border border-border/70 bg-card p-3 shadow-xs">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Classification
+              </span>
+              <p className="mt-0.5 text-xs font-semibold text-foreground">
+                {payload.supply === "prescription_only"
+                  ? "Prescription Only"
+                  : "Over The Counter"}
               </p>
             </div>
           </div>
 
           <div className="rounded-xl border border-border/80 bg-card/60 p-4 space-y-2">
             <h4 className="text-xs font-bold uppercase tracking-wider text-foreground flex items-center gap-1.5">
-              <Info className="size-3.5 text-primary" /> Clinical Indication & Guidance
+              <Info className="size-3.5 text-primary" /> Clinical Indication &
+              Guidance
             </h4>
-            <p className="text-sm text-muted-foreground leading-relaxed">{payload.information}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {payload.information}
+            </p>
           </div>
 
           {payload.warnings.length > 0 && (
@@ -77,7 +98,9 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
 
           {payload.commonSideEffects.length > 0 && (
             <div className="rounded-xl border border-border/70 bg-card p-3.5 space-y-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Common Side Effects</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Common Side Effects
+              </h4>
               <div className="flex flex-wrap gap-1.5">
                 {payload.commonSideEffects.map((se) => (
                   <span
@@ -103,7 +126,9 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
               >
                 <div>
                   <div className="flex items-start justify-between gap-2">
-                    <h4 className="font-display text-sm font-bold text-ink">{row.medicine}</h4>
+                    <h4 className="font-display text-sm font-bold text-ink">
+                      {row.medicine}
+                    </h4>
                     <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary shrink-0">
                       {row.form}
                     </span>
@@ -115,15 +140,21 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
                   <div className="mt-3 space-y-1 text-xs text-muted-foreground">
                     <div className="flex justify-between border-t border-border/50 pt-1.5">
                       <span>Strength:</span>
-                      <span className="font-medium text-foreground">{row.strength}</span>
+                      <span className="font-medium text-foreground">
+                        {row.strength}
+                      </span>
                     </div>
                     <div className="flex justify-between border-t border-border/50 pt-1.5">
                       <span>Status:</span>
-                      <span className="font-medium text-foreground">{row.supply}</span>
+                      <span className="font-medium text-foreground">
+                        {row.supply}
+                      </span>
                     </div>
                     <div className="flex justify-between border-t border-border/50 pt-1.5">
                       <span>Manufacturer:</span>
-                      <span className="font-medium text-foreground truncate max-w-[120px]">{row.manufacturer}</span>
+                      <span className="font-medium text-foreground truncate max-w-[120px]">
+                        {row.manufacturer}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -133,9 +164,12 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
 
           <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3.5 space-y-1 text-xs">
             <span className="font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
-              <BadgeCheck className="size-4 text-emerald-600 dark:text-emerald-400" /> Bioequivalence Assessment
+              <BadgeCheck className="size-4 text-emerald-600 dark:text-emerald-400" />{" "}
+              Bioequivalence Assessment
             </span>
-            <p className="text-muted-foreground leading-relaxed">{payload.equivalence}</p>
+            <p className="text-muted-foreground leading-relaxed">
+              {payload.equivalence}
+            </p>
           </div>
         </div>
       )}
@@ -145,7 +179,8 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
           {payload.findings.map((finding) => {
             const isSevere = finding.severity === "severe";
             const isModerate = finding.severity === "moderate";
-            const isSafe = finding.severity === "safe" || finding.type === "safe";
+            const isSafe =
+              finding.severity === "safe" || finding.type === "safe";
 
             const borderTone = isSevere
               ? "border-rose-500/40 bg-rose-500/5"
@@ -185,10 +220,14 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
                     {finding.severity}
                   </span>
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">{finding.detail}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {finding.detail}
+                </p>
                 {finding.items.length > 0 && (
                   <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Drugs:</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                      Drugs:
+                    </span>
                     {finding.items.map((it) => (
                       <span
                         key={it}
@@ -216,7 +255,9 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
                 <div className="text-[11px] font-bold uppercase tracking-wide text-primary flex items-center gap-1">
                   <Sparkles className="size-3" /> {b.label}
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">{b.value}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {b.value}
+                </p>
               </div>
             ))}
           </div>
@@ -242,13 +283,21 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="text-xs font-bold text-foreground">{analyte.name}</p>
-                      <p className="text-[11px] text-muted-foreground">Range: {analyte.referenceRange}</p>
+                      <p className="text-xs font-bold text-foreground">
+                        {analyte.name}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">
+                        Range: {analyte.referenceRange}
+                      </p>
                     </div>
                     <div className="text-right">
-                      <span className="text-sm font-extrabold text-foreground">{analyte.value}</span>
+                      <span className="text-sm font-extrabold text-foreground">
+                        {analyte.value}
+                      </span>
                       <div>
-                        <span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${flagTone}`}>
+                        <span
+                          className={`rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase ${flagTone}`}
+                        >
                           {analyte.flag}
                         </span>
                       </div>
@@ -268,21 +317,35 @@ export function AiPayloadView({ payload }: { payload: AiPayload }) {
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-2">
             <div className="rounded-xl border border-border bg-card p-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Triage Tier</span>
-              <p className="mt-0.5 text-xs font-bold text-primary uppercase">{payload.escalation.level.replace("_", " ")}</p>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Triage Tier
+              </span>
+              <p className="mt-0.5 text-xs font-bold text-primary uppercase">
+                {payload.escalation.level.replace("_", " ")}
+              </p>
             </div>
             <div className="rounded-xl border border-border bg-card p-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Symptoms Read</span>
-              <p className="mt-0.5 text-xs font-medium text-foreground truncate">{payload.symptoms.join(", ") || "—"}</p>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Symptoms Read
+              </span>
+              <p className="mt-0.5 text-xs font-medium text-foreground truncate">
+                {payload.symptoms.join(", ") || "—"}
+              </p>
             </div>
           </div>
           <div className="rounded-xl border border-border/80 bg-card p-3.5 space-y-1.5">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">Recommended Clinical Action</h4>
-            <p className="text-xs text-muted-foreground leading-relaxed">{payload.escalation.action}</p>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
+              Recommended Clinical Action
+            </h4>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {payload.escalation.action}
+            </p>
           </div>
           {payload.redFlags.length > 0 && (
             <div className="rounded-xl border border-rose-500/30 bg-rose-500/5 p-3.5 space-y-1.5">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">Emergency Red Flags</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
+                Emergency Red Flags
+              </h4>
               <ul className="space-y-1 text-xs text-muted-foreground">
                 {payload.redFlags.map((rf) => (
                   <li key={rf} className="flex items-start gap-1.5">

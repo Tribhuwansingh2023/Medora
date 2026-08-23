@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { APIProvider, Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
+import {
+  APIProvider,
+  Map,
+  AdvancedMarker,
+  useMap,
+} from "@vis.gl/react-google-maps";
 import {
   MapPin,
   Clock,
@@ -115,7 +120,9 @@ export function GooglePharmacyMap({
               <Key className="size-5 text-primary" /> Google Maps API Key
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Enter your Google Maps JavaScript API key to enable live satellite and terrain imagery. Leave empty to use the built-in Interactive Vector Map.
+              Enter your Google Maps JavaScript API key to enable live satellite
+              and terrain imagery. Leave empty to use the built-in Interactive
+              Vector Map.
             </DialogDescription>
           </DialogHeader>
 
@@ -132,7 +139,11 @@ export function GooglePharmacyMap({
               />
             </div>
             <div className="flex justify-end gap-2 pt-2">
-              <Button size="sm" variant="outline" onClick={() => setKeyModalOpen(false)}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setKeyModalOpen(false)}
+              >
                 Cancel
               </Button>
               <Button size="sm" onClick={handleSaveKey} className="font-bold">
@@ -184,9 +195,13 @@ function InteractiveDemoVectorMap({
   onOpenKeyModal,
 }: GooglePharmacyMapProps & { onOpenKeyModal: () => void }) {
   const [activePharmacy, setActivePharmacy] = useState<Pharmacy | null>(
-    pharmacies.find((p) => p.id === selectedPharmacyId) || pharmacies[0] || null,
+    pharmacies.find((p) => p.id === selectedPharmacyId) ||
+      pharmacies[0] ||
+      null,
   );
-  const [mapTheme, setMapTheme] = useState<"light" | "dark" | "blueprint">("light");
+  const [mapTheme, setMapTheme] = useState<"light" | "dark" | "blueprint">(
+    "light",
+  );
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -279,7 +294,9 @@ function InteractiveDemoVectorMap({
               type="button"
               onClick={() => setMapTheme("light")}
               className={`rounded-md px-2 py-1 text-[11px] font-semibold transition ${
-                mapTheme === "light" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+                mapTheme === "light"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground"
               }`}
             >
               Streets
@@ -288,7 +305,9 @@ function InteractiveDemoVectorMap({
               type="button"
               onClick={() => setMapTheme("blueprint")}
               className={`rounded-md px-2 py-1 text-[11px] font-semibold transition ${
-                mapTheme === "blueprint" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+                mapTheme === "blueprint"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground"
               }`}
             >
               Blueprint
@@ -297,7 +316,9 @@ function InteractiveDemoVectorMap({
               type="button"
               onClick={() => setMapTheme("dark")}
               className={`rounded-md px-2 py-1 text-[11px] font-semibold transition ${
-                mapTheme === "dark" ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+                mapTheme === "dark"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground"
               }`}
             >
               Night
@@ -370,9 +391,18 @@ function InteractiveDemoVectorMap({
               transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
             }}
           >
-            <svg className="size-full" viewBox="0 0 1000 700" preserveAspectRatio="none">
+            <svg
+              className="size-full"
+              viewBox="0 0 1000 700"
+              preserveAspectRatio="none"
+            >
               <defs>
-                <pattern id="grid-pattern" width="50" height="50" patternUnits="userSpaceOnUse">
+                <pattern
+                  id="grid-pattern"
+                  width="50"
+                  height="50"
+                  patternUnits="userSpaceOnUse"
+                >
                   <path
                     d="M 50 0 L 0 0 0 50"
                     fill="none"
@@ -393,13 +423,35 @@ function InteractiveDemoVectorMap({
               {/* Water Body Simulation */}
               <path
                 d="M 0,220 C 180,240 320,180 500,210 C 700,240 850,190 1000,230 L 1000,320 C 800,280 620,330 450,300 C 280,270 120,310 0,300 Z"
-                fill={mapTheme === "light" ? "#bfdbfe" : mapTheme === "blueprint" ? "#1e3a8a" : "#1e293b"}
+                fill={
+                  mapTheme === "light"
+                    ? "#bfdbfe"
+                    : mapTheme === "blueprint"
+                      ? "#1e3a8a"
+                      : "#1e293b"
+                }
                 opacity="0.6"
               />
 
               {/* Parks / Green Zones */}
-              <rect x="80" y="80" width="180" height="120" rx="20" fill={mapTheme === "light" ? "#dcfce7" : "#064e3b"} opacity="0.6" />
-              <rect x="720" y="380" width="220" height="160" rx="30" fill={mapTheme === "light" ? "#dcfce7" : "#064e3b"} opacity="0.6" />
+              <rect
+                x="80"
+                y="80"
+                width="180"
+                height="120"
+                rx="20"
+                fill={mapTheme === "light" ? "#dcfce7" : "#064e3b"}
+                opacity="0.6"
+              />
+              <rect
+                x="720"
+                y="380"
+                width="220"
+                height="160"
+                rx="30"
+                fill={mapTheme === "light" ? "#dcfce7" : "#064e3b"}
+                opacity="0.6"
+              />
 
               {/* Highways & Arterial Roads */}
               <path
@@ -467,7 +519,11 @@ function InteractiveDemoVectorMap({
                     handleSelect(p);
                   }}
                   className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-200 cursor-pointer"
-                  style={{ left: `${pos.x}%`, top: `${pos.y}%`, zIndex: isSelected ? 40 : 10 }}
+                  style={{
+                    left: `${pos.x}%`,
+                    top: `${pos.y}%`,
+                    zIndex: isSelected ? 40 : 10,
+                  }}
                 >
                   <div
                     className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold shadow-lg transition-all ${
@@ -484,13 +540,17 @@ function InteractiveDemoVectorMap({
                     <span className="truncate max-w-[110px] font-display">
                       {p.name.split(" ")[0]}
                     </span>
-                    <span className="text-[10px] opacity-80">{p.distanceKm}km</span>
+                    <span className="text-[10px] opacity-80">
+                      {p.distanceKm}km
+                    </span>
                   </div>
 
                   {/* Pin Pointer Arrow */}
                   <div
                     className={`mx-auto size-2 -mt-0.5 rotate-45 transform ${
-                      isSelected ? "bg-primary" : "bg-card border-r border-b border-border/80"
+                      isSelected
+                        ? "bg-primary"
+                        : "bg-card border-r border-b border-border/80"
                     }`}
                   />
                 </div>
@@ -522,7 +582,9 @@ function InteractiveDemoVectorMap({
                 <div className="flex items-center gap-1.5 text-xs font-bold text-ink">
                   <Star className="size-3.5 fill-amber-400 text-amber-400" />
                   <span>{activePharmacy.rating}</span>
-                  <span className="text-[11px] text-muted-foreground font-normal">({activePharmacy.reviews})</span>
+                  <span className="text-[11px] text-muted-foreground font-normal">
+                    ({activePharmacy.reviews})
+                  </span>
                 </div>
                 <Button
                   size="sm"
@@ -550,7 +612,10 @@ function InteractiveDemoVectorMap({
             </h3>
           </div>
 
-          <div ref={listRef} className="flex-1 overflow-y-auto divide-y divide-border/60 p-2 space-y-1">
+          <div
+            ref={listRef}
+            className="flex-1 overflow-y-auto divide-y divide-border/60 p-2 space-y-1"
+          >
             {pharmacies.map((p) => {
               const isSelected = activePharmacy?.id === p.id;
               const open = isOpenNow(p);
@@ -569,7 +634,9 @@ function InteractiveDemoVectorMap({
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <h4 className="font-display font-bold text-ink truncate">{p.name}</h4>
+                    <h4 className="font-display font-bold text-ink truncate">
+                      {p.name}
+                    </h4>
                     <span
                       className={`rounded-full px-2 py-0.5 text-[10px] font-bold shrink-0 ${
                         open
@@ -581,10 +648,14 @@ function InteractiveDemoVectorMap({
                     </span>
                   </div>
 
-                  <p className="text-muted-foreground truncate mt-0.5">{p.address}</p>
+                  <p className="text-muted-foreground truncate mt-0.5">
+                    {p.address}
+                  </p>
 
                   <div className="mt-2 flex items-center justify-between text-muted-foreground pt-1 border-t border-border/40">
-                    <span className="font-semibold text-foreground">{p.distanceKm} km away</span>
+                    <span className="font-semibold text-foreground">
+                      {p.distanceKm} km away
+                    </span>
                     <span className="flex items-center gap-1 font-bold text-ink">
                       <Star className="size-3 fill-amber-400 text-amber-400" />
                       {p.rating}
@@ -712,8 +783,12 @@ function LiveGoogleMapInner({
                       : "bg-background/95 text-foreground hover:bg-background backdrop-blur-sm border border-border"
                   }`}
                 >
-                  <span className={`size-2.5 rounded-full ${open ? "bg-emerald-500" : "bg-zinc-400"}`} />
-                  <span className="max-w-[120px] truncate">{p.name.split(" ")[0]}</span>
+                  <span
+                    className={`size-2.5 rounded-full ${open ? "bg-emerald-500" : "bg-zinc-400"}`}
+                  />
+                  <span className="max-w-[120px] truncate">
+                    {p.name.split(" ")[0]}
+                  </span>
                 </div>
               </AdvancedMarker>
             );

@@ -91,7 +91,9 @@ export function DataTable<T>({
     return (
       getId ??
       ((row: any) =>
-        String(row?.id ?? row?._id ?? row?.key ?? row?.code ?? JSON.stringify(row)))
+        String(
+          row?.id ?? row?._id ?? row?.key ?? row?.code ?? JSON.stringify(row),
+        ))
     );
   }, [getId]);
 

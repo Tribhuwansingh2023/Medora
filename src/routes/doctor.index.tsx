@@ -3,6 +3,7 @@ import {
   CalendarClock,
   ClipboardCheck,
   FileEdit,
+  HeartPulse,
   Stethoscope,
   TrendingUp,
   Users,
@@ -23,6 +24,7 @@ import {
 import { PatientSearchBar } from "@/components/patient/PatientSearchBar";
 import { WeeklyWorkflowChart } from "@/components/workspace/WeeklyWorkflowChart";
 import { ClinicalNotesForm } from "@/components/doctor/ClinicalNotesForm";
+import { PatientHealthMetricsDashboard } from "@/components/patient/PatientHealthMetricsDashboard";
 import {
   shortDate,
   shortDateTime,
@@ -76,9 +78,9 @@ function DoctorPatientsPage() {
   const notes = useWorkspaceData("consultNotes");
   const history = useWorkspaceData("medicineHistory");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"records" | "chart" | "notes">(
-    "records",
-  );
+  const [activeTab, setActiveTab] = useState<
+    "records" | "vitals" | "chart" | "notes"
+  >("records");
   const [decision, setDecision] = useState("");
   const [recorded, setRecorded] = useState<
     { id: string; at: string; text: string }[]
@@ -190,11 +192,11 @@ function DoctorPatientsPage() {
       </div>
 
       {/* Workspace Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-border pb-1">
+      <div className="flex items-center gap-2 border-b border-border pb-1 overflow-x-auto no-scrollbar">
         <button
           type="button"
           onClick={() => setActiveTab("records")}
-          className={`flex items-center gap-1.5 border-b-2 px-3 py-2 text-xs font-semibold transition-colors ${
+          className={`flex items-center gap-1.5 border-b-2 px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
             activeTab === "records"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-ink"
@@ -206,8 +208,21 @@ function DoctorPatientsPage() {
 
         <button
           type="button"
+          onClick={() => setActiveTab("vitals")}
+          className={`flex items-center gap-1.5 border-b-2 px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
+            activeTab === "vitals"
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-ink"
+          }`}
+        >
+          <HeartPulse className="size-3.5" />
+          Patient Health Metrics Dashboard
+        </button>
+
+        <button
+          type="button"
           onClick={() => setActiveTab("chart")}
-          className={`flex items-center gap-1.5 border-b-2 px-3 py-2 text-xs font-semibold transition-colors ${
+          className={`flex items-center gap-1.5 border-b-2 px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
             activeTab === "chart"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-ink"
@@ -220,7 +235,7 @@ function DoctorPatientsPage() {
         <button
           type="button"
           onClick={() => setActiveTab("notes")}
-          className={`flex items-center gap-1.5 border-b-2 px-3 py-2 text-xs font-semibold transition-colors ${
+          className={`flex items-center gap-1.5 border-b-2 px-3 py-2 text-xs font-semibold whitespace-nowrap transition-colors ${
             activeTab === "notes"
               ? "border-primary text-primary"
               : "border-transparent text-muted-foreground hover:text-ink"
@@ -230,6 +245,15 @@ function DoctorPatientsPage() {
           Doctor Consultation Notes Form
         </button>
       </div>
+
+      {/* Tab: Patient Health Metrics Dashboard */}
+      {activeTab === "vitals" && (
+        <div className="rise space-y-6">
+          <PatientHealthMetricsDashboard
+            initialPatientId={selected?.id ?? "pt-1"}
+          />
+        </div>
+      )}
 
       {/* Tab: Weekly Workflow Chart */}
       {activeTab === "chart" && (
@@ -306,10 +330,21 @@ function DoctorPatientsPage() {
                   title={selected.name}
                   description={`${selected.reason} · last seen ${shortDate(`${selected.lastVisit}T00:00:00.000Z`)}`}
                   actions={
-                    <StatusPill
-                      label={statusLabel[selected.status]}
-                      tone={statusTone[selected.status]}
-                    />
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setActiveTab("vitals")}
+                        className="h-7 gap-1 rounded-lg text-xs font-semibold"
+                      >
+                        <HeartPulse className="size-3 text-rose-500" />
+                        Health Metrics
+                      </Button>
+                      <StatusPill
+                        label={statusLabel[selected.status]}
+                        tone={statusTone[selected.status]}
+                      />
+                    </div>
                   }
                 >
                   <dl className="grid gap-4 sm:grid-cols-2">

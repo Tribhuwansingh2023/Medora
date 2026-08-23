@@ -649,7 +649,10 @@ export const demoPharmacies: Pharmacy[] = [
     ],
     licenseId: "KA-BLR-2024-GUARDIAN",
     coords: { lat: 12.9782, lng: 77.6391 },
-    provenance: demoProvenance("Medora Verified Pharmacy Directory", "2026-08-14"),
+    provenance: demoProvenance(
+      "Medora Verified Pharmacy Directory",
+      "2026-08-14",
+    ),
   },
   {
     id: "ph-8",
@@ -671,7 +674,10 @@ export const demoPharmacies: Pharmacy[] = [
     ],
     licenseId: "KA-BLR-2023-NOBLE",
     coords: { lat: 12.9698, lng: 77.7499 },
-    provenance: demoProvenance("Medora Verified Pharmacy Directory", "2026-08-14"),
+    provenance: demoProvenance(
+      "Medora Verified Pharmacy Directory",
+      "2026-08-14",
+    ),
   },
   {
     id: "ph-9",
@@ -692,7 +698,10 @@ export const demoPharmacies: Pharmacy[] = [
     ],
     licenseId: "KA-BLR-2022-DHANVANTARI",
     coords: { lat: 12.9988, lng: 77.5711 },
-    provenance: demoProvenance("Medora Verified Pharmacy Directory", "2026-08-12"),
+    provenance: demoProvenance(
+      "Medora Verified Pharmacy Directory",
+      "2026-08-12",
+    ),
   },
   {
     id: "ph-10",
@@ -712,8 +721,11 @@ export const demoPharmacies: Pharmacy[] = [
       "Express 30-min Delivery",
     ],
     licenseId: "KA-BLR-2024-SANJIVANI",
-    coords: { lat: 12.8399, lng: 77.6770 },
-    provenance: demoProvenance("Medora Verified Pharmacy Directory", "2026-08-14"),
+    coords: { lat: 12.8399, lng: 77.677 },
+    provenance: demoProvenance(
+      "Medora Verified Pharmacy Directory",
+      "2026-08-14",
+    ),
   },
   {
     id: "ph-11",
@@ -734,7 +746,10 @@ export const demoPharmacies: Pharmacy[] = [
     ],
     licenseId: "KA-BLR-2024-FORTIS",
     coords: { lat: 12.8943, lng: 77.5976 },
-    provenance: demoProvenance("Medora Verified Pharmacy Directory", "2026-08-15"),
+    provenance: demoProvenance(
+      "Medora Verified Pharmacy Directory",
+      "2026-08-15",
+    ),
   },
   {
     id: "ph-12",
@@ -755,7 +770,10 @@ export const demoPharmacies: Pharmacy[] = [
     ],
     licenseId: "MH-MUM-2024-APOLLO",
     coords: { lat: 19.0596, lng: 72.8295 },
-    provenance: demoProvenance("Medora Verified Pharmacy Directory", "2026-08-15"),
+    provenance: demoProvenance(
+      "Medora Verified Pharmacy Directory",
+      "2026-08-15",
+    ),
   },
   {
     id: "ph-13",
@@ -776,7 +794,10 @@ export const demoPharmacies: Pharmacy[] = [
     ],
     licenseId: "MH-MUM-2024-WELLNESS",
     coords: { lat: 19.0886, lng: 72.8265 },
-    provenance: demoProvenance("Medora Verified Pharmacy Directory", "2026-08-15"),
+    provenance: demoProvenance(
+      "Medora Verified Pharmacy Directory",
+      "2026-08-15",
+    ),
   },
 ];
 

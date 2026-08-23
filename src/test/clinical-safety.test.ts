@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { demoMedicines } from "@/data/demo-catalog";
-import { explainBestValue, formatMoney, type OfferRow } from "@/services/medicines";
+import {
+  explainBestValue,
+  formatMoney,
+  type OfferRow,
+} from "@/services/medicines";
 import { daysUntil } from "@/services/workspace";
 
 describe("Clinical Safety & Pharmacology Logic", () => {
@@ -39,7 +43,11 @@ describe("Clinical Safety & Pharmacology Logic", () => {
         packSize: "10 Tablets",
         availability: "in_stock",
         updatedAt: "2026-08-16T00:00:00.000Z",
-        provenance: { source: "Demo", updatedAt: "2026-08-16T00:00:00.000Z", verified: true },
+        provenance: {
+          source: "Demo",
+          updatedAt: "2026-08-16T00:00:00.000Z",
+          verified: true,
+        },
       },
       pharmacy: {
         id: "ph-1",
@@ -56,7 +64,11 @@ describe("Clinical Safety & Pharmacology Logic", () => {
         services: ["Dispensing"],
         licenseId: "PH-1234",
         coords: { lat: 12.9, lng: 77.6 },
-        provenance: { source: "Demo", updatedAt: "2026-08-16T00:00:00.000Z", verified: true },
+        provenance: {
+          source: "Demo",
+          updatedAt: "2026-08-16T00:00:00.000Z",
+          verified: true,
+        },
       },
       units: 10,
       unitPrice: 5.0,

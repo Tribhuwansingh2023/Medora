@@ -43,7 +43,12 @@ import {
   StatusPill,
   WorkspaceSection,
 } from "@/components/workspace/parts";
-import { shortDate, shortDateTime, timeOnly, useWorkspaceData } from "@/services/workspace";
+import {
+  shortDate,
+  shortDateTime,
+  timeOnly,
+  useWorkspaceData,
+} from "@/services/workspace";
 import type { Appointment } from "@/data/workspace-demo";
 
 export const Route = createFileRoute("/doctor/schedule")({
@@ -58,7 +63,8 @@ export const Route = createFileRoute("/doctor/schedule")({
       { property: "og:title", content: "Schedule — Medora Doctor Workspace" },
       {
         property: "og:description",
-        content: "Clinician schedule, appointment tracking, and consultation management.",
+        content:
+          "Clinician schedule, appointment tracking, and consultation management.",
       },
     ],
   }),
@@ -74,9 +80,21 @@ const statusMeta = {
 };
 
 const kindMeta = {
-  in_person: { label: "In Person", icon: MapPin, tone: "border-primary/30 bg-primary-soft text-primary" },
-  video: { label: "Video Call", icon: Video, tone: "border-chart-2/30 bg-chart-2/15 text-chart-2" },
-  phone: { label: "Phone Consult", icon: Phone, tone: "border-chart-3/30 bg-chart-3/15 text-chart-3" },
+  in_person: {
+    label: "In Person",
+    icon: MapPin,
+    tone: "border-primary/30 bg-primary-soft text-primary",
+  },
+  video: {
+    label: "Video Call",
+    icon: Video,
+    tone: "border-chart-2/30 bg-chart-2/15 text-chart-2",
+  },
+  phone: {
+    label: "Phone Consult",
+    icon: Phone,
+    tone: "border-chart-3/30 bg-chart-3/15 text-chart-3",
+  },
 };
 
 export function DoctorSchedulePage() {
@@ -87,7 +105,8 @@ export function DoctorSchedulePage() {
   const [filterKind, setFilterKind] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
 
   // New appointment dialog state
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
@@ -95,7 +114,9 @@ export function DoctorSchedulePage() {
   const [newDate, setNewDate] = useState(new Date().toISOString().slice(0, 10));
   const [newTime, setNewTime] = useState("11:30");
   const [newDuration, setNewDuration] = useState("20");
-  const [newKind, setNewKind] = useState<"in_person" | "video" | "phone">("in_person");
+  const [newKind, setNewKind] = useState<"in_person" | "video" | "phone">(
+    "in_person",
+  );
   const [newReason, setNewReason] = useState("");
 
   // Sync initial loaded data
@@ -111,9 +132,13 @@ export function DoctorSchedulePage() {
     setAppointments((prev) =>
       prev.map((app) => (app.id === id ? { ...app, status: newStatus } : app)),
     );
-    toast.success(`Appointment status updated to ${statusMeta[newStatus].label}`);
+    toast.success(
+      `Appointment status updated to ${statusMeta[newStatus].label}`,
+    );
     if (selectedAppointment?.id === id) {
-      setSelectedAppointment((prev) => (prev ? { ...prev, status: newStatus } : null));
+      setSelectedAppointment((prev) =>
+        prev ? { ...prev, status: newStatus } : null,
+      );
     }
   };
 
@@ -166,9 +191,15 @@ export function DoctorSchedulePage() {
 
   // Metric stats
   const totalCount = appointments.length;
-  const checkedInCount = appointments.filter((a) => a.status === "checked_in").length;
-  const inConsultCount = appointments.filter((a) => a.status === "in_consult").length;
-  const completedCount = appointments.filter((a) => a.status === "completed").length;
+  const checkedInCount = appointments.filter(
+    (a) => a.status === "checked_in",
+  ).length;
+  const inConsultCount = appointments.filter(
+    (a) => a.status === "in_consult",
+  ).length;
+  const completedCount = appointments.filter(
+    (a) => a.status === "completed",
+  ).length;
 
   const columns: DataColumn<Appointment>[] = [
     {
@@ -189,7 +220,9 @@ export function DoctorSchedulePage() {
       render: (r) => (
         <div>
           <p className="font-medium text-ink">{r.patientName}</p>
-          <p className="text-xs text-muted-foreground">{r.durationMin} mins duration</p>
+          <p className="text-xs text-muted-foreground">
+            {r.durationMin} mins duration
+          </p>
         </div>
       ),
     },
@@ -201,7 +234,9 @@ export function DoctorSchedulePage() {
         const meta = kindMeta[r.kind];
         const Icon = meta.icon;
         return (
-          <span className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-xs font-medium ${meta.tone}`}>
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-xs font-medium ${meta.tone}`}
+          >
             <Icon className="size-3" />
             {meta.label}
           </span>
@@ -229,24 +264,46 @@ export function DoctorSchedulePage() {
       header: "Actions",
       align: "right",
       render: (r) => (
-        <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex items-center justify-end gap-1.5"
+          onClick={(e) => e.stopPropagation()}
+        >
           {r.status === "scheduled" && (
-            <Button size="sm" variant="outline" className="h-7 text-xs" onClick={() => updateStatus(r.id, "checked_in")}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 text-xs"
+              onClick={() => updateStatus(r.id, "checked_in")}
+            >
               Check In
             </Button>
           )}
           {r.status === "checked_in" && (
-            <Button size="sm" className="h-7 text-xs bg-primary text-primary-foreground" onClick={() => updateStatus(r.id, "in_consult")}>
+            <Button
+              size="sm"
+              className="h-7 text-xs bg-primary text-primary-foreground"
+              onClick={() => updateStatus(r.id, "in_consult")}
+            >
               Start Consult
             </Button>
           )}
           {r.status === "in_consult" && (
-            <Button size="sm" variant="outline" className="h-7 text-xs text-success border-success/40" onClick={() => updateStatus(r.id, "completed")}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 text-xs text-success border-success/40"
+              onClick={() => updateStatus(r.id, "completed")}
+            >
               <CheckCircle2 className="size-3 mr-1" />
               Complete
             </Button>
           )}
-          <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setSelectedAppointment(r)}>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-7 text-xs"
+            onClick={() => setSelectedAppointment(r)}
+          >
             Details
           </Button>
         </div>
@@ -269,10 +326,26 @@ export function DoctorSchedulePage() {
 
       {/* KPI Stats Bar */}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <StatTile label="Total Bookings" value={totalCount.toString()} hint="Active schedule slots" />
-        <StatTile label="Checked In" value={checkedInCount.toString()} hint="Patients in clinic waiting" />
-        <StatTile label="In Consultation" value={inConsultCount.toString()} hint="Currently in consult room" />
-        <StatTile label="Completed Today" value={completedCount.toString()} hint="Consults concluded" />
+        <StatTile
+          label="Total Bookings"
+          value={totalCount.toString()}
+          hint="Active schedule slots"
+        />
+        <StatTile
+          label="Checked In"
+          value={checkedInCount.toString()}
+          hint="Patients in clinic waiting"
+        />
+        <StatTile
+          label="In Consultation"
+          value={inConsultCount.toString()}
+          hint="Currently in consult room"
+        />
+        <StatTile
+          label="Completed Today"
+          value={completedCount.toString()}
+          hint="Consults concluded"
+        />
       </div>
 
       {/* Filter and Search Bar */}
@@ -335,7 +408,10 @@ export function DoctorSchedulePage() {
       </WorkspaceSection>
 
       {/* Appointment Detail Dialog */}
-      <Dialog open={Boolean(selectedAppointment)} onOpenChange={(open) => !open && setSelectedAppointment(null)}>
+      <Dialog
+        open={Boolean(selectedAppointment)}
+        onOpenChange={(open) => !open && setSelectedAppointment(null)}
+      >
         {selectedAppointment && (
           <DialogContent className="max-w-lg">
             <DialogHeader>
@@ -344,7 +420,10 @@ export function DoctorSchedulePage() {
                 Appointment Details
               </DialogTitle>
               <DialogDescription>
-                Reference ID: <span className="font-mono text-xs text-ink">{selectedAppointment.id}</span>
+                Reference ID:{" "}
+                <span className="font-mono text-xs text-ink">
+                  {selectedAppointment.id}
+                </span>
               </DialogDescription>
             </DialogHeader>
 
@@ -352,21 +431,30 @@ export function DoctorSchedulePage() {
               <div className="rounded-lg border border-border bg-card p-3 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Patient Name:</span>
-                  <span className="font-semibold text-ink">{selectedAppointment.patientName}</span>
+                  <span className="font-semibold text-ink">
+                    {selectedAppointment.patientName}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Date & Time:</span>
                   <span className="font-medium text-ink numeric">
-                    {shortDate(selectedAppointment.at)} at {timeOnly(selectedAppointment.at)}
+                    {shortDate(selectedAppointment.at)} at{" "}
+                    {timeOnly(selectedAppointment.at)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Consultation Type:</span>
-                  <Badge variant="outline">{kindMeta[selectedAppointment.kind].label}</Badge>
+                  <span className="text-muted-foreground">
+                    Consultation Type:
+                  </span>
+                  <Badge variant="outline">
+                    {kindMeta[selectedAppointment.kind].label}
+                  </Badge>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Duration:</span>
-                  <span className="font-medium text-ink">{selectedAppointment.durationMin} minutes</span>
+                  <span className="font-medium text-ink">
+                    {selectedAppointment.durationMin} minutes
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Current Status:</span>
@@ -378,7 +466,9 @@ export function DoctorSchedulePage() {
               </div>
 
               <div>
-                <Label className="text-xs font-semibold text-muted-foreground">Clinical Reason for Visit</Label>
+                <Label className="text-xs font-semibold text-muted-foreground">
+                  Clinical Reason for Visit
+                </Label>
                 <div className="mt-1 rounded-md border border-border bg-muted/40 p-3 text-ink">
                   {selectedAppointment.reason}
                 </div>
@@ -387,30 +477,49 @@ export function DoctorSchedulePage() {
 
             <DialogFooter className="flex flex-wrap items-center justify-between gap-2 sm:justify-between">
               <div className="flex items-center gap-2">
-                {selectedAppointment.status !== "cancelled" && selectedAppointment.status !== "completed" && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-destructive hover:bg-destructive-soft hover:text-destructive"
-                    onClick={() => updateStatus(selectedAppointment.id, "cancelled")}
-                  >
-                    <XCircle className="size-4 mr-1" /> Cancel Slot
-                  </Button>
-                )}
+                {selectedAppointment.status !== "cancelled" &&
+                  selectedAppointment.status !== "completed" && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-destructive hover:bg-destructive-soft hover:text-destructive"
+                      onClick={() =>
+                        updateStatus(selectedAppointment.id, "cancelled")
+                      }
+                    >
+                      <XCircle className="size-4 mr-1" /> Cancel Slot
+                    </Button>
+                  )}
               </div>
               <div className="flex items-center gap-2">
                 {selectedAppointment.status === "scheduled" && (
-                  <Button size="sm" onClick={() => updateStatus(selectedAppointment.id, "checked_in")}>
+                  <Button
+                    size="sm"
+                    onClick={() =>
+                      updateStatus(selectedAppointment.id, "checked_in")
+                    }
+                  >
                     Check In Patient
                   </Button>
                 )}
                 {selectedAppointment.status === "checked_in" && (
-                  <Button size="sm" onClick={() => updateStatus(selectedAppointment.id, "in_consult")}>
+                  <Button
+                    size="sm"
+                    onClick={() =>
+                      updateStatus(selectedAppointment.id, "in_consult")
+                    }
+                  >
                     Start Consultation
                   </Button>
                 )}
                 {selectedAppointment.status === "in_consult" && (
-                  <Button size="sm" variant="default" onClick={() => updateStatus(selectedAppointment.id, "completed")}>
+                  <Button
+                    size="sm"
+                    variant="default"
+                    onClick={() =>
+                      updateStatus(selectedAppointment.id, "completed")
+                    }
+                  >
                     <CheckCircle2 className="size-4 mr-1" /> Conclude Consult
                   </Button>
                 )}
@@ -453,18 +562,33 @@ export function DoctorSchedulePage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label htmlFor="newDate">Date</Label>
-                <Input id="newDate" type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
+                <Input
+                  id="newDate"
+                  type="date"
+                  value={newDate}
+                  onChange={(e) => setNewDate(e.target.value)}
+                />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="newTime">Time</Label>
-                <Input id="newTime" type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)} />
+                <Input
+                  id="newTime"
+                  type="time"
+                  value={newTime}
+                  onChange={(e) => setNewTime(e.target.value)}
+                />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label htmlFor="newKind">Consultation Modality</Label>
-                <Select value={newKind} onValueChange={(v) => setNewKind(v as "in_person" | "video" | "phone")}>
+                <Select
+                  value={newKind}
+                  onValueChange={(v) =>
+                    setNewKind(v as "in_person" | "video" | "phone")
+                  }
+                >
                   <SelectTrigger id="newKind">
                     <SelectValue />
                   </SelectTrigger>

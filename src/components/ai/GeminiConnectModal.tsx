@@ -47,13 +47,23 @@ export function GeminiConnectModal({
   const [apiKey, setApiKey] = useState("");
   const [showKey, setShowKey] = useState(false);
   const [testing, setTesting] = useState(false);
-  const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [testResult, setTestResult] = useState<{
+    success: boolean;
+    message: string;
+  } | null>(null);
 
   useEffect(() => {
     if (open) {
       const existing = getStoredGeminiKey();
       setApiKey(existing);
-      setTestResult(existing ? { success: true, message: "Active key loaded from secure local storage." } : null);
+      setTestResult(
+        existing
+          ? {
+              success: true,
+              message: "Active key loaded from secure local storage.",
+            }
+          : null,
+      );
     }
   }, [open]);
 
@@ -73,7 +83,10 @@ export function GeminiConnectModal({
         toast.error("Connection Failed: " + res.message);
       }
     } catch (err: any) {
-      setTestResult({ success: false, message: err.message || "Network test failed" });
+      setTestResult({
+        success: false,
+        message: err.message || "Network test failed",
+      });
       toast.error("Test error: " + err.message);
     } finally {
       setTesting(false);
@@ -83,7 +96,9 @@ export function GeminiConnectModal({
   const handleSave = () => {
     if (!apiKey.trim()) {
       setStoredGeminiKey("");
-      toast.info("Gemini API Key removed. Medora will use Grounded Clinical RAG Engine.");
+      toast.info(
+        "Gemini API Key removed. Medora will use Grounded Clinical RAG Engine.",
+      );
       onKeyUpdated?.();
       onOpenChange(false);
       return;
@@ -91,7 +106,8 @@ export function GeminiConnectModal({
 
     setStoredGeminiKey(apiKey.trim());
     toast.success("Google Gemini Live AI Connected!", {
-      description: "Medora Medicine Assistant is now operating with live Google Gemini 1.5 Flash intelligence.",
+      description:
+        "Medora Medicine Assistant is now operating with live Google Gemini 1.5 Flash intelligence.",
     });
     onKeyUpdated?.();
     onOpenChange(false);
@@ -120,7 +136,8 @@ export function GeminiConnectModal({
                 Google Gemini Live AI Setup
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
-                Connect your Google Gemini API key for real-time generative clinical intelligence.
+                Connect your Google Gemini API key for real-time generative
+                clinical intelligence.
               </DialogDescription>
             </div>
           </div>
@@ -144,7 +161,9 @@ export function GeminiConnectModal({
               )}
               <div>
                 <div className="font-bold text-sm">
-                  {isConnected ? "Google Gemini 1.5 Flash Connected" : "Clinical RAG Active (No Key Configured)"}
+                  {isConnected
+                    ? "Google Gemini 1.5 Flash Connected"
+                    : "Clinical RAG Active (No Key Configured)"}
                 </div>
                 <p className="text-[11px] opacity-90">
                   {isConnected
@@ -157,7 +176,9 @@ export function GeminiConnectModal({
               variant="outline"
               className={cn(
                 "text-[10px] font-mono font-bold uppercase",
-                isConnected ? "border-emerald-500/40 bg-emerald-500/20 text-emerald-700 dark:text-emerald-300" : "border-primary/30 text-primary",
+                isConnected
+                  ? "border-emerald-500/40 bg-emerald-500/20 text-emerald-700 dark:text-emerald-300"
+                  : "border-primary/30 text-primary",
               )}
             >
               {isConnected ? "Live API" : "Local RAG"}
@@ -176,7 +197,8 @@ export function GeminiConnectModal({
                 rel="noreferrer"
                 className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1"
               >
-                Get a Free Key from Google AI Studio <ExternalLink className="size-3" />
+                Get a Free Key from Google AI Studio{" "}
+                <ExternalLink className="size-3" />
               </a>
             </div>
 
@@ -201,7 +223,11 @@ export function GeminiConnectModal({
                   className="size-7 text-muted-foreground hover:text-foreground"
                   title={showKey ? "Hide key" : "Show key"}
                 >
-                  {showKey ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+                  {showKey ? (
+                    <EyeOff className="size-3.5" />
+                  ) : (
+                    <Eye className="size-3.5" />
+                  )}
                 </Button>
                 {apiKey && (
                   <Button
@@ -219,7 +245,8 @@ export function GeminiConnectModal({
             </div>
             <p className="text-[10px] text-muted-foreground flex items-center gap-1">
               <Lock className="size-3 text-emerald-500" />
-              Your key is stored only in your local browser storage and never sent to any intermediary server.
+              Your key is stored only in your local browser storage and never
+              sent to any intermediary server.
             </p>
           </div>
 
@@ -234,10 +261,18 @@ export function GeminiConnectModal({
               )}
             >
               <div className="font-bold flex items-center gap-1.5">
-                {testResult.success ? <CheckCircle2 className="size-4 text-emerald-600" /> : <XCircle className="size-4 text-rose-600" />}
-                <span>{testResult.success ? "Test Passed" : "Connection Error"}</span>
+                {testResult.success ? (
+                  <CheckCircle2 className="size-4 text-emerald-600" />
+                ) : (
+                  <XCircle className="size-4 text-rose-600" />
+                )}
+                <span>
+                  {testResult.success ? "Test Passed" : "Connection Error"}
+                </span>
               </div>
-              <p className="mt-0.5 text-[11px] opacity-90">{testResult.message}</p>
+              <p className="mt-0.5 text-[11px] opacity-90">
+                {testResult.message}
+              </p>
             </div>
           )}
 
@@ -259,8 +294,13 @@ export function GeminiConnectModal({
                 </a>
                 .
               </li>
-              <li>Click <strong>"Create API key"</strong> in your Google account.</li>
-              <li>Copy the key, paste it into the field above, and click <strong>"Save & Connect"</strong>.</li>
+              <li>
+                Click <strong>"Create API key"</strong> in your Google account.
+              </li>
+              <li>
+                Copy the key, paste it into the field above, and click{" "}
+                <strong>"Save & Connect"</strong>.
+              </li>
             </ol>
           </div>
         </div>
@@ -274,7 +314,12 @@ export function GeminiConnectModal({
             disabled={testing || !apiKey.trim()}
             className="text-xs font-semibold"
           >
-            <RefreshCw className={cn("mr-1.5 size-3.5", testing && "animate-spin text-primary")} />
+            <RefreshCw
+              className={cn(
+                "mr-1.5 size-3.5",
+                testing && "animate-spin text-primary",
+              )}
+            />
             {testing ? "Testing..." : "Test Connection"}
           </Button>
 

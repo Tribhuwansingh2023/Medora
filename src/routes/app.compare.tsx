@@ -190,9 +190,7 @@ function ComparePage() {
       />
 
       {/* Multi-Medicine Side-by-side Active Ingredients, Uses, Side Effects & Pricing View */}
-      <MedicineComparativeView
-        medicineIds={ids}
-      />
+      <MedicineComparativeView medicineIds={ids} />
 
       {/* Matching criteria — always visible, never implied */}
       <section className="rounded-lg border border-border bg-secondary/50 p-5">

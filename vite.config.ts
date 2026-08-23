@@ -14,11 +14,6 @@ export default defineConfig({
     preset: "node-server",
   },
   vite: {
-    resolve: {
-      alias: {
-        "react/jsx-dev-runtime": "react/jsx-runtime",
-      },
-    },
     plugins: process.platform === "win32" ? [] : [mcpPlugin()],
   },
 });

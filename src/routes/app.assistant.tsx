@@ -5,7 +5,9 @@ import {
   Copy,
   Download,
   Flag,
+  Globe,
   HelpCircle,
+  MessageSquare,
   Pill,
   RotateCcw,
   Send,
@@ -24,6 +26,7 @@ import {
   type ConversationTurn,
 } from "@/ai/useAiConversation";
 import { AiPayloadView } from "@/components/ai/AiPayloadView";
+import { LiveGoogleSearchGrounding } from "@/components/ai/LiveGoogleSearchGrounding";
 import {
   ConfidenceBadge,
   ModeBadge,
@@ -184,7 +187,7 @@ function TurnCard({
             {turn.status === "complete" && (
               <>
                 <AiPayloadView payload={envelope.payload} />
-                
+
                 {/* Unified Verification Bar */}
                 <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/50 pt-2.5">
                   <SourceChips sources={envelope.sources} />
@@ -292,6 +295,7 @@ function TurnCard({
 
 function MedicineAssistantPage() {
   const { turns, ask, retry, setFeedback, clear, busy } = useAiConversation();
+  const [activeTab, setActiveTab] = useState<"chat" | "grounding">("chat");
   const [draft, setDraft] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>(
     PROMPT_CATEGORIES[0]?.title ?? "",
@@ -336,139 +340,177 @@ function MedicineAssistantPage() {
 
   return (
     <div className="space-y-6 pb-28">
-
       <PageHeader
-        title="Medicine assistant"
-        description="Every answer runs through intent detection, structured extraction, source retrieval and a clinical-safety validator before you see it."
+        title="Medicine Assistant & Clinical Grounding"
+        description="Source-labelled medicine explanations, verified safety rules, and real-time Google Search grounding powered by Gemini 3.7 Flash."
         actions={
-          turns.length > 0 ? (
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExportTranscript}
-                className="gap-1.5"
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center rounded-xl border border-border bg-muted/60 p-0.5 text-xs font-semibold">
+              <button
+                type="button"
+                onClick={() => setActiveTab("chat")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                  activeTab === "chat"
+                    ? "bg-background text-foreground shadow-2xs font-bold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
-                <Download className="size-3.5" /> Export
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={clear}
-                className="text-destructive hover:bg-destructive/10"
+                <MessageSquare className="size-3.5" /> AI Chat
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("grounding")}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                  activeTab === "grounding"
+                    ? "bg-background text-primary shadow-2xs font-bold"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
-                <Trash2 className="mr-1.5 size-3.5" /> Clear conversation
-              </Button>
+                <Globe className="size-3.5 text-primary" /> Live Web Grounding
+              </button>
             </div>
-          ) : undefined
+
+            {turns.length > 0 && activeTab === "chat" && (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleExportTranscript}
+                  className="gap-1.5 h-8 text-xs"
+                >
+                  <Download className="size-3.5" /> Export
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clear}
+                  className="text-destructive hover:bg-destructive/10 h-8 text-xs"
+                >
+                  <Trash2 className="mr-1.5 size-3.5" /> Clear
+                </Button>
+              </>
+            )}
+          </div>
         }
       />
 
-      <SafetyNotice title="Not a doctor, pharmacist or prescriber" tone="info">
-        {ASSISTANT_ROLE_STATEMENT}
-      </SafetyNotice>
+      {activeTab === "grounding" ? (
+        <LiveGoogleSearchGrounding
+          initialQuery="Latest clinical trials and safety notices on Semaglutide and SGLT2 inhibitors"
+          initialContextType="clinical_trial"
+        />
+      ) : (
+        <>
+          <SafetyNotice
+            title="Not a doctor, pharmacist or prescriber"
+            tone="info"
+          >
+            {ASSISTANT_ROLE_STATEMENT}
+          </SafetyNotice>
 
-      {/* Persistent Suggested Prompts Explorer */}
-      <div className="surface space-y-3 rounded-2xl border border-border p-4 sm:p-5 shadow-xs">
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <Sparkles className="size-3.5 text-primary" /> Suggested Clinical
-            Prompts
-          </p>
-          <span className="text-[11px] text-muted-foreground">
-            Click any prompt to ask
-          </span>
-        </div>
+          {/* Persistent Suggested Prompts Explorer */}
+          <div className="surface space-y-3 rounded-2xl border border-border p-4 sm:p-5 shadow-xs">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                <Sparkles className="size-3.5 text-primary" /> Suggested
+                Clinical Prompts
+              </p>
+              <span className="text-[11px] text-muted-foreground">
+                Click any prompt to ask
+              </span>
+            </div>
 
-        {/* Category Tabs */}
-        <div className="flex flex-wrap gap-1.5 border-b border-border pb-2.5">
-          {PROMPT_CATEGORIES.map((cat) => (
-            <button
-              key={cat.title}
-              type="button"
-              onClick={() => setActiveCategory(cat.title)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
-                activeCategory === cat.title
-                  ? "bg-primary text-primary-foreground shadow-xs"
-                  : "bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted"
-              }`}
-            >
-              {cat.title}
-            </button>
-          ))}
-        </div>
+            {/* Category Tabs */}
+            <div className="flex flex-wrap gap-1.5 border-b border-border pb-2.5">
+              {PROMPT_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.title}
+                  type="button"
+                  onClick={() => setActiveCategory(cat.title)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                    activeCategory === cat.title
+                      ? "bg-primary text-primary-foreground shadow-xs"
+                      : "bg-muted/60 text-muted-foreground hover:text-foreground hover:bg-muted"
+                  }`}
+                >
+                  {cat.title}
+                </button>
+              ))}
+            </div>
 
-        {/* Prompts for active category */}
-        <div className="flex flex-wrap gap-2 pt-1">
-          {PROMPT_CATEGORIES.find(
-            (c) => c.title === activeCategory,
-          )?.prompts.map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => submit(s)}
-              className="rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground transition hover:border-primary hover:bg-primary/5 text-left flex items-center gap-1.5 shadow-2xs"
-            >
-              <Pill className="size-3 text-primary shrink-0" />
-              <span>{s}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+            {/* Prompts for active category */}
+            <div className="flex flex-wrap gap-2 pt-1">
+              {PROMPT_CATEGORIES.find(
+                (c) => c.title === activeCategory,
+              )?.prompts.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => submit(s)}
+                  className="rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground transition hover:border-primary hover:bg-primary/5 text-left flex items-center gap-1.5 shadow-2xs"
+                >
+                  <Pill className="size-3 text-primary shrink-0" />
+                  <span>{s}</span>
+                </button>
+              ))}
+            </div>
+          </div>
 
-      {/* Conversation Turns */}
-      {turns.length > 0 && (
-        <div className="space-y-6">
-          {turns.map((turn) => (
-            <TurnCard
-              key={turn.id}
-              turn={turn}
-              onRetry={retry}
-              onFeedback={setFeedback}
-              onAsk={submit}
-            />
-          ))}
-        </div>
-      )}
+          {/* Conversation Turns */}
+          {turns.length > 0 && (
+            <div className="space-y-6">
+              {turns.map((turn) => (
+                <TurnCard
+                  key={turn.id}
+                  turn={turn}
+                  onRetry={retry}
+                  onFeedback={setFeedback}
+                  onAsk={submit}
+                />
+              ))}
+            </div>
+          )}
 
-      <div ref={endRef} />
+          <div ref={endRef} />
 
-      <form
-        className="sticky bottom-20 z-10 flex items-end gap-2 rounded-xl border-2 border-border bg-background p-2.5 shadow-md md:bottom-4"
-        onSubmit={(event) => {
-          event.preventDefault();
-          submit(draft);
-        }}
-      >
-        <Textarea
-          value={draft}
-          onChange={(event) => setDraft(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Enter" && !event.shiftKey) {
+          <form
+            className="sticky bottom-20 z-10 flex items-end gap-2 rounded-xl border-2 border-border bg-background p-2.5 shadow-md md:bottom-4"
+            onSubmit={(event) => {
               event.preventDefault();
               submit(draft);
-            }
-          }}
-          rows={1}
-          placeholder="Ask about a medicine, a symptom, or how Medora compares products…"
-          className="min-h-[44px] resize-none border-0 bg-transparent focus-visible:ring-0 text-xs sm:text-sm"
-        />
-        <Button
-          type="submit"
-          size="icon"
-          disabled={busy || !draft.trim()}
-          aria-label="Send question"
-          className="shrink-0 size-10"
-        >
-          <Send className="size-4" />
-        </Button>
-      </form>
+            }}
+          >
+            <Textarea
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault();
+                  submit(draft);
+                }
+              }}
+              rows={1}
+              placeholder="Ask about a medicine, a symptom, or how Medora compares products…"
+              className="min-h-[44px] resize-none border-0 bg-transparent focus-visible:ring-0 text-xs sm:text-sm"
+            />
+            <Button
+              type="submit"
+              size="icon"
+              disabled={busy || !draft.trim()}
+              aria-label="Send question"
+              className="shrink-0 size-10"
+            >
+              <Send className="size-4" />
+            </Button>
+          </form>
 
-      <p className="text-xs text-muted-foreground leading-relaxed">
-        Answers are informational only. Medora does not diagnose, prescribe, or
-        change a dose — confirm anything clinical with a pharmacist or doctor,
-        and use emergency services for anything urgent.
-      </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Answers are informational only. Medora does not diagnose, prescribe,
+            or change a dose — confirm anything clinical with a pharmacist or
+            doctor, and use emergency services for anything urgent.
+          </p>
+        </>
+      )}
     </div>
   );
 }

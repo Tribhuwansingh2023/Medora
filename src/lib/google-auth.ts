@@ -50,7 +50,10 @@ export function getGoogleClientId(): string {
   }
 
   // Priority 2: Firebase Applet config
-  if (firebaseConfig?.oAuthClientId && firebaseConfig.oAuthClientId.trim().length > 0) {
+  if (
+    firebaseConfig?.oAuthClientId &&
+    firebaseConfig.oAuthClientId.trim().length > 0
+  ) {
     return firebaseConfig.oAuthClientId.trim();
   }
 
@@ -192,9 +195,10 @@ export async function requestGoogleOAuthToken(
       return;
     }
 
-    const clientId = (clientIdOverride && clientIdOverride.trim().length > 0)
-      ? clientIdOverride.trim()
-      : getGoogleClientId();
+    const clientId =
+      clientIdOverride && clientIdOverride.trim().length > 0
+        ? clientIdOverride.trim()
+        : getGoogleClientId();
 
     const client = google.accounts.oauth2.initTokenClient({
       client_id: clientId,

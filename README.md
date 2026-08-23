@@ -210,10 +210,12 @@ User Input / Medicine Query
 Medora connects directly to **Google Gemini** via verified REST endpoints (`gemini-3.7-flash` with automatic cascade to `gemini-3.6-flash` / `gemini-3.5-flash`).
 
 Configure your Gemini API key in `.env`:
+
 ```env
 VITE_GEMINI_API_KEY=AIzaSy...YourKeyHere
 ```
-*Alternatively, users and clinicians can manage and test their Gemini API Key directly inside the web interface on the Medicine Assistant screen via the **🔑 Connect Gemini API Key** modal.*
+
+_Alternatively, users and clinicians can manage and test their Gemini API Key directly inside the web interface on the Medicine Assistant screen via the **🔑 Connect Gemini API Key** modal._
 
 ---
 

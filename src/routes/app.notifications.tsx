@@ -144,7 +144,8 @@ function NotificationsPage() {
               onClick={() => setPrefsModalOpen(true)}
               className="rounded-xl font-bold text-xs gap-1.5 h-8"
             >
-              <Settings2 className="size-3.5 text-primary" /> Channel Preferences
+              <Settings2 className="size-3.5 text-primary" /> Channel
+              Preferences
             </Button>
             {unreadCount > 0 && (
               <Button
@@ -153,7 +154,8 @@ function NotificationsPage() {
                 onClick={handleMarkAllRead}
                 className="rounded-xl font-bold text-xs gap-1.5 h-8"
               >
-                <CheckCheck className="size-3.5 text-emerald-600" /> Mark all read
+                <CheckCheck className="size-3.5 text-emerald-600" /> Mark all
+                read
               </Button>
             )}
           </div>
@@ -200,7 +202,10 @@ function NotificationsPage() {
           <TabsTrigger value="unread" className="rounded-xl text-xs font-bold">
             Unread ({unreadCount})
           </TabsTrigger>
-          <TabsTrigger value="reminder" className="rounded-xl text-xs font-bold">
+          <TabsTrigger
+            value="reminder"
+            className="rounded-xl text-xs font-bold"
+          >
             💊 Dose Reminders
           </TabsTrigger>
           <TabsTrigger value="order" className="rounded-xl text-xs font-bold">
@@ -212,7 +217,10 @@ function NotificationsPage() {
           <TabsTrigger value="safety" className="rounded-xl text-xs font-bold">
             ⚠️ Safety Advisories
           </TabsTrigger>
-          <TabsTrigger value="pharmacy" className="rounded-xl text-xs font-bold">
+          <TabsTrigger
+            value="pharmacy"
+            className="rounded-xl text-xs font-bold"
+          >
             🏪 Pharmacy
           </TabsTrigger>
         </TabsList>

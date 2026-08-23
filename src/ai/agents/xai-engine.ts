@@ -73,7 +73,8 @@ export class ClinicalPharmacologyAgent {
         isEquivalent: false,
         compositionKey: "",
         score: 0,
-        pharmacologyNotes: "No medicines provided for pharmacological evaluation.",
+        pharmacologyNotes:
+          "No medicines provided for pharmacological evaluation.",
       };
     }
 
@@ -114,7 +115,8 @@ export class ClinicalPharmacologyAgent {
         : `Dosage form mismatch detected. Bioavailability rate (Cmax & Tmax) will differ between formulations.`,
       confidence: allSameForm ? 95 : 88,
       riskLevel: allSameForm ? "optimal" : "info",
-      evidenceCitation: "WHO Technical Report Series — Bioequivalence Standards",
+      evidenceCitation:
+        "WHO Technical Report Series — Bioequivalence Standards",
     });
 
     const pharmacologyNotes = allSameComposition
@@ -157,7 +159,8 @@ export class InteractionSafetyAgent {
           : `Standard clinical safety profiles observed with no high-risk black-box contraindications.`,
       confidence: 94,
       riskLevel: allWarnings.length > 0 ? "info" : "optimal",
-      evidenceCitation: "FDA Drug Safety Communications & British National Formulary (BNF)",
+      evidenceCitation:
+        "FDA Drug Safety Communications & British National Formulary (BNF)",
     });
 
     return {
@@ -182,13 +185,17 @@ export class PricingEconomicsAgent {
     const pricedMeds = medicines
       .map((m) => {
         const prices = demoPrices.filter((p) => p.medicineId === m.id);
-        const minPrice = prices.length > 0 ? Math.min(...prices.map((p) => p.price)) : null;
+        const minPrice =
+          prices.length > 0 ? Math.min(...prices.map((p) => p.price)) : null;
         return {
           medicine: m,
           minPrice,
         };
       })
-      .filter((item): item is { medicine: Medicine; minPrice: number } => item.minPrice !== null);
+      .filter(
+        (item): item is { medicine: Medicine; minPrice: number } =>
+          item.minPrice !== null,
+      );
 
     if (pricedMeds.length < 2) {
       steps.push({
@@ -196,7 +203,8 @@ export class PricingEconomicsAgent {
         agentName: this.name,
         agentRole: "economics",
         title: "Dispensary Unit Price Normalization",
-        rationale: "Live verified price feeds cataloged. Comparing unit costs across authorized pharmacies.",
+        rationale:
+          "Live verified price feeds cataloged. Comparing unit costs across authorized pharmacies.",
         confidence: 90,
         riskLevel: "optimal",
         evidenceCitation: "Verified NPPA / Local Pharmacy Price Index",
@@ -257,7 +265,9 @@ export class ExplainableAiCoordinator {
     ].map((step, idx) => ({ ...step, step: idx + 1 }));
 
     const overallConfidence = Math.round(
-      (pharmResult.score * 0.4 + safetyResult.score * 0.3 + econResult.score * 0.3),
+      pharmResult.score * 0.4 +
+        safetyResult.score * 0.3 +
+        econResult.score * 0.3,
     );
 
     const counterfactuals = [
@@ -293,7 +303,9 @@ export class ExplainableAiCoordinator {
         pharmacology: {
           approved: pharmResult.isEquivalent,
           score: pharmResult.score,
-          comment: pharmResult.isEquivalent ? "Identical API & Pharmacodynamics" : "Different Chemical Classes",
+          comment: pharmResult.isEquivalent
+            ? "Identical API & Pharmacodynamics"
+            : "Different Chemical Classes",
         },
         safety: {
           approved: true,
@@ -303,7 +315,9 @@ export class ExplainableAiCoordinator {
         economics: {
           approved: true,
           score: econResult.score,
-          comment: econResult.savingsData ? `Up to ${econResult.savingsData.savingsPercentage}% savings verified` : "Standard pricing",
+          comment: econResult.savingsData
+            ? `Up to ${econResult.savingsData.savingsPercentage}% savings verified`
+            : "Standard pricing",
         },
         triage: {
           approved: true,

@@ -103,7 +103,9 @@ export function GoogleAuthModal({
                     const authRes = await auth.signInWithGoogle(next, {
                       email: profile.email,
                       name: profile.name,
-                      ...(profile.picture ? { avatarUrl: profile.picture } : {}),
+                      ...(profile.picture
+                        ? { avatarUrl: profile.picture }
+                        : {}),
                       role: selectedRole,
                       rememberMe,
                     });

@@ -93,11 +93,36 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const THERAPEUTIC_CATEGORIES = [
-  { name: "Antibiotics & Anti-Infectives", share: 34, revenue: 60418, growth: "+18.2%" },
-  { name: "Analgesics & Antipyretics", share: 28, revenue: 49756, growth: "+24.5%" },
-  { name: "Cardiometabolic & Antidiabetic", share: 18, revenue: 31986, growth: "+12.1%" },
-  { name: "Respiratory & Anti-Allergics", share: 12, revenue: 21324, growth: "+31.0%" },
-  { name: "Gastrointestinal & Proton Inhibitors", share: 8, revenue: 14216, growth: "+8.4%" },
+  {
+    name: "Antibiotics & Anti-Infectives",
+    share: 34,
+    revenue: 60418,
+    growth: "+18.2%",
+  },
+  {
+    name: "Analgesics & Antipyretics",
+    share: 28,
+    revenue: 49756,
+    growth: "+24.5%",
+  },
+  {
+    name: "Cardiometabolic & Antidiabetic",
+    share: 18,
+    revenue: 31986,
+    growth: "+12.1%",
+  },
+  {
+    name: "Respiratory & Anti-Allergics",
+    share: 12,
+    revenue: 21324,
+    growth: "+31.0%",
+  },
+  {
+    name: "Gastrointestinal & Proton Inhibitors",
+    share: 8,
+    revenue: 14216,
+    growth: "+8.4%",
+  },
 ];
 
 const PAYMENT_CHANNELS = [
@@ -138,7 +163,9 @@ function AnalyticsPage() {
   }));
 
   const inventoryRows = inventory.data ?? [];
-  const lowStockCount = inventoryRows.filter((i) => i.stock <= i.reorderLevel).length;
+  const lowStockCount = inventoryRows.filter(
+    (i) => i.stock <= i.reorderLevel,
+  ).length;
 
   const restockBar = useMemo(() => {
     return inventoryRows
@@ -154,20 +181,40 @@ function AnalyticsPage() {
   const handleExportReport = () => {
     const rows = [
       ["Metric", "Value", "Period"],
-      ["Gross Revenue", `INR ${totalRevenue.toFixed(2)}`, `Last ${period} days`],
-      ["Total Prescriptions Dispensed", String(totalOrders), `Last ${period} days`],
-      ["Average Order Value", `INR ${avgOrderValue.toFixed(2)}`, `Last ${period} days`],
+      [
+        "Gross Revenue",
+        `INR ${totalRevenue.toFixed(2)}`,
+        `Last ${period} days`,
+      ],
+      [
+        "Total Prescriptions Dispensed",
+        String(totalOrders),
+        `Last ${period} days`,
+      ],
+      [
+        "Average Order Value",
+        `INR ${avgOrderValue.toFixed(2)}`,
+        `Last ${period} days`,
+      ],
       ["Low Stock Lines", String(lowStockCount), "Current Active"],
       [""],
       ["Therapeutic Category", "Market Share (%)", "Revenue (INR)", "Growth"],
-      ...THERAPEUTIC_CATEGORIES.map((c) => [c.name, `${c.share}%`, `INR ${c.revenue}`, c.growth]),
+      ...THERAPEUTIC_CATEGORIES.map((c) => [
+        c.name,
+        `${c.share}%`,
+        `INR ${c.revenue}`,
+        c.growth,
+      ]),
     ];
     const csvContent = rows.map((r) => r.join(",")).join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `Medora_Dispensary_Analytics_Report_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute(
+      "download",
+      `Medora_Dispensary_Analytics_Report_${new Date().toISOString().slice(0, 10)}.csv`,
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -193,7 +240,10 @@ function AnalyticsPage() {
             </Button>
 
             <Select value={period} onValueChange={setPeriod}>
-              <SelectTrigger className="w-[160px] h-9 text-xs font-bold" aria-label="Select period">
+              <SelectTrigger
+                className="w-[160px] h-9 text-xs font-bold"
+                aria-label="Select period"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -222,7 +272,8 @@ function AnalyticsPage() {
               <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    <IndianRupee className="size-3.5 text-primary" /> Gross Revenue
+                    <IndianRupee className="size-3.5 text-primary" /> Gross
+                    Revenue
                   </span>
                   <span className="inline-flex items-center gap-0.5 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-600">
                     <ArrowUpRight className="size-3" /> +18.4%
@@ -241,7 +292,8 @@ function AnalyticsPage() {
               <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    <ShoppingCart className="size-3.5 text-blue-500" /> Prescriptions Dispensed
+                    <ShoppingCart className="size-3.5 text-blue-500" />{" "}
+                    Prescriptions Dispensed
                   </span>
                   <span className="inline-flex items-center gap-0.5 rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-bold text-blue-600">
                     <ArrowUpRight className="size-3" /> +12.1%
@@ -251,14 +303,17 @@ function AnalyticsPage() {
                   <span className="font-display text-2xl font-extrabold text-ink">
                     {totalOrders}
                   </span>
-                  <span className="text-xs text-muted-foreground">orders billed</span>
+                  <span className="text-xs text-muted-foreground">
+                    orders billed
+                  </span>
                 </div>
               </div>
 
               <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    <TrendingUp className="size-3.5 text-amber-500" /> Avg Basket Value
+                    <TrendingUp className="size-3.5 text-amber-500" /> Avg
+                    Basket Value
                   </span>
                   <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-600">
                     Optimal
@@ -268,16 +323,22 @@ function AnalyticsPage() {
                   <span className="font-display text-2xl font-extrabold text-ink">
                     {money(avgOrderValue)}
                   </span>
-                  <span className="text-xs text-muted-foreground">per prescription</span>
+                  <span className="text-xs text-muted-foreground">
+                    per prescription
+                  </span>
                 </div>
               </div>
 
               <div className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    <Timer className="size-3.5 text-emerald-500" /> Rx Turnaround Velocity
+                    <Timer className="size-3.5 text-emerald-500" /> Rx
+                    Turnaround Velocity
                   </span>
-                  <Badge variant="outline" className="font-mono text-[10px] bg-emerald-500/10 text-emerald-600 border-emerald-500/30">
+                  <Badge
+                    variant="outline"
+                    className="font-mono text-[10px] bg-emerald-500/10 text-emerald-600 border-emerald-500/30"
+                  >
                     99.2% SLA
                   </Badge>
                 </div>
@@ -285,7 +346,9 @@ function AnalyticsPage() {
                   <span className="font-display text-2xl font-extrabold text-ink">
                     12.4 min
                   </span>
-                  <span className="text-xs text-muted-foreground">verification to pack</span>
+                  <span className="text-xs text-muted-foreground">
+                    verification to pack
+                  </span>
                 </div>
               </div>
             </div>
@@ -356,18 +419,26 @@ function AnalyticsPage() {
                   <Pill className="size-4" />
                 </span>
                 <div>
-                  <h4 className="font-display text-sm font-bold text-ink">Therapeutic Class Share</h4>
-                  <p className="text-[11px] text-muted-foreground">Top revenue generating categories</p>
+                  <h4 className="font-display text-sm font-bold text-ink">
+                    Therapeutic Class Share
+                  </h4>
+                  <p className="text-[11px] text-muted-foreground">
+                    Top revenue generating categories
+                  </p>
                 </div>
               </div>
-              <span className="text-[10px] font-bold text-primary">CDSCO Formulary</span>
+              <span className="text-[10px] font-bold text-primary">
+                CDSCO Formulary
+              </span>
             </div>
 
             <div className="mt-3 space-y-2.5">
               {THERAPEUTIC_CATEGORIES.map((cat) => (
                 <div key={cat.name} className="space-y-1">
                   <div className="flex items-center justify-between text-xs font-semibold">
-                    <span className="text-foreground truncate max-w-[200px]">{cat.name}</span>
+                    <span className="text-foreground truncate max-w-[200px]">
+                      {cat.name}
+                    </span>
                     <span className="text-ink font-bold">{cat.share}%</span>
                   </div>
                   <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
@@ -383,7 +454,9 @@ function AnalyticsPage() {
 
           <div className="mt-4 pt-3 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
             <span>Formulary Coverage: 100%</span>
-            <span className="font-bold text-emerald-600">Verified CDSCO IP</span>
+            <span className="font-bold text-emerald-600">
+              Verified CDSCO IP
+            </span>
           </div>
         </div>
 
@@ -396,21 +469,37 @@ function AnalyticsPage() {
                   <CreditCard className="size-4" />
                 </span>
                 <div>
-                  <h4 className="font-display text-sm font-bold text-ink">Payment Channel Mix</h4>
-                  <p className="text-[11px] text-muted-foreground">Settlement distribution</p>
+                  <h4 className="font-display text-sm font-bold text-ink">
+                    Payment Channel Mix
+                  </h4>
+                  <p className="text-[11px] text-muted-foreground">
+                    Settlement distribution
+                  </p>
                 </div>
               </div>
-              <span className="text-[10px] font-bold text-emerald-600">99.8% Auto-Settled</span>
+              <span className="text-[10px] font-bold text-emerald-600">
+                99.8% Auto-Settled
+              </span>
             </div>
 
             <div className="mt-3 space-y-3">
               {PAYMENT_CHANNELS.map((ch) => (
-                <div key={ch.name} className="rounded-xl border border-border/50 bg-muted/30 p-2.5 flex items-center justify-between text-xs">
+                <div
+                  key={ch.name}
+                  className="rounded-xl border border-border/50 bg-muted/30 p-2.5 flex items-center justify-between text-xs"
+                >
                   <div className="flex items-center gap-2">
-                    <span className="size-2.5 rounded-full shrink-0" style={{ background: ch.color }} />
-                    <span className="font-medium text-foreground">{ch.name}</span>
+                    <span
+                      className="size-2.5 rounded-full shrink-0"
+                      style={{ background: ch.color }}
+                    />
+                    <span className="font-medium text-foreground">
+                      {ch.name}
+                    </span>
                   </div>
-                  <strong className="font-mono font-bold text-ink">{ch.value}%</strong>
+                  <strong className="font-mono font-bold text-ink">
+                    {ch.value}%
+                  </strong>
                 </div>
               ))}
             </div>
@@ -418,7 +507,9 @@ function AnalyticsPage() {
 
           <div className="mt-4 pt-3 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
             <span>Instant UPI Gateway Active</span>
-            <span className="font-mono font-bold text-ink">T+0 Settlements</span>
+            <span className="font-mono font-bold text-ink">
+              T+0 Settlements
+            </span>
           </div>
         </div>
       </div>

@@ -125,7 +125,8 @@ class NotificationService {
   private playChime() {
     try {
       if (typeof window === "undefined") return;
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioCtx =
+        window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioCtx) return;
       const ctx = new AudioCtx();
       const osc = ctx.createOscillator();
@@ -209,7 +210,10 @@ class NotificationService {
     this.notificationsCache = items;
     if (typeof window !== "undefined") {
       try {
-        window.localStorage.setItem(NOTIFICATIONS_STORAGE_KEY, JSON.stringify(items));
+        window.localStorage.setItem(
+          NOTIFICATIONS_STORAGE_KEY,
+          JSON.stringify(items),
+        );
       } catch (e) {
         console.warn("Failed saving notifications:", e);
       }
@@ -289,7 +293,12 @@ class NotificationService {
     const now = new Date().toISOString();
     const id = `notif-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
 
-    const targetChannels = payload.channels || ["in_app", "push", "email", "sms"];
+    const targetChannels = payload.channels || [
+      "in_app",
+      "push",
+      "email",
+      "sms",
+    ];
     const activeChannels: ("in_app" | "push" | "email" | "sms")[] = ["in_app"];
 
     // 1. In-App Notification
@@ -323,7 +332,11 @@ class NotificationService {
 
     // 3. Browser Web Push
     if (targetChannels.includes("push") && prefs.pushEnabled) {
-      if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+      if (
+        typeof window !== "undefined" &&
+        "Notification" in window &&
+        Notification.permission === "granted"
+      ) {
         try {
           const n = new Notification(payload.title, {
             body: payload.body,
@@ -366,7 +379,11 @@ class NotificationService {
     }
 
     // 4. Transactional Email Simulation
-    if (targetChannels.includes("email") && prefs.emailEnabled && prefs.emailAddress) {
+    if (
+      targetChannels.includes("email") &&
+      prefs.emailEnabled &&
+      prefs.emailAddress
+    ) {
       activeChannels.push("email");
       this.logDelivery({
         channel: "email",
@@ -378,7 +395,11 @@ class NotificationService {
     }
 
     // 5. SMS Carrier Simulation
-    if (targetChannels.includes("sms") && prefs.smsEnabled && prefs.phoneNumber) {
+    if (
+      targetChannels.includes("sms") &&
+      prefs.smsEnabled &&
+      prefs.phoneNumber
+    ) {
       activeChannels.push("sms");
       this.logDelivery({
         channel: "sms",
@@ -407,7 +428,10 @@ class NotificationService {
     });
   }
 
-  public notifyPrescriptionVerified(order: Order, pharmacistName: string): void {
+  public notifyPrescriptionVerified(
+    order: Order,
+    pharmacistName: string,
+  ): void {
     this.dispatch({
       title: `📋 Prescription Endorsed by Pharmacist`,
       body: `${pharmacistName} has validated and digitally signed your prescription for Order ${order.id}. Medicine packing has started.`,
@@ -466,7 +490,12 @@ class NotificationService {
     });
   }
 
-  public notifyPriceAlert(medicineName: string, dropPercent: number, lowestPrice: number, pharmacyName: string): void {
+  public notifyPriceAlert(
+    medicineName: string,
+    dropPercent: number,
+    lowestPrice: number,
+    pharmacyName: string,
+  ): void {
     this.dispatch({
       title: `📉 Price Dropped ${dropPercent}% on ${medicineName}`,
       body: `Now available for ₹${lowestPrice.toFixed(2)} at ${pharmacyName}. Save on your next prescription refill.`,
@@ -477,7 +506,11 @@ class NotificationService {
     });
   }
 
-  public notifySafetyAlert(title: string, detail: string, severity: "info" | "warning" | "critical"): void {
+  public notifySafetyAlert(
+    title: string,
+    detail: string,
+    severity: "info" | "warning" | "critical",
+  ): void {
     this.dispatch({
       title: `⚠️ Safety Advisory: ${title}`,
       body: detail,
@@ -489,7 +522,11 @@ class NotificationService {
     });
   }
 
-  public notifyPharmacyAlert(title: string, detail: string, actionUrl?: string): void {
+  public notifyPharmacyAlert(
+    title: string,
+    detail: string,
+    actionUrl?: string,
+  ): void {
     this.dispatch({
       title: `🏪 Pharmacy Alert: ${title}`,
       body: detail,

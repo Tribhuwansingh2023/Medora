@@ -43,7 +43,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PageHeader, SafetyNotice, StatTile } from "@/components/common/primitives";
+import {
+  PageHeader,
+  SafetyNotice,
+  StatTile,
+} from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
 import {
   AsyncSection,
@@ -122,12 +126,16 @@ function InventoryPage() {
 
   // New Batch Form State
   const [batchName, setBatchName] = useState("");
-  const [batchCode, setBatchCode] = useState(`BATCH-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`);
+  const [batchCode, setBatchCode] = useState(
+    `BATCH-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`,
+  );
   const [batchStock, setBatchStock] = useState("50");
   const [batchReorder, setBatchReorder] = useState("15");
   const [batchPrice, setBatchPrice] = useState("45.00");
   const [batchExpiry, setBatchExpiry] = useState("2027-06-30");
-  const [batchSupplier, setBatchSupplier] = useState("MedPlus Central Distribution");
+  const [batchSupplier, setBatchSupplier] = useState(
+    "MedPlus Central Distribution",
+  );
 
   // Onboarding Profile State
   const [editName, setEditName] = useState(profile.name);
@@ -147,7 +155,10 @@ function InventoryPage() {
     await pharmacyInventoryService.updateStock(item.id, newStock);
     refreshInventory();
     toast.success(`${item.name} stock updated to ${newStock} units`, {
-      description: newStock === 0 ? "Flagged as Out of Stock in live catalog" : "Live price listings synchronized",
+      description:
+        newStock === 0
+          ? "Flagged as Out of Stock in live catalog"
+          : "Live price listings synchronized",
     });
   };
 
@@ -195,7 +206,9 @@ function InventoryPage() {
 
     // Reset fields
     setBatchName("");
-    setBatchCode(`BATCH-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`);
+    setBatchCode(
+      `BATCH-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`,
+    );
   };
 
   // Save Onboarding Profile
@@ -213,7 +226,8 @@ function InventoryPage() {
     setProfile(updated);
     setOnboardingOpen(false);
     toast.success("Pharmacy Verification Profile Updated", {
-      description: "State Drug Control credentials & license verification confirmed.",
+      description:
+        "State Drug Control credentials & license verification confirmed.",
     });
   };
 
@@ -246,12 +260,18 @@ function InventoryPage() {
       `"${item.supplier.replace(/"/g, '""')}"`,
       `"${getStockStatus(item).toUpperCase()}"`,
     ]);
-    const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((r) => r.join(",")),
+    ].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `Medora_Pharmacy_Inventory_Ledger_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute(
+      "download",
+      `Medora_Pharmacy_Inventory_Ledger_${new Date().toISOString().slice(0, 10)}.csv`,
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -264,12 +284,15 @@ function InventoryPage() {
   const handleScanBarcode = () => {
     const raw = inventory.data || [];
     const query = scannerQuery.trim().toLowerCase();
-    const match = raw.find(
-      (i) =>
-        i.batch.toLowerCase().includes(query) ||
-        i.name.toLowerCase().includes(query) ||
-        i.id.toLowerCase().includes(query),
-    ) || raw[0] || null;
+    const match =
+      raw.find(
+        (i) =>
+          i.batch.toLowerCase().includes(query) ||
+          i.name.toLowerCase().includes(query) ||
+          i.id.toLowerCase().includes(query),
+      ) ||
+      raw[0] ||
+      null;
 
     setScannedItem(match);
     if (match) {
@@ -298,12 +321,21 @@ function InventoryPage() {
   const metrics = useMemo(() => {
     const raw = inventory.data || [];
     const totalUnits = raw.reduce((sum, i) => sum + i.stock, 0);
-    const lowStockCount = raw.filter((i) => i.stock > 0 && i.stock <= i.reorderLevel).length;
+    const lowStockCount = raw.filter(
+      (i) => i.stock > 0 && i.stock <= i.reorderLevel,
+    ).length;
     const outOfStockCount = raw.filter((i) => i.stock === 0).length;
     const expiringCount = raw.filter((i) => daysUntil(i.expiry) <= 60).length;
     const totalValue = raw.reduce((sum, i) => sum + i.stock * i.price, 0);
 
-    return { totalUnits, lowStockCount, outOfStockCount, expiringCount, totalValue, count: raw.length };
+    return {
+      totalUnits,
+      lowStockCount,
+      outOfStockCount,
+      expiringCount,
+      totalValue,
+      count: raw.length,
+    };
   }, [inventory.data]);
 
   const columns: DataColumn<InventoryItem>[] = [
@@ -332,8 +364,16 @@ function InventoryPage() {
             <span className="font-mono text-xs font-bold text-foreground bg-muted/60 px-1.5 py-0.5 rounded">
               {r.batch}
             </span>
-            <p className={cn("mt-1 text-xs font-medium", days <= 60 ? "text-rose-600 dark:text-rose-400 font-bold" : "text-muted-foreground")}>
-              {shortDate(`${r.expiry}T00:00:00.000Z`)} ({days > 0 ? `${days}d left` : "Expired"})
+            <p
+              className={cn(
+                "mt-1 text-xs font-medium",
+                days <= 60
+                  ? "text-rose-600 dark:text-rose-400 font-bold"
+                  : "text-muted-foreground",
+              )}
+            >
+              {shortDate(`${r.expiry}T00:00:00.000Z`)} (
+              {days > 0 ? `${days}d left` : "Expired"})
             </p>
           </div>
         );
@@ -358,7 +398,16 @@ function InventoryPage() {
           </Button>
 
           <div className="min-w-[70px] text-center">
-            <span className={cn("numeric font-display text-base font-extrabold", r.stock === 0 ? "text-rose-600" : r.stock <= r.reorderLevel ? "text-amber-600" : "text-ink")}>
+            <span
+              className={cn(
+                "numeric font-display text-base font-extrabold",
+                r.stock === 0
+                  ? "text-rose-600"
+                  : r.stock <= r.reorderLevel
+                    ? "text-amber-600"
+                    : "text-ink",
+              )}
+            >
               {r.stock}
             </span>
             <span className="block text-[10px] text-muted-foreground">
@@ -440,7 +489,9 @@ function InventoryPage() {
               {profile.name}
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl">
-              Real-time POS/ERP inventory synchronization, dynamic availability broadcast, batch expiry monitoring, and State Drug Authority verification.
+              Real-time POS/ERP inventory synchronization, dynamic availability
+              broadcast, batch expiry monitoring, and State Drug Authority
+              verification.
             </p>
           </div>
 
@@ -483,7 +534,12 @@ function InventoryPage() {
               disabled={syncingFeed}
               className="h-9 px-3 text-xs font-bold gap-1.5 rounded-xl"
             >
-              <RefreshCw className={cn("size-3.5", syncingFeed && "animate-spin text-primary")} />
+              <RefreshCw
+                className={cn(
+                  "size-3.5",
+                  syncingFeed && "animate-spin text-primary",
+                )}
+              />
               {syncingFeed ? "Syncing Feed..." : "Sync POS Feed"}
             </Button>
 
@@ -492,8 +548,7 @@ function InventoryPage() {
               onClick={() => setAddBatchOpen(true)}
               className="h-9 px-4 bg-primary text-primary-foreground font-bold text-xs gap-1.5 rounded-xl shadow-soft"
             >
-              <PackagePlus className="size-4" />
-              + Add Stock Batch
+              <PackagePlus className="size-4" />+ Add Stock Batch
             </Button>
           </div>
         </div>
@@ -546,7 +601,12 @@ function InventoryPage() {
         </div>
 
         {filterQuery && (
-          <Button variant="ghost" size="sm" onClick={() => setFilterQuery("")} className="text-xs">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setFilterQuery("")}
+            className="text-xs"
+          >
             Clear Filter
           </Button>
         )}
@@ -576,56 +636,119 @@ function InventoryPage() {
 
       {/* DIALOG: VIEW / EDIT ITEM DETAILS */}
       {viewing && (
-        <Dialog open={Boolean(viewing)} onOpenChange={(open) => !open && setViewing(null)}>
+        <Dialog
+          open={Boolean(viewing)}
+          onOpenChange={(open) => !open && setViewing(null)}
+        >
           <DialogContent className="max-w-md rounded-2xl">
             <DialogHeader>
-              <DialogTitle className="font-display text-xl font-bold">{viewing.name}</DialogTitle>
+              <DialogTitle className="font-display text-xl font-bold">
+                {viewing.name}
+              </DialogTitle>
               <DialogDescription>
-                Batch: <span className="font-mono font-bold text-foreground">{viewing.batch}</span> · Supplier: {viewing.supplier}
+                Batch:{" "}
+                <span className="font-mono font-bold text-foreground">
+                  {viewing.batch}
+                </span>{" "}
+                · Supplier: {viewing.supplier}
               </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4 py-2">
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-xl border border-border bg-muted/40 p-3">
-                  <span className="text-[10px] font-semibold text-muted-foreground uppercase">Current Stock</span>
-                  <div className="font-display text-2xl font-extrabold text-ink">{viewing.stock} units</div>
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase">
+                    Current Stock
+                  </span>
+                  <div className="font-display text-2xl font-extrabold text-ink">
+                    {viewing.stock} units
+                  </div>
                 </div>
                 <div className="rounded-xl border border-border bg-muted/40 p-3">
-                  <span className="text-[10px] font-semibold text-muted-foreground uppercase">Reorder Level</span>
-                  <div className="font-display text-2xl font-extrabold text-amber-600">{viewing.reorderLevel} units</div>
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase">
+                    Reorder Level
+                  </span>
+                  <div className="font-display text-2xl font-extrabold text-amber-600">
+                    {viewing.reorderLevel} units
+                  </div>
                 </div>
               </div>
 
               <div className="rounded-xl border border-border bg-card p-3 space-y-2 text-xs">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Unit Price:</span>
-                  <strong className="font-bold text-ink">{money(viewing.price)}</strong>
+                  <strong className="font-bold text-ink">
+                    {money(viewing.price)}
+                  </strong>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Expiry Date:</span>
-                  <strong className="text-foreground">{shortDate(`${viewing.expiry}T00:00:00.000Z`)} ({daysUntil(viewing.expiry)} days)</strong>
+                  <strong className="text-foreground">
+                    {shortDate(`${viewing.expiry}T00:00:00.000Z`)} (
+                    {daysUntil(viewing.expiry)} days)
+                  </strong>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Inventory Status:</span>
-                  <StatusPill label={statusMeta[getStockStatus(viewing)].label} tone={statusMeta[getStockStatus(viewing)].tone} />
+                  <span className="text-muted-foreground">
+                    Inventory Status:
+                  </span>
+                  <StatusPill
+                    label={statusMeta[getStockStatus(viewing)].label}
+                    tone={statusMeta[getStockStatus(viewing)].tone}
+                  />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-xs font-bold">Quick Stock Adjustment</Label>
+                <Label className="text-xs font-bold">
+                  Quick Stock Adjustment
+                </Label>
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" onClick={() => handleAdjustStock(viewing, -10)} disabled={viewing.stock < 10}>-10</Button>
-                  <Button variant="outline" size="sm" onClick={() => handleAdjustStock(viewing, -1)} disabled={viewing.stock <= 0}>-1</Button>
-                  <Button variant="outline" size="sm" onClick={() => handleAdjustStock(viewing, 1)}>+1</Button>
-                  <Button variant="outline" size="sm" onClick={() => handleAdjustStock(viewing, 10)}>+10</Button>
-                  <Button variant="outline" size="sm" onClick={() => handleAdjustStock(viewing, 50)}>+50</Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleAdjustStock(viewing, -10)}
+                    disabled={viewing.stock < 10}
+                  >
+                    -10
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleAdjustStock(viewing, -1)}
+                    disabled={viewing.stock <= 0}
+                  >
+                    -1
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleAdjustStock(viewing, 1)}
+                  >
+                    +1
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleAdjustStock(viewing, 10)}
+                  >
+                    +10
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleAdjustStock(viewing, 50)}
+                  >
+                    +50
+                  </Button>
                 </div>
               </div>
             </div>
 
             <DialogFooter>
-              <Button variant="default" onClick={() => setViewing(null)}>Done</Button>
+              <Button variant="default" onClick={() => setViewing(null)}>
+                Done
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -640,13 +763,16 @@ function InventoryPage() {
               Register New Medicine Batch
             </DialogTitle>
             <DialogDescription>
-              Add a new pharmaceutical batch to your pharmacy stock register with live price propagation.
+              Add a new pharmaceutical batch to your pharmacy stock register
+              with live price propagation.
             </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleCreateBatch} className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <Label htmlFor="batch-med-name" className="text-xs font-bold">Medicine Brand Name *</Label>
+              <Label htmlFor="batch-med-name" className="text-xs font-bold">
+                Medicine Brand Name *
+              </Label>
               <Input
                 id="batch-med-name"
                 required
@@ -659,7 +785,9 @@ function InventoryPage() {
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label htmlFor="batch-code" className="text-xs font-bold">Batch Number *</Label>
+                <Label htmlFor="batch-code" className="text-xs font-bold">
+                  Batch Number *
+                </Label>
                 <Input
                   id="batch-code"
                   required
@@ -671,7 +799,9 @@ function InventoryPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="batch-supplier" className="text-xs font-bold">Authorized Distributor *</Label>
+                <Label htmlFor="batch-supplier" className="text-xs font-bold">
+                  Authorized Distributor *
+                </Label>
                 <Input
                   id="batch-supplier"
                   required
@@ -685,7 +815,9 @@ function InventoryPage() {
 
             <div className="grid grid-cols-3 gap-3">
               <div className="space-y-1.5">
-                <Label htmlFor="batch-stock" className="text-xs font-bold">Quantity (Units) *</Label>
+                <Label htmlFor="batch-stock" className="text-xs font-bold">
+                  Quantity (Units) *
+                </Label>
                 <Input
                   id="batch-stock"
                   type="number"
@@ -698,7 +830,9 @@ function InventoryPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="batch-reorder" className="text-xs font-bold">Reorder Alert Level</Label>
+                <Label htmlFor="batch-reorder" className="text-xs font-bold">
+                  Reorder Alert Level
+                </Label>
                 <Input
                   id="batch-reorder"
                   type="number"
@@ -710,7 +844,9 @@ function InventoryPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="batch-price" className="text-xs font-bold">Pack Price (₹) *</Label>
+                <Label htmlFor="batch-price" className="text-xs font-bold">
+                  Pack Price (₹) *
+                </Label>
                 <Input
                   id="batch-price"
                   type="number"
@@ -724,7 +860,9 @@ function InventoryPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="batch-expiry" className="text-xs font-bold">Expiry Date *</Label>
+              <Label htmlFor="batch-expiry" className="text-xs font-bold">
+                Expiry Date *
+              </Label>
               <Input
                 id="batch-expiry"
                 type="date"
@@ -736,8 +874,19 @@ function InventoryPage() {
             </div>
 
             <DialogFooter className="pt-3">
-              <Button type="button" variant="outline" onClick={() => setAddBatchOpen(false)}>Cancel</Button>
-              <Button type="submit" className="bg-primary text-primary-foreground font-bold">Register Batch</Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setAddBatchOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="bg-primary text-primary-foreground font-bold"
+              >
+                Register Batch
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -752,45 +901,84 @@ function InventoryPage() {
               Pharmacy License & Verification Profile
             </DialogTitle>
             <DialogDescription>
-              Verify regulatory credentials registered with the State Drugs Control Administration.
+              Verify regulatory credentials registered with the State Drugs
+              Control Administration.
             </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleSaveProfile} className="space-y-4 py-2">
             <div className="space-y-1.5">
               <Label className="text-xs font-bold">Pharmacy Name</Label>
-              <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="h-10 text-xs sm:text-sm" />
+              <Input
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                className="h-10 text-xs sm:text-sm"
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-xs font-bold">Drug License No. (Form 20/21)</Label>
-                <Input value={editLicense} onChange={(e) => setEditLicense(e.target.value)} className="h-10 font-mono text-xs sm:text-sm uppercase" />
+                <Label className="text-xs font-bold">
+                  Drug License No. (Form 20/21)
+                </Label>
+                <Input
+                  value={editLicense}
+                  onChange={(e) => setEditLicense(e.target.value)}
+                  className="h-10 font-mono text-xs sm:text-sm uppercase"
+                />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-bold">GSTIN Registration</Label>
-                <Input value={editGstin} onChange={(e) => setEditGstin(e.target.value)} className="h-10 font-mono text-xs sm:text-sm uppercase" />
+                <Input
+                  value={editGstin}
+                  onChange={(e) => setEditGstin(e.target.value)}
+                  className="h-10 font-mono text-xs sm:text-sm uppercase"
+                />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold">Physical Dispensary Address</Label>
-              <Input value={editAddress} onChange={(e) => setEditAddress(e.target.value)} className="h-10 text-xs sm:text-sm" />
+              <Label className="text-xs font-bold">
+                Physical Dispensary Address
+              </Label>
+              <Input
+                value={editAddress}
+                onChange={(e) => setEditAddress(e.target.value)}
+                className="h-10 text-xs sm:text-sm"
+              />
             </div>
 
             <div className="space-y-1.5">
               <Label className="text-xs font-bold">Registered Phone</Label>
-              <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} className="h-10 text-xs sm:text-sm" />
+              <Input
+                value={editPhone}
+                onChange={(e) => setEditPhone(e.target.value)}
+                className="h-10 text-xs sm:text-sm"
+              />
             </div>
 
             <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-950 dark:text-emerald-200">
               <div className="font-bold">✓ Active Verification Status</div>
-              <p className="mt-0.5 opacity-90">License verified with State Pharmacy Council. Cold chain telemetry sensor active.</p>
+              <p className="mt-0.5 opacity-90">
+                License verified with State Pharmacy Council. Cold chain
+                telemetry sensor active.
+              </p>
             </div>
 
             <DialogFooter className="pt-3">
-              <Button type="button" variant="outline" onClick={() => setOnboardingOpen(false)}>Cancel</Button>
-              <Button type="submit" className="bg-primary text-primary-foreground font-bold">Save Credentials</Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOnboardingOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="bg-primary text-primary-foreground font-bold"
+              >
+                Save Credentials
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
@@ -805,7 +993,8 @@ function InventoryPage() {
               Dispensary Barcode & SKU Scanner
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Scan standard GS1 DataMatrix, EAN-13, or internal batch QR codes for instantaneous medicine verification and stock adjustments.
+              Scan standard GS1 DataMatrix, EAN-13, or internal batch QR codes
+              for instantaneous medicine verification and stock adjustments.
             </DialogDescription>
           </DialogHeader>
 
@@ -834,7 +1023,11 @@ function InventoryPage() {
                   placeholder="e.g. 8901030383121 or BATCH-2026-X01"
                   className="font-mono text-xs"
                 />
-                <Button size="sm" onClick={handleScanBarcode} className="font-bold shrink-0">
+                <Button
+                  size="sm"
+                  onClick={handleScanBarcode}
+                  className="font-bold shrink-0"
+                >
                   <Zap className="size-3.5 mr-1" /> Scan
                 </Button>
               </div>
@@ -845,19 +1038,34 @@ function InventoryPage() {
               <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4 space-y-3 animate-in zoom-in-95">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h4 className="font-bold text-ink text-sm">{scannedItem.name}</h4>
+                    <h4 className="font-bold text-ink text-sm">
+                      {scannedItem.name}
+                    </h4>
                     <span className="font-mono text-xs text-muted-foreground">
                       Batch: {scannedItem.batch}
                     </span>
                   </div>
-                  <Badge variant="outline" className="font-mono text-xs font-bold bg-background">
+                  <Badge
+                    variant="outline"
+                    className="font-mono text-xs font-bold bg-background"
+                  >
                     {scannedItem.stock} in stock
                   </Badge>
                 </div>
 
                 <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-border/50">
-                  <span>Price: <strong className="text-ink">{money(scannedItem.price)}</strong></span>
-                  <span>Expires: <strong className="text-foreground">{scannedItem.expiry}</strong></span>
+                  <span>
+                    Price:{" "}
+                    <strong className="text-ink">
+                      {money(scannedItem.price)}
+                    </strong>
+                  </span>
+                  <span>
+                    Expires:{" "}
+                    <strong className="text-foreground">
+                      {scannedItem.expiry}
+                    </strong>
+                  </span>
                 </div>
 
                 <div className="flex items-center gap-2 pt-1">

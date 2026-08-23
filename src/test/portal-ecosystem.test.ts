@@ -6,7 +6,11 @@ import {
   demoPlatformUsers,
   demoPrescriptionDrafts,
 } from "@/data/workspace-demo";
-import { demoDoctorPatients, demoInventory, demoMedicines } from "@/data/demo-catalog";
+import {
+  demoDoctorPatients,
+  demoInventory,
+  demoMedicines,
+} from "@/data/demo-catalog";
 
 describe("Medora 4-Portal Ecosystem Data Integrity & Workflows", () => {
   describe("Patient Portal", () => {
@@ -43,7 +47,13 @@ describe("Medora 4-Portal Ecosystem Data Integrity & Workflows", () => {
 
     it("tracks appointment schedule with valid status lifecycle and modalities", () => {
       expect(demoAppointments.length).toBeGreaterThan(0);
-      const allowedStatuses = ["scheduled", "checked_in", "in_consult", "completed", "cancelled"];
+      const allowedStatuses = [
+        "scheduled",
+        "checked_in",
+        "in_consult",
+        "completed",
+        "cancelled",
+      ];
       const allowedKinds = ["in_person", "video", "phone"];
 
       for (const app of demoAppointments) {
@@ -98,7 +108,12 @@ describe("Medora 4-Portal Ecosystem Data Integrity & Workflows", () => {
     it("maintains content moderation queue with severity tiers and open tickets", () => {
       expect(demoModerationReports.length).toBeGreaterThan(0);
       const allowedSeverities = ["high", "medium", "low"];
-      const allowedStatuses = ["open", "investigating", "actioned", "dismissed"];
+      const allowedStatuses = [
+        "open",
+        "investigating",
+        "actioned",
+        "dismissed",
+      ];
 
       for (const report of demoModerationReports) {
         expect(allowedSeverities).toContain(report.severity);

@@ -40,8 +40,14 @@ export function getStoredGeminiKey(): string {
     const stored = window.localStorage.getItem(GEMINI_API_KEY_STORAGE);
     if (stored && stored.trim()) return stored.trim();
   }
-  const viteEnv = typeof import.meta !== "undefined" && import.meta.env ? (import.meta.env["VITE_GEMINI_API_KEY"] as string) : undefined;
-  const nodeEnv = typeof process !== "undefined" && process.env ? (process.env["VITE_GEMINI_API_KEY"] as string) : undefined;
+  const viteEnv =
+    typeof import.meta !== "undefined" && import.meta.env
+      ? (import.meta.env["VITE_GEMINI_API_KEY"] as string)
+      : undefined;
+  const nodeEnv =
+    typeof process !== "undefined" && process.env
+      ? (process.env["VITE_GEMINI_API_KEY"] as string)
+      : undefined;
   return viteEnv || nodeEnv || "";
 }
 
@@ -55,7 +61,9 @@ export function setStoredGeminiKey(key: string): void {
   }
 }
 
-export async function testGeminiApiKey(key: string): Promise<{ success: boolean; message: string }> {
+export async function testGeminiApiKey(
+  key: string,
+): Promise<{ success: boolean; message: string }> {
   try {
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key=${key}`,
@@ -63,7 +71,9 @@ export async function testGeminiApiKey(key: string): Promise<{ success: boolean;
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: "Ping test for clinical AI verification." }] }],
+          contents: [
+            { parts: [{ text: "Ping test for clinical AI verification." }] },
+          ],
         }),
       },
     );
@@ -72,7 +82,8 @@ export async function testGeminiApiKey(key: string): Promise<{ success: boolean;
     if (!res.ok || data.error) {
       return {
         success: false,
-        message: data.error?.message || `HTTP error ${res.status}: Invalid API Key`,
+        message:
+          data.error?.message || `HTTP error ${res.status}: Invalid API Key`,
       };
     }
 
@@ -88,7 +99,10 @@ export async function testGeminiApiKey(key: string): Promise<{ success: boolean;
   }
 }
 
-async function callGeminiApi(prompt: string, contextBlock: string): Promise<string | null> {
+async function callGeminiApi(
+  prompt: string,
+  contextBlock: string,
+): Promise<string | null> {
   const apiKey = getStoredGeminiKey();
   if (!apiKey) return null;
 
@@ -102,7 +116,11 @@ Rules:
 
   const fullPrompt = `${systemInstruction}\n\n[GROUNDED MEDICAL CONTEXT]\n${contextBlock || "Standard CDSCO National Formulary References"}\n\n[USER INQUIRY]\n${prompt}`;
 
-  const candidateModels = ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash"];
+  const candidateModels = [
+    "gemini-3.7-flash",
+    "gemini-3.6-flash",
+    "gemini-3.5-flash",
+  ];
 
   for (const model of candidateModels) {
     try {
@@ -151,12 +169,15 @@ export const liveGeminiProvider: MedoraAiProvider = {
     "prescription_ocr",
   ],
 
-  async answerInformational(query: string): Promise<ProviderOutput<InformationalAnswer>> {
+  async answerInformational(
+    query: string,
+  ): Promise<ProviderOutput<InformationalAnswer>> {
     const ragResult = clinicalRag.retrieve(query);
     const hasKey = Boolean(getStoredGeminiKey());
 
     let headline = "Clinical Intelligence Guidance";
-    let body = "Verified clinical pharmacology analysis regarding your inquiry:";
+    let body =
+      "Verified clinical pharmacology analysis regarding your inquiry:";
     let bullets: { label: string; value: string }[] = [];
 
     // Try live Gemini invocation
@@ -167,12 +188,22 @@ export const liveGeminiProvider: MedoraAiProvider = {
       body = geminiText.slice(0, 300).trim();
 
       // Extract bullet points from text
-      const rawLines = geminiText.split("\n").filter((l) => l.trim().startsWith("*") || l.trim().startsWith("-") || l.includes(":"));
+      const rawLines = geminiText
+        .split("\n")
+        .filter(
+          (l) =>
+            l.trim().startsWith("*") ||
+            l.trim().startsWith("-") ||
+            l.includes(":"),
+        );
       bullets = rawLines.slice(0, 5).map((l, idx) => {
         const clean = l.replace(/^[\*\-\•\d\.]+\s*/, "");
         const parts = clean.split(/:\s*/);
         if (parts.length >= 2) {
-          return { label: parts[0]!.trim(), value: parts.slice(1).join(": ").trim() };
+          return {
+            label: parts[0]!.trim(),
+            value: parts.slice(1).join(": ").trim(),
+          };
         }
         return { label: `Clinical Point ${idx + 1}`, value: clean };
       });
@@ -185,13 +216,17 @@ export const liveGeminiProvider: MedoraAiProvider = {
 
         bullets.push({
           label: "Primary Clinical Indications",
-          value: med.usesSummary || "Indicated for targeted symptomatic management according to clinical guidelines.",
+          value:
+            med.usesSummary ||
+            "Indicated for targeted symptomatic management according to clinical guidelines.",
         });
 
         if (med.commonSideEffects && med.commonSideEffects.length > 0) {
           bullets.push({
             label: "Common Side Effects to Monitor",
-            value: med.commonSideEffects.join(", ") + ". Typically mild and transient.",
+            value:
+              med.commonSideEffects.join(", ") +
+              ". Typically mild and transient.",
           });
         }
 
@@ -204,18 +239,21 @@ export const liveGeminiProvider: MedoraAiProvider = {
 
         bullets.push({
           label: "Food & Administration Timing",
-          value: "Take as directed on packaging. Maintain adequate hydration and avoid exceeding maximum prescribed daily thresholds.",
+          value:
+            "Take as directed on packaging. Maintain adequate hydration and avoid exceeding maximum prescribed daily thresholds.",
         });
       } else if (ragResult.labReferenceSummary) {
         headline = "Diagnostic Lab Reference Interpretation";
-        body = "Clinical evaluation against standard diagnostic reference ranges:";
+        body =
+          "Clinical evaluation against standard diagnostic reference ranges:";
         bullets.push({
           label: "Reference Standards",
           value: ragResult.labReferenceSummary,
         });
         bullets.push({
           label: "Clinical Follow-up",
-          value: "Always correlate lab values with clinical symptoms, patient history, and concurrent drug therapy.",
+          value:
+            "Always correlate lab values with clinical symptoms, patient history, and concurrent drug therapy.",
         });
       } else {
         headline = "General Pharmacology & Medication Safety";
@@ -223,15 +261,18 @@ export const liveGeminiProvider: MedoraAiProvider = {
         bullets = [
           {
             label: "Adherence & Timing",
-            value: "Always adhere to the prescribed schedule. Consistency maintains therapeutic blood plasma concentrations.",
+            value:
+              "Always adhere to the prescribed schedule. Consistency maintains therapeutic blood plasma concentrations.",
           },
           {
             label: "Side Effect Vigilance",
-            value: "Common side effects include mild GI upset, dizziness, or headache. Report any rash, wheezing, or severe discomfort immediately.",
+            value:
+              "Common side effects include mild GI upset, dizziness, or headache. Report any rash, wheezing, or severe discomfort immediately.",
           },
           {
             label: "Co-Medication Safety",
-            value: "Check for potential drug-drug or food-drug interactions before starting any new over-the-counter supplement or pain reliever.",
+            value:
+              "Check for potential drug-drug or food-drug interactions before starting any new over-the-counter supplement or pain reliever.",
           },
         ];
       }
@@ -240,8 +281,11 @@ export const liveGeminiProvider: MedoraAiProvider = {
     const sources: AiSource[] = [
       {
         id: hasKey ? "gemini:3.7-flash" : "medora:rag-engine",
-        label: hasKey ? "Google Gemini 3.7 Flash (Verified Live Model)" : "Medora Clinical RAG Knowledge Graph",
-        detail: "Grounded in CDSCO National Formulary, Indian Pharmacopoeia monographs, and verified pharmacology rules.",
+        label: hasKey
+          ? "Google Gemini 3.7 Flash (Verified Live Model)"
+          : "Medora Clinical RAG Knowledge Graph",
+        detail:
+          "Grounded in CDSCO National Formulary, Indian Pharmacopoeia monographs, and verified pharmacology rules.",
         kind: "catalogue",
         verified: true,
       },
@@ -253,7 +297,8 @@ export const liveGeminiProvider: MedoraAiProvider = {
         headline,
         body,
         bullets,
-        safetyNotice: "Medora provides verified pharmaceutical and clinical guidance. Always consult a licensed physician or pharmacist for individual medical decisions.",
+        safetyNotice:
+          "Medora provides verified pharmaceutical and clinical guidance. Always consult a licensed physician or pharmacist for individual medical decisions.",
       },
       sources,
       matchScore: hasKey ? 0.98 : 0.94,
@@ -268,12 +313,17 @@ export const liveGeminiProvider: MedoraAiProvider = {
     };
   },
 
-  async explainMedicine(query: string): Promise<ProviderOutput<MedicineExplanation> | null> {
+  async explainMedicine(
+    query: string,
+  ): Promise<ProviderOutput<MedicineExplanation> | null> {
     const ragResult = clinicalRag.retrieve(query);
     const med = ragResult.relevantMedicines[0];
     const brandName = med?.brandName || query;
     const genericName = med?.genericName || query;
-    const ingredients = med?.activeIngredients.map((i) => `${i.name} ${i.strength}`).join(" + ") || genericName;
+    const ingredients =
+      med?.activeIngredients
+        .map((i) => `${i.name} ${i.strength}`)
+        .join(" + ") || genericName;
 
     return {
       payload: {
@@ -282,12 +332,25 @@ export const liveGeminiProvider: MedoraAiProvider = {
         activeIngredient: ingredients,
         strength: med?.activeIngredients[0]?.strength || "Standard",
         form: med?.form || "Tablet",
-        information: med?.usesSummary || "Indicated for standard clinical therapy according to verified pharmaceutical guidelines.",
-        warnings: med?.warnings || ["Do not exceed recommended daily threshold.", "Consult doctor if pregnant or breastfeeding."],
-        commonSideEffects: med?.commonSideEffects || ["Mild nausea", "Headache", "Dizziness"],
-        storage: "Store below 25°C in a dry place protected from direct sunlight.",
-        supply: med?.prescriptionOnly ? "prescription_only" : "over_the_counter",
-        safetyNotice: "Informational only. Follow doctor's prescription instructions.",
+        information:
+          med?.usesSummary ||
+          "Indicated for standard clinical therapy according to verified pharmaceutical guidelines.",
+        warnings: med?.warnings || [
+          "Do not exceed recommended daily threshold.",
+          "Consult doctor if pregnant or breastfeeding.",
+        ],
+        commonSideEffects: med?.commonSideEffects || [
+          "Mild nausea",
+          "Headache",
+          "Dizziness",
+        ],
+        storage:
+          "Store below 25°C in a dry place protected from direct sunlight.",
+        supply: med?.prescriptionOnly
+          ? "prescription_only"
+          : "over_the_counter",
+        safetyNotice:
+          "Informational only. Follow doctor's prescription instructions.",
       },
       sources: [
         {
@@ -308,7 +371,9 @@ export const liveGeminiProvider: MedoraAiProvider = {
     };
   },
 
-  async interpretSearch(query: string): Promise<ProviderOutput<SearchInterpretation>> {
+  async interpretSearch(
+    query: string,
+  ): Promise<ProviderOutput<SearchInterpretation>> {
     const ragResult = clinicalRag.retrieve(query);
     const matches = ragResult.relevantMedicines.map((m) => ({
       id: m.id,
@@ -322,11 +387,24 @@ export const liveGeminiProvider: MedoraAiProvider = {
         query,
         interpretedAs: {
           ingredient: ragResult.relevantMedicines[0]?.genericName || null,
-          strength: ragResult.relevantMedicines[0]?.activeIngredients[0]?.strength || null,
+          strength:
+            ragResult.relevantMedicines[0]?.activeIngredients[0]?.strength ||
+            null,
           form: ragResult.relevantMedicines[0]?.form || null,
-          supply: ragResult.relevantMedicines[0]?.prescriptionOnly ? "prescription_only" : "over_the_counter",
+          supply: ragResult.relevantMedicines[0]?.prescriptionOnly
+            ? "prescription_only"
+            : "over_the_counter",
         },
-        matches: matches.length > 0 ? matches : [{ id: "med-search-gen", label: query, why: "Direct clinical search query" }],
+        matches:
+          matches.length > 0
+            ? matches
+            : [
+                {
+                  id: "med-search-gen",
+                  label: query,
+                  why: "Direct clinical search query",
+                },
+              ],
         safetyNotice: "Verified against national pharmaceutical registry.",
       },
       sources: [
@@ -339,11 +417,14 @@ export const liveGeminiProvider: MedoraAiProvider = {
         },
       ],
       matchScore: 0.94,
-      matchRationale: "Parsed medicine search entities and active chemical classes.",
+      matchRationale:
+        "Parsed medicine search entities and active chemical classes.",
     };
   },
 
-  async compareMedicines(medicineIds: string[]): Promise<ProviderOutput<MedicineComparison> | null> {
+  async compareMedicines(
+    medicineIds: string[],
+  ): Promise<ProviderOutput<MedicineComparison> | null> {
     const rawList = (medicineIds || []).filter(Boolean);
     const matchedMeds: (typeof demoMedicines)[0][] = [];
 
@@ -371,9 +452,13 @@ export const liveGeminiProvider: MedoraAiProvider = {
       matchedMeds.push(demoMedicines[0]!, demoMedicines[1]!);
     } else if (matchedMeds.length === 1) {
       const first = matchedMeds[0]!;
-      const counterpart = demoMedicines.find(
-        (m) => m.id !== first.id && (m.compositionKey === first.compositionKey || m.form === first.form),
-      ) || demoMedicines.find((m) => m.id !== first.id);
+      const counterpart =
+        demoMedicines.find(
+          (m) =>
+            m.id !== first.id &&
+            (m.compositionKey === first.compositionKey ||
+              m.form === first.form),
+        ) || demoMedicines.find((m) => m.id !== first.id);
       if (counterpart) matchedMeds.push(counterpart);
     }
 
@@ -382,13 +467,17 @@ export const liveGeminiProvider: MedoraAiProvider = {
       activeIngredient: m.genericName,
       strength: m.activeIngredients.map((i) => i.strength).join(" + "),
       form: m.form,
-      supply: m.prescriptionOnly ? "Prescription Required" : "Over The Counter (OTC)",
+      supply: m.prescriptionOnly
+        ? "Prescription Required"
+        : "Over The Counter (OTC)",
       manufacturer: m.manufacturer || "Verified Pharmaceutical Laboratory",
     }));
 
     const isBioequivalent =
       matchedMeds.length > 1 &&
-      matchedMeds.every((m) => m.compositionKey === matchedMeds[0]?.compositionKey);
+      matchedMeds.every(
+        (m) => m.compositionKey === matchedMeds[0]?.compositionKey,
+      );
 
     const equivalence = isBioequivalent
       ? "Direct 100% Bioequivalent Alternative: These products share identical active pharmaceutical ingredients, strengths, and pharmacokinetic profiles."
@@ -397,22 +486,31 @@ export const liveGeminiProvider: MedoraAiProvider = {
     return {
       payload: {
         kind: "medicine_comparison",
-        criteria: ["Active Formulation", "Strength", "Dosage Form", "Prescription Requirement", "Manufacturer"],
+        criteria: [
+          "Active Formulation",
+          "Strength",
+          "Dosage Form",
+          "Prescription Requirement",
+          "Manufacturer",
+        ],
         rows,
         equivalence,
-        safetyNotice: "Bioequivalent generics offer the same therapeutic efficacy as branded medicines at lower cost. Consult your pharmacist before switching.",
+        safetyNotice:
+          "Bioequivalent generics offer the same therapeutic efficacy as branded medicines at lower cost. Consult your pharmacist before switching.",
       },
       sources: [
         {
           id: "cdsco:bioequivalence",
           label: "CDSCO National Bioequivalence Index",
-          detail: "Official therapeutic equivalence and pharmaceutical formulary.",
+          detail:
+            "Official therapeutic equivalence and pharmaceutical formulary.",
           kind: "catalogue",
           verified: true,
         },
       ],
       matchScore: 0.98,
-      matchRationale: "Compared across active ingredient formulations and verified price indices.",
+      matchRationale:
+        "Compared across active ingredient formulations and verified price indices.",
     };
   },
 
@@ -445,9 +543,11 @@ export const liveGeminiProvider: MedoraAiProvider = {
         ],
         escalation: {
           level: "routine",
-          action: "Schedule a routine consultation with a primary care physician if symptoms persist.",
+          action:
+            "Schedule a routine consultation with a primary care physician if symptoms persist.",
         },
-        disclaimer: "This is clinical triage routing, not a definitive medical diagnosis. Seek emergency care if red flags develop.",
+        disclaimer:
+          "This is clinical triage routing, not a definitive medical diagnosis. Seek emergency care if red flags develop.",
       },
       sources: [
         {
@@ -463,7 +563,10 @@ export const liveGeminiProvider: MedoraAiProvider = {
     };
   },
 
-  async checkInteractions(medicines: string[], allergies: string[]): Promise<ProviderOutput<InteractionReport>> {
+  async checkInteractions(
+    medicines: string[],
+    allergies: string[],
+  ): Promise<ProviderOutput<InteractionReport>> {
     const list = (medicines || []).filter(Boolean);
     const findings: InteractionReport["findings"] = [];
 
@@ -479,7 +582,12 @@ export const liveGeminiProvider: MedoraAiProvider = {
       if (hasD1 && hasD2) {
         findings.push({
           type: "interaction",
-          severity: rule.severity === "severe" ? "severe" : rule.severity === "moderate" ? "moderate" : "minor",
+          severity:
+            rule.severity === "severe"
+              ? "severe"
+              : rule.severity === "moderate"
+                ? "moderate"
+                : "minor",
           title: rule.title,
           detail: `${rule.mechanism}. Recommendation: ${rule.clinicalAdvice}`,
           items: [rule.drugs[0], rule.drugs[1]],
@@ -492,7 +600,8 @@ export const liveGeminiProvider: MedoraAiProvider = {
         type: "safe",
         severity: "safe",
         title: "No High-Risk Pharmacological Conflict Identified",
-        detail: "These medications operate through compatible metabolic pathways without direct competitive inhibition.",
+        detail:
+          "These medications operate through compatible metabolic pathways without direct competitive inhibition.",
         items: list,
       });
     }
@@ -502,8 +611,10 @@ export const liveGeminiProvider: MedoraAiProvider = {
         kind: "interaction_report",
         medicines: list,
         findings,
-        assessedBy: "Google Gemini 3.7 Flash & Medora Clinical Interaction Matrix",
-        safetyNotice: "Evaluated against verified CYP450 metabolism and clinical pharmacology rules.",
+        assessedBy:
+          "Google Gemini 3.7 Flash & Medora Clinical Interaction Matrix",
+        safetyNotice:
+          "Evaluated against verified CYP450 metabolism and clinical pharmacology rules.",
       },
       sources: [
         {
@@ -519,7 +630,10 @@ export const liveGeminiProvider: MedoraAiProvider = {
     };
   },
 
-  async checkAllergies(medicines: string[], allergies: string[]): Promise<ProviderOutput<AllergyReport>> {
+  async checkAllergies(
+    medicines: string[],
+    allergies: string[],
+  ): Promise<ProviderOutput<AllergyReport>> {
     const medList = (medicines || []).filter(Boolean);
     const allergyList = (allergies || []).filter(Boolean);
     const matches: AllergyReport["matches"] = [];
@@ -543,7 +657,8 @@ export const liveGeminiProvider: MedoraAiProvider = {
         allergies: allergyList,
         medicines: medList,
         matches,
-        safetyNotice: "Cross-checked against documented patient hypersensitivities.",
+        safetyNotice:
+          "Cross-checked against documented patient hypersensitivities.",
       },
       sources: [
         {
@@ -559,7 +674,10 @@ export const liveGeminiProvider: MedoraAiProvider = {
     };
   },
 
-  async extractPrescription(file: { name: string; type: string }): Promise<ProviderOutput<OcrExtraction>> {
+  async extractPrescription(file: {
+    name: string;
+    type: string;
+  }): Promise<ProviderOutput<OcrExtraction>> {
     return {
       payload: {
         kind: "ocr_extraction",
@@ -586,23 +704,28 @@ export const liveGeminiProvider: MedoraAiProvider = {
         ],
         prescriber: "Dr. Vikram Seth, MD (General Medicine)",
         issuedOn: "2026-08-20",
-        safetyNotice: "Always verify digitized prescriptions against the original doctor's signed physical copy.",
+        safetyNotice:
+          "Always verify digitized prescriptions against the original doctor's signed physical copy.",
       },
       sources: [
         {
           id: "ocr:model",
           label: "Medora Vision AI & OCR Pipeline",
-          detail: "Medical prescription handwriting and layout recognition model.",
+          detail:
+            "Medical prescription handwriting and layout recognition model.",
           kind: "model",
           verified: true,
         },
       ],
       matchScore: 0.97,
-      matchRationale: "Extracted structured prescription entities with high confidence.",
+      matchRationale:
+        "Extracted structured prescription entities with high confidence.",
     };
   },
 
-  async explainLabReport(panel: string): Promise<ProviderOutput<LabExplanation> | null> {
+  async explainLabReport(
+    panel: string,
+  ): Promise<ProviderOutput<LabExplanation> | null> {
     const q = panel.toLowerCase();
     let panelName = "Comprehensive Metabolic & Diagnostic Panel";
     let analytes: LabExplanation["analytes"] = [];
@@ -613,16 +736,19 @@ export const liveGeminiProvider: MedoraAiProvider = {
         {
           name: "HbA1c (Glycated Hemoglobin)",
           value: "6.8%",
-          referenceRange: "< 5.7% (Normal), 5.7 - 6.4% (Prediabetes), ≥ 6.5% (Diabetes)",
+          referenceRange:
+            "< 5.7% (Normal), 5.7 - 6.4% (Prediabetes), ≥ 6.5% (Diabetes)",
           flag: "high",
-          plainLanguage: "Reflects average blood sugar control over the past 2 to 3 months.",
+          plainLanguage:
+            "Reflects average blood sugar control over the past 2 to 3 months.",
         },
         {
           name: "Fasting Blood Glucose",
           value: "118 mg/dL",
           referenceRange: "70 - 99 mg/dL",
           flag: "high",
-          plainLanguage: "Blood sugar level after an overnight fast (minimum 8 hours).",
+          plainLanguage:
+            "Blood sugar level after an overnight fast (minimum 8 hours).",
         },
       ];
     } else if (q.includes("lipid") || q.includes("cholesterol")) {
@@ -633,21 +759,24 @@ export const liveGeminiProvider: MedoraAiProvider = {
           value: "185 mg/dL",
           referenceRange: "< 200 mg/dL",
           flag: "normal",
-          plainLanguage: "Overall level of cholesterol circulating in blood plasma.",
+          plainLanguage:
+            "Overall level of cholesterol circulating in blood plasma.",
         },
         {
           name: "LDL ('Bad') Cholesterol",
           value: "95 mg/dL",
           referenceRange: "< 100 mg/dL",
           flag: "normal",
-          plainLanguage: "Low-density lipoprotein; optimal levels support cardiovascular health.",
+          plainLanguage:
+            "Low-density lipoprotein; optimal levels support cardiovascular health.",
         },
         {
           name: "HDL ('Good') Cholesterol",
           value: "52 mg/dL",
           referenceRange: "> 40 mg/dL (men), > 50 mg/dL (women)",
           flag: "normal",
-          plainLanguage: "High-density lipoprotein; helps remove cholesterol from arteries.",
+          plainLanguage:
+            "High-density lipoprotein; helps remove cholesterol from arteries.",
         },
       ];
     } else {
@@ -658,7 +787,8 @@ export const liveGeminiProvider: MedoraAiProvider = {
           value: "Standard Range",
           referenceRange: "Verified Clinical Reference Interval",
           flag: "normal",
-          plainLanguage: "Analyzed according to accredited clinical pathology laboratory reference standards.",
+          plainLanguage:
+            "Analyzed according to accredited clinical pathology laboratory reference standards.",
         },
       ];
     }
@@ -668,13 +798,16 @@ export const liveGeminiProvider: MedoraAiProvider = {
         kind: "lab_explanation",
         panel: panelName,
         analytes,
-        whatThisIsNot: "This lab explanation is an educational reference, not a standalone clinical diagnosis. Always discuss findings with your physician.",
-        safetyNotice: "Diagnostic values must always be interpreted in context with clinical symptoms.",
+        whatThisIsNot:
+          "This lab explanation is an educational reference, not a standalone clinical diagnosis. Always discuss findings with your physician.",
+        safetyNotice:
+          "Diagnostic values must always be interpreted in context with clinical symptoms.",
       },
       sources: [
         {
           id: "lab:pathology",
-          label: "National Accreditation Board for Laboratories (NABL) Reference Standards",
+          label:
+            "National Accreditation Board for Laboratories (NABL) Reference Standards",
           detail: "Standardized pathology intervals.",
           kind: "catalogue",
           verified: true,
@@ -685,19 +818,31 @@ export const liveGeminiProvider: MedoraAiProvider = {
     };
   },
 
-  async summarisePatient(request: PatientSummaryRequest): Promise<ProviderOutput<PatientSummary>> {
+  async summarisePatient(
+    request: PatientSummaryRequest,
+  ): Promise<ProviderOutput<PatientSummary>> {
     return {
       payload: {
         kind: "patient_summary",
         headline: "Comprehensive Patient Health Summary",
-        currentMedicines: request.currentMedicines.length > 0 ? request.currentMedicines : ["Metformin 500mg SR", "Telmisartan 40mg"],
-        adherenceNote: request.adherencePercent !== null ? `Medication adherence is approximately ${request.adherencePercent}%.` : "Medication adherence is well-maintained.",
-        openItems: ["Schedule quarterly HbA1c repeat in 6 weeks", "Refill prescription before current cycle ends"],
+        currentMedicines:
+          request.currentMedicines.length > 0
+            ? request.currentMedicines
+            : ["Metformin 500mg SR", "Telmisartan 40mg"],
+        adherenceNote:
+          request.adherencePercent !== null
+            ? `Medication adherence is approximately ${request.adherencePercent}%.`
+            : "Medication adherence is well-maintained.",
+        openItems: [
+          "Schedule quarterly HbA1c repeat in 6 weeks",
+          "Refill prescription before current cycle ends",
+        ],
         questionsForYourClinician: [
           "Should I continue the current dosage of Metformin?",
           "Are there any additional dietary adjustments recommended?",
         ],
-        safetyNotice: "Clinical overview compiled from electronic health records.",
+        safetyNotice:
+          "Clinical overview compiled from electronic health records.",
       },
       sources: [
         {

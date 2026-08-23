@@ -78,12 +78,16 @@ export function SafetyStrip({ safety }: { safety: SafetyVerdict }) {
       )}
     >
       {safety.passed ? (
-        <ShieldCheck className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden />
+        <ShieldCheck
+          className="size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400"
+          aria-hidden
+        />
       ) : (
         <AlertTriangle className="size-3.5 shrink-0" aria-hidden />
       )}
       <span className="font-medium">
-        {safety.passed ? "Clinical Safety Validated" : safety.notice} · {safety.rulesRun.length} rules checked
+        {safety.passed ? "Clinical Safety Validated" : safety.notice} ·{" "}
+        {safety.rulesRun.length} rules checked
       </span>
     </div>
   );
@@ -98,7 +102,9 @@ export function PipelineTrace({ trace }: { trace: PipelineStage[] }) {
           <Workflow className="size-3.5 text-primary" aria-hidden />
           Clinical Verification & Reasoning Trace
         </span>
-        <span className="text-[10px] text-muted-foreground group-open:rotate-180 transition-transform">▼</span>
+        <span className="text-[10px] text-muted-foreground group-open:rotate-180 transition-transform">
+          ▼
+        </span>
       </summary>
       <ol className="mt-3 divide-y divide-border/40 pt-1 space-y-2">
         {trace.map((stage, i) => (
@@ -108,7 +114,9 @@ export function PipelineTrace({ trace }: { trace: PipelineStage[] }) {
             </span>
             <span className="min-w-0 flex-1">
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-foreground text-xs">{stage.label}</span>
+                <span className="font-semibold text-foreground text-xs">
+                  {stage.label}
+                </span>
                 <div className="flex items-center gap-1.5">
                   <span
                     className={cn(
@@ -127,7 +135,9 @@ export function PipelineTrace({ trace }: { trace: PipelineStage[] }) {
                   </span>
                 </div>
               </div>
-              <p className="mt-0.5 text-[11px] text-muted-foreground leading-relaxed">{stage.detail}</p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground leading-relaxed">
+                {stage.detail}
+              </p>
             </span>
           </li>
         ))}

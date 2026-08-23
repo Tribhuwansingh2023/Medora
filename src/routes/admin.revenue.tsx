@@ -20,7 +20,11 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { PageHeader, SafetyNotice, StatTile } from "@/components/common/primitives";
+import {
+  PageHeader,
+  SafetyNotice,
+  StatTile,
+} from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
 import { WorkspaceSection, StatusPill } from "@/components/workspace/parts";
 import { money } from "@/services/workspace";
@@ -191,7 +195,10 @@ function RevenueAdminPage() {
       `"${p.utrNumber || "N/A"}"`,
     ]);
 
-    const csvContent = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((r) => r.join(",")),
+    ].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -209,7 +216,9 @@ function RevenueAdminPage() {
       render: (r) => (
         <div>
           <p className="font-bold text-ink">{r.pharmacyName}</p>
-          <p className="text-xs text-muted-foreground font-mono">{r.bankAccount}</p>
+          <p className="text-xs text-muted-foreground font-mono">
+            {r.bankAccount}
+          </p>
         </div>
       ),
     },
@@ -220,8 +229,12 @@ function RevenueAdminPage() {
       sortValue: (r) => r.ordersCount,
       render: (r) => (
         <div>
-          <span className="text-xs font-medium text-foreground">{r.period}</span>
-          <p className="text-[11px] text-muted-foreground">{r.ordersCount} orders cleared</p>
+          <span className="text-xs font-medium text-foreground">
+            {r.period}
+          </span>
+          <p className="text-[11px] text-muted-foreground">
+            {r.ordersCount} orders cleared
+          </p>
         </div>
       ),
     },
@@ -230,7 +243,11 @@ function RevenueAdminPage() {
       header: "Gross GMV",
       align: "right",
       sortValue: (r) => r.grossAmount,
-      render: (r) => <span className="font-mono text-xs font-bold text-foreground">{money(r.grossAmount)}</span>,
+      render: (r) => (
+        <span className="font-mono text-xs font-bold text-foreground">
+          {money(r.grossAmount)}
+        </span>
+      ),
     },
     {
       key: "net",
@@ -305,7 +322,9 @@ function RevenueAdminPage() {
         tone="info"
         title="Automated GST E-Invoicing & DPDP Compliant Payment Processing"
       >
-        All customer payments are routed through RBI-licensed UPI and payment aggregators with instant 3D Secure verification. Payouts to verified pharmacies are batched with automated Form 16 / GSTR-1 tax filings.
+        All customer payments are routed through RBI-licensed UPI and payment
+        aggregators with instant 3D Secure verification. Payouts to verified
+        pharmacies are batched with automated Form 16 / GSTR-1 tax filings.
       </SafetyNotice>
 
       {/* Action Toolbar */}
@@ -316,7 +335,8 @@ function RevenueAdminPage() {
             Weekly Merchant Payout Disbursement Queue
           </h3>
           <p className="text-xs text-muted-foreground">
-            Review calculated commissions, deducted GST, and trigger instant NEFT/IMPS bank payouts.
+            Review calculated commissions, deducted GST, and trigger instant
+            NEFT/IMPS bank payouts.
           </p>
         </div>
 

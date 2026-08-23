@@ -456,7 +456,9 @@ function AuditLogPage() {
                 rows={filteredRows}
                 columns={columns}
                 getId={(r) => r.id}
-                searchText={(r) => `${r.actor} ${r.action} ${r.target} ${r.details || ""}`}
+                searchText={(r) =>
+                  `${r.actor} ${r.action} ${r.target} ${r.details || ""}`
+                }
                 searchPlaceholder="Search audit events…"
                 initialSort={{ key: "at", direction: "desc" }}
                 pageSize={10}

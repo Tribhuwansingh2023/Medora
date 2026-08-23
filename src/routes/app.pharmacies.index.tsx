@@ -236,122 +236,121 @@ function PharmaciesPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-          title="Pharmacies & Live Stock Grounding"
-          demo
-          description="Verify real-time stock availability, dispensary opening hours, and grounded regional pharmacy pricing before you travel."
-        />
+        title="Pharmacies & Live Stock Grounding"
+        demo
+        description="Verify real-time stock availability, dispensary opening hours, and grounded regional pharmacy pricing before you travel."
+      />
 
-        <Tabs defaultValue="directory" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="grounded" className="gap-2">
-              <Radio className="size-4 text-primary" /> Live Stock Grounding
-              Tool
-            </TabsTrigger>
-            <TabsTrigger value="directory" className="gap-2">
-              <Store className="size-4" /> Pharmacy Directory
-            </TabsTrigger>
-          </TabsList>
+      <Tabs defaultValue="directory" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="grounded" className="gap-2">
+            <Radio className="size-4 text-primary" /> Live Stock Grounding Tool
+          </TabsTrigger>
+          <TabsTrigger value="directory" className="gap-2">
+            <Store className="size-4" /> Pharmacy Directory
+          </TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="grounded" className="space-y-6">
-            <PharmacySearchGrounding />
-          </TabsContent>
+        <TabsContent value="grounded" className="space-y-6">
+          <PharmacySearchGrounding />
+        </TabsContent>
 
-          <TabsContent value="directory" className="space-y-6">
-            {/* Filters Bar */}
-            <div className="flex flex-col gap-4 surface p-4 border border-border">
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 items-end">
-                <div className="space-y-1.5">
-                  <Label htmlFor="pq">Search directory</Label>
-                  <Input
-                    id="pq"
-                    value={q}
-                    maxLength={80}
-                    placeholder="Name, area, pincode or service..."
-                    onChange={(e) => setQ(e.target.value)}
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="pradius">Radius</Label>
-                  <Select
-                    value={radius.toString()}
-                    onValueChange={(v) => setRadius(Number(v))}
-                  >
-                    <SelectTrigger id="pradius">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1 km</SelectItem>
-                      <SelectItem value="2">2 km</SelectItem>
-                      <SelectItem value="5">5 km</SelectItem>
-                      <SelectItem value="10">10 km</SelectItem>
-                      <SelectItem value="25">25 km</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="psort">Sort by</Label>
-                  <Select
-                    value={sort}
-                    onValueChange={(v) => setSort(v as SortKey)}
-                  >
-                    <SelectTrigger id="psort">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="distance">Nearest first</SelectItem>
-                      <SelectItem value="rating">Highest rated</SelectItem>
-                      <SelectItem value="open">Open now first</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex items-center gap-2 pb-2 h-10">
-                  <Switch
-                    id="open"
-                    checked={openOnly}
-                    onCheckedChange={setOpenOnly}
-                  />
-                  <Label htmlFor="open">Open now only</Label>
-                </div>
+        <TabsContent value="directory" className="space-y-6">
+          {/* Filters Bar */}
+          <div className="flex flex-col gap-4 surface p-4 border border-border">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 items-end">
+              <div className="space-y-1.5">
+                <Label htmlFor="pq">Search directory</Label>
+                <Input
+                  id="pq"
+                  value={q}
+                  maxLength={80}
+                  placeholder="Name, area, pincode or service..."
+                  onChange={(e) => setQ(e.target.value)}
+                />
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-border">
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs font-medium"
-                    onClick={handleUseLocation}
-                    disabled={locationStatus === "loading"}
-                  >
-                    <MapPin className="size-3.5" />
-                    {locationStatus === "loading"
-                      ? "Locating..."
-                      : "Use my location"}
-                  </Button>
-                  <span className="text-xs text-muted-foreground hidden sm:inline-block">
-                    Or drag the map to search a different area
-                  </span>
-                </div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  {list.length} results
-                </p>
+              <div className="space-y-1.5">
+                <Label htmlFor="pradius">Radius</Label>
+                <Select
+                  value={radius.toString()}
+                  onValueChange={(v) => setRadius(Number(v))}
+                >
+                  <SelectTrigger id="pradius">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1 km</SelectItem>
+                    <SelectItem value="2">2 km</SelectItem>
+                    <SelectItem value="5">5 km</SelectItem>
+                    <SelectItem value="10">10 km</SelectItem>
+                    <SelectItem value="25">25 km</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="psort">Sort by</Label>
+                <Select
+                  value={sort}
+                  onValueChange={(v) => setSort(v as SortKey)}
+                >
+                  <SelectTrigger id="psort">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="distance">Nearest first</SelectItem>
+                    <SelectItem value="rating">Highest rated</SelectItem>
+                    <SelectItem value="open">Open now first</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-2 pb-2 h-10">
+                <Switch
+                  id="open"
+                  checked={openOnly}
+                  onCheckedChange={setOpenOnly}
+                />
+                <Label htmlFor="open">Open now only</Label>
               </div>
             </div>
 
-            {/* Unified Leaflet GIS Map & Pharmacy List View */}
-            <div className="rounded-2xl overflow-hidden border border-border bg-card shadow-sm">
-              <LeafletPharmacyMap
-                pharmacies={list}
-                selectedPharmacyId={selectedPharmacyId}
-                onSelectPharmacy={(p) => setSelectedPharmacyId(p.id)}
-                userCoords={userLocation || undefined}
-              />
+            <div className="flex items-center justify-between pt-3 border-t border-border">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5 text-xs font-medium"
+                  onClick={handleUseLocation}
+                  disabled={locationStatus === "loading"}
+                >
+                  <MapPin className="size-3.5" />
+                  {locationStatus === "loading"
+                    ? "Locating..."
+                    : "Use my location"}
+                </Button>
+                <span className="text-xs text-muted-foreground hidden sm:inline-block">
+                  Or drag the map to search a different area
+                </span>
+              </div>
+              <p className="text-sm font-medium text-muted-foreground">
+                {list.length} results
+              </p>
             </div>
-          </TabsContent>
-        </Tabs>
-      </div>
+          </div>
+
+          {/* Unified Leaflet GIS Map & Pharmacy List View */}
+          <div className="rounded-2xl overflow-hidden border border-border bg-card shadow-sm">
+            <LeafletPharmacyMap
+              pharmacies={list}
+              selectedPharmacyId={selectedPharmacyId}
+              onSelectPharmacy={(p) => setSelectedPharmacyId(p.id)}
+              userCoords={userLocation || undefined}
+            />
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }

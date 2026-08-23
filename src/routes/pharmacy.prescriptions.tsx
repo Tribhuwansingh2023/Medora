@@ -36,7 +36,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { PageHeader, SafetyNotice, StatTile } from "@/components/common/primitives";
+import {
+  PageHeader,
+  SafetyNotice,
+  StatTile,
+} from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
 import {
   AiAssistTag,
@@ -94,7 +98,10 @@ function VerificationQueuePage() {
   const queue = useWorkspaceData("verificationQueue");
   const [openId, setOpenId] = useState<string | null>("vq-1");
   const [localState, setLocalState] = useState<
-    Record<string, { status: "approved" | "rejected"; reason: string; signedAt: string }>
+    Record<
+      string,
+      { status: "approved" | "rejected"; reason: string; signedAt: string }
+    >
   >({});
   const [reason, setReason] = useState("");
   const [checklist, setChecklist] = useState<{
@@ -134,7 +141,9 @@ function VerificationQueuePage() {
             <User className="size-3.5 text-primary" />
             {r.patient}
           </p>
-          <p className="text-xs text-muted-foreground truncate max-w-[200px]">{r.prescriber}</p>
+          <p className="text-xs text-muted-foreground truncate max-w-[200px]">
+            {r.prescriber}
+          </p>
         </div>
       ),
     },
@@ -144,7 +153,10 @@ function VerificationQueuePage() {
       hideBelow: "md",
       sortValue: (r) => r.prescriptionId,
       render: (r) => (
-        <Badge variant="outline" className="font-mono text-xs bg-muted/50 border-border">
+        <Badge
+          variant="outline"
+          className="font-mono text-xs bg-muted/50 border-border"
+        >
           {r.prescriptionId}
         </Badge>
       ),
@@ -155,7 +167,9 @@ function VerificationQueuePage() {
       hideBelow: "sm",
       sortValue: (r) => r.receivedAt,
       render: (r) => (
-        <span className="text-xs text-muted-foreground">{shortDateTime(r.receivedAt)}</span>
+        <span className="text-xs text-muted-foreground">
+          {shortDateTime(r.receivedAt)}
+        </span>
       ),
     },
     {
@@ -238,7 +252,10 @@ function VerificationQueuePage() {
         tone="warning"
         title="Registered Pharmacist Statutory Responsibility (CDSCO & Pharmacy Act 1948)"
       >
-        AI vision text extraction and confidence metrics are purely assistive tools. Under Indian Pharmacy Regulations, every medicine formulation, dosage frequency, and prescriber registration must be confirmed by a licensed Registered Pharmacist before dispensing.
+        AI vision text extraction and confidence metrics are purely assistive
+        tools. Under Indian Pharmacy Regulations, every medicine formulation,
+        dosage frequency, and prescriber registration must be confirmed by a
+        licensed Registered Pharmacist before dispensing.
       </SafetyNotice>
 
       {/* Main Two-Column Verification Workspace */}
@@ -260,7 +277,9 @@ function VerificationQueuePage() {
                 rows={data}
                 columns={columns}
                 getId={(r) => r.id}
-                searchText={(r) => `${r.patient} ${r.prescriber} ${r.prescriptionId}`}
+                searchText={(r) =>
+                  `${r.patient} ${r.prescriber} ${r.prescriptionId}`
+                }
                 searchPlaceholder="Search by patient, prescriber, or Rx ID…"
                 initialSort={{ key: "received", direction: "desc" }}
                 pageSize={6}
@@ -272,11 +291,14 @@ function VerificationQueuePage() {
                   {
                     key: "status",
                     label: "Status",
-                    options: Object.entries(statusMeta).map(([value, meta]) => ({
-                      value,
-                      label: meta.label,
-                    })),
-                    predicate: (r, v) => (localState[r.id]?.status ?? r.status) === v,
+                    options: Object.entries(statusMeta).map(
+                      ([value, meta]) => ({
+                        value,
+                        label: meta.label,
+                      }),
+                    ),
+                    predicate: (r, v) =>
+                      (localState[r.id]?.status ?? r.status) === v,
                   },
                 ]}
                 rowActions={(r) => (
@@ -312,7 +334,10 @@ function VerificationQueuePage() {
                     <div>
                       <h3 className="font-display text-base font-extrabold text-ink flex items-center gap-2">
                         Prescription {open.prescriptionId}
-                        <Badge variant="outline" className="text-[10px] font-mono bg-primary/10 text-primary border-primary/30">
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] font-mono bg-primary/10 text-primary border-primary/30"
+                        >
                           Verified Format
                         </Badge>
                       </h3>
@@ -334,8 +359,12 @@ function VerificationQueuePage() {
                   <span className="font-bold text-muted-foreground uppercase text-[10px] flex items-center gap-1">
                     <User className="size-3 text-primary" /> Patient Details
                   </span>
-                  <p className="font-extrabold text-sm text-ink">{open.patient}</p>
-                  <p className="text-muted-foreground text-[11px]">Indiranagar, Bengaluru · Age: 29</p>
+                  <p className="font-extrabold text-sm text-ink">
+                    {open.patient}
+                  </p>
+                  <p className="text-muted-foreground text-[11px]">
+                    Indiranagar, Bengaluru · Age: 29
+                  </p>
                   <div className="pt-1 flex items-center gap-1.5">
                     <span className="rounded bg-rose-500/10 px-1.5 py-0.5 text-[10px] font-bold text-rose-600 border border-rose-500/20">
                       Allergy: Penicillin
@@ -345,10 +374,15 @@ function VerificationQueuePage() {
 
                 <div className="rounded-xl border border-border/80 bg-muted/30 p-3 space-y-1">
                   <span className="font-bold text-muted-foreground uppercase text-[10px] flex items-center gap-1">
-                    <UserCheck className="size-3 text-emerald-600" /> Prescribing Clinician
+                    <UserCheck className="size-3 text-emerald-600" />{" "}
+                    Prescribing Clinician
                   </span>
-                  <p className="font-extrabold text-sm text-ink">{open.prescriber}</p>
-                  <p className="text-muted-foreground text-[11px]">Apollo Clinic & Diagnostics</p>
+                  <p className="font-extrabold text-sm text-ink">
+                    {open.prescriber}
+                  </p>
+                  <p className="text-muted-foreground text-[11px]">
+                    Apollo Clinic & Diagnostics
+                  </p>
                   <div className="pt-1 flex items-center gap-1">
                     <ShieldCheck className="size-3 text-emerald-600" />
                     <span className="text-[10px] font-bold text-emerald-600">
@@ -362,7 +396,8 @@ function VerificationQueuePage() {
               <div className="rounded-xl border border-border bg-slate-950 p-4 text-slate-100 space-y-3 relative overflow-hidden">
                 <div className="flex items-center justify-between text-xs border-b border-slate-800 pb-2">
                   <span className="flex items-center gap-1.5 font-bold text-emerald-400 font-mono text-[11px]">
-                    <Scan className="size-3.5" /> High-Res Optical Scan (OCR Stream)
+                    <Scan className="size-3.5" /> High-Res Optical Scan (OCR
+                    Stream)
                   </span>
                   <span className="text-[10px] text-slate-400 font-mono">
                     Fidelity: {Math.round(open.confidence * 100)}%
@@ -372,22 +407,37 @@ function VerificationQueuePage() {
                 <div className="font-mono text-xs space-y-2 py-1 text-slate-200">
                   <div className="p-2.5 rounded bg-slate-900/80 border border-slate-800 space-y-1">
                     <div className="flex items-center justify-between text-[11px] text-teal-300 font-bold">
-                      <span>1. Rx: Augmentin 625 Duo (Amoxicillin + Clavulanic Acid 625mg)</span>
-                      <Badge variant="outline" className="text-[9px] border-amber-500/40 bg-amber-500/10 text-amber-300">
+                      <span>
+                        1. Rx: Augmentin 625 Duo (Amoxicillin + Clavulanic Acid
+                        625mg)
+                      </span>
+                      <Badge
+                        variant="outline"
+                        className="text-[9px] border-amber-500/40 bg-amber-500/10 text-amber-300"
+                      >
                         Schedule H1
                       </Badge>
                     </div>
-                    <p className="text-[11px] text-slate-400">Sig: 1 Tab BD after meals x 5 days (Total 10 Tabs)</p>
+                    <p className="text-[11px] text-slate-400">
+                      Sig: 1 Tab BD after meals x 5 days (Total 10 Tabs)
+                    </p>
                   </div>
 
                   <div className="p-2.5 rounded bg-slate-900/80 border border-slate-800 space-y-1">
                     <div className="flex items-center justify-between text-[11px] text-teal-300 font-bold">
-                      <span>2. Rx: Levocet 5mg (Levocetirizine Dihydrochloride)</span>
-                      <Badge variant="outline" className="text-[9px] border-emerald-500/40 bg-emerald-500/10 text-emerald-300">
+                      <span>
+                        2. Rx: Levocet 5mg (Levocetirizine Dihydrochloride)
+                      </span>
+                      <Badge
+                        variant="outline"
+                        className="text-[9px] border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
+                      >
                         Schedule H
                       </Badge>
                     </div>
-                    <p className="text-[11px] text-slate-400">Sig: 1 Tab OD at bedtime x 10 days (Total 10 Tabs)</p>
+                    <p className="text-[11px] text-slate-400">
+                      Sig: 1 Tab OD at bedtime x 10 days (Total 10 Tabs)
+                    </p>
                   </div>
                 </div>
 
@@ -410,28 +460,52 @@ function VerificationQueuePage() {
                     <input
                       type="checkbox"
                       checked={checklist.prescriberNmc}
-                      onChange={(e) => setChecklist({ ...checklist, prescriberNmc: e.target.checked })}
+                      onChange={(e) =>
+                        setChecklist({
+                          ...checklist,
+                          prescriberNmc: e.target.checked,
+                        })
+                      }
                       className="rounded border-border text-primary focus:ring-primary size-4"
                     />
-                    <span>Prescriber Registration Number validated on National Medical Commission registry</span>
+                    <span>
+                      Prescriber Registration Number validated on National
+                      Medical Commission registry
+                    </span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer text-foreground">
                     <input
                       type="checkbox"
                       checked={checklist.dosageConfirmed}
-                      onChange={(e) => setChecklist({ ...checklist, dosageConfirmed: e.target.checked })}
+                      onChange={(e) =>
+                        setChecklist({
+                          ...checklist,
+                          dosageConfirmed: e.target.checked,
+                        })
+                      }
                       className="rounded border-border text-primary focus:ring-primary size-4"
                     />
-                    <span>Medicine strength, dosage frequency, and duration clinically verified</span>
+                    <span>
+                      Medicine strength, dosage frequency, and duration
+                      clinically verified
+                    </span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer text-foreground">
                     <input
                       type="checkbox"
                       checked={checklist.ddiClear}
-                      onChange={(e) => setChecklist({ ...checklist, ddiClear: e.target.checked })}
+                      onChange={(e) =>
+                        setChecklist({
+                          ...checklist,
+                          ddiClear: e.target.checked,
+                        })
+                      }
                       className="rounded border-border text-primary focus:ring-primary size-4"
                     />
-                    <span>No severe drug-drug interactions or cross-allergies detected</span>
+                    <span>
+                      No severe drug-drug interactions or cross-allergies
+                      detected
+                    </span>
                   </label>
                 </div>
               </div>
@@ -439,10 +513,15 @@ function VerificationQueuePage() {
               {/* Decision Log & Reason Box */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="verify-reason" className="font-bold text-xs text-ink">
+                  <Label
+                    htmlFor="verify-reason"
+                    className="font-bold text-xs text-ink"
+                  >
                     Pharmacist Clinical Decision Record
                   </Label>
-                  <span className="text-[10px] text-muted-foreground">Recorded with digital timestamp</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    Recorded with digital timestamp
+                  </span>
                 </div>
 
                 <Textarea
@@ -473,9 +552,13 @@ function VerificationQueuePage() {
               <div className="pt-3 border-t border-border flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <Button
-                    disabled={!checklist.prescriberNmc || !checklist.dosageConfirmed}
+                    disabled={
+                      !checklist.prescriberNmc || !checklist.dosageConfirmed
+                    }
                     onClick={() => {
-                      const finalReason = reason.trim() || "Prescription verified against NMC database and CDSCO schedule.";
+                      const finalReason =
+                        reason.trim() ||
+                        "Prescription verified against NMC database and CDSCO schedule.";
                       setLocalState((prev) => ({
                         ...prev,
                         [open.id]: {
@@ -484,7 +567,9 @@ function VerificationQueuePage() {
                           signedAt: new Date().toISOString(),
                         },
                       }));
-                      toast.success(`Prescription ${open.prescriptionId} Digitally Signed & Approved`);
+                      toast.success(
+                        `Prescription ${open.prescriptionId} Digitally Signed & Approved`,
+                      );
                       setReason("");
                     }}
                     className="h-9 px-4 font-bold text-xs gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-soft"
@@ -495,7 +580,9 @@ function VerificationQueuePage() {
                   <Button
                     variant="outline"
                     onClick={() => {
-                      const finalReason = reason.trim() || "Prescription incomplete or signature verification unconfirmed.";
+                      const finalReason =
+                        reason.trim() ||
+                        "Prescription incomplete or signature verification unconfirmed.";
                       setLocalState((prev) => ({
                         ...prev,
                         [open.id]: {
@@ -504,7 +591,9 @@ function VerificationQueuePage() {
                           signedAt: new Date().toISOString(),
                         },
                       }));
-                      toast.error(`Prescription ${open.prescriptionId} Marked Rejected`);
+                      toast.error(
+                        `Prescription ${open.prescriptionId} Marked Rejected`,
+                      );
                       setReason("");
                     }}
                     className="h-9 px-4 font-bold text-xs gap-1.5 rounded-xl border-destructive/40 text-destructive hover:bg-destructive-soft"
