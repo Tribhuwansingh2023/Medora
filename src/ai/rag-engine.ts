@@ -16,7 +16,7 @@ export interface RetrievedClinicalContext {
   relevantMedicines: Medicine[];
   relevantInteractions: string[];
   relevantSafetyMonographs: string[];
-  labReferenceSummary?: string;
+  labReferenceSummary?: string | undefined;
   contextPromptBlock: string;
 }
 

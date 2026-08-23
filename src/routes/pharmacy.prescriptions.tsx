@@ -97,7 +97,11 @@ function VerificationQueuePage() {
     Record<string, { status: "approved" | "rejected"; reason: string; signedAt: string }>
   >({});
   const [reason, setReason] = useState("");
-  const [checklist, setChecklist] = useState<Record<string, boolean>>({
+  const [checklist, setChecklist] = useState<{
+    prescriberNmc: boolean;
+    dosageConfirmed: boolean;
+    ddiClear: boolean;
+  }>({
     prescriberNmc: true,
     dosageConfirmed: true,
     ddiClear: true,

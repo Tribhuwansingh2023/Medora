@@ -79,6 +79,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       mediaQuery.addEventListener("change", handler);
       return () => mediaQuery.removeEventListener("change", handler);
     }
+    return undefined;
   }, [theme]);
 
   const setTheme = useCallback((newTheme: ThemeMode) => {

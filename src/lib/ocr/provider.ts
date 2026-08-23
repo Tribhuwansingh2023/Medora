@@ -2,13 +2,22 @@ import { Prescription, PrescriptionItem } from "@/lib/domain";
 import { demoPrescriptions } from "@/data/demo-catalog";
 
 export interface OCRResult {
-  prescription: Omit<Prescription, "id" | "status" | "uploadedAt">;
+  prescription: Omit<Prescription, "id" | "status" | "uploadedAt" | "items">;
   items: Omit<PrescriptionItem, "id" | "userConfirmed">[];
 }
 
 export interface OCRProvider {
   extractPrescription(file: File): Promise<OCRResult>;
   name: string;
+}
+
+interface ExtractedItemRaw {
+  medicineText?: string;
+  strength?: string;
+  frequency?: string;
+  duration?: string;
+  notes?: string;
+  confidence?: number;
 }
 
 export class DemoOCRProvider implements OCRProvider {
@@ -147,7 +156,7 @@ Output strictly valid JSON.`;
                 prescriberName: parsed.prescriberName || "Extracted via Gemini Vision",
                 patientName: parsed.patientName || undefined,
               },
-              items: parsed.items.map((i: Record<string, unknown>) => ({
+              items: (parsed.items as ExtractedItemRaw[]).map((i) => ({
                 medicineText: String(i.medicineText || "Medication"),
                 strength: String(i.strength || "Standard"),
                 frequency: String(i.frequency || "Once daily"),

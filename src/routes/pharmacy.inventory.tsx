@@ -94,7 +94,7 @@ function getStockStatus(item: InventoryItem): StockStatus {
 
 const statusMeta: Record<
   StockStatus,
-  { label: string; tone: "warning" | "danger" | "positive" | "muted" }
+  { label: string; tone: "warning" | "danger" | "positive" | "neutral" }
 > = {
   out: { label: "Out of stock", tone: "danger" },
   low: { label: "Low stock", tone: "warning" },

@@ -53,9 +53,10 @@ export function ClinicalNotesForm({
   const [followUpDays, setFollowUpDays] = useState("7");
   const [isSaving, setIsSaving] = useState(false);
 
+  const fallbackPatient = demoDoctorPatients[0]!;
   const currentPatient =
-    demoDoctorPatients.find((p) => p.id === selectedPatientId) ||
-    demoDoctorPatients[0];
+    demoDoctorPatients.find((p) => p.id === selectedPatientId) ??
+    fallbackPatient;
 
   const handleAddMed = (medName: string) => {
     if (!medName.trim() || prescribedMeds.includes(medName.trim())) return;
@@ -88,8 +89,11 @@ export function ClinicalNotesForm({
       id: `note-${Date.now()}`,
       patientId: currentPatient.id,
       patientName: currentPatient.name,
+      author: "Dr. Sharma, MD",
       doctorName: "Dr. Sharma, MD",
       doctorRole: "Consultant Physician",
+      content: `${diagnosis.trim()} — ${clinicalAssessment.trim()}`,
+      category: "consult",
       timestamp: timestampIso,
       chiefComplaint: chiefComplaint.trim(),
       diagnosis: diagnosis.trim(),
@@ -416,7 +420,7 @@ export function ClinicalNotesForm({
               >
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-ink">
-                    {note.diagnosis}
+                    {note.diagnosis || note.content}
                   </span>
                   <time className="flex items-center gap-1 text-[11px] text-muted-foreground">
                     <Clock className="size-3" />
@@ -426,12 +430,12 @@ export function ClinicalNotesForm({
 
                 <p className="text-muted-foreground leading-relaxed">
                   <span className="font-medium text-ink">Assessment:</span>{" "}
-                  {note.clinicalAssessment}
+                  {note.clinicalAssessment || note.content}
                 </p>
 
-                {note.prescribedMeds.length > 0 && (
+                {(note.prescribedMeds ?? []).length > 0 && (
                   <div className="flex flex-wrap gap-1 pt-1">
-                    {note.prescribedMeds.map((m, i) => (
+                    {(note.prescribedMeds ?? []).map((m: string, i: number) => (
                       <Badge key={i} variant="outline" className="text-[10px]">
                         {m}
                       </Badge>
@@ -440,8 +444,10 @@ export function ClinicalNotesForm({
                 )}
 
                 <div className="flex items-center justify-between pt-1 border-t border-border/60 text-[11px] text-muted-foreground">
-                  <span>Author: {note.doctorName}</span>
-                  <span>Follow-up: in {note.followUpDays} days</span>
+                  <span>Author: {note.doctorName || note.author}</span>
+                  {note.followUpDays ? (
+                    <span>Follow-up: in {note.followUpDays} days</span>
+                  ) : null}
                 </div>
               </div>
             ))}

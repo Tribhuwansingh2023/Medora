@@ -197,15 +197,14 @@ export function MedicineBottleScanner({
       });
 
       toast.success(`Identified ${data.brandName} (${data.strength})`);
-    } catch (err) {
-      console.warn("Scan API call error, using local fallback parser:", err);
       // Fallback local match
+      const fallbackMed = demoMedicines[0]!;
       const matched =
         demoMedicines.find((m) =>
           hintText
             ? hintText.toLowerCase().includes(m.brandName.toLowerCase())
             : true,
-        ) || demoMedicines[0];
+        ) ?? fallbackMed;
 
       const fallback: ScannedMedicineData = {
         brandName: matched.brandName,
@@ -442,7 +441,7 @@ export function MedicineBottleScanner({
                   <p className="text-xs text-muted-foreground mt-1">
                     Supports JPG, PNG, WEBP (Clear label photo with dosage)
                   </p>
-                  <Input
+                  <input
                     id="bottle-file-upload-input"
                     type="file"
                     accept="image/*"

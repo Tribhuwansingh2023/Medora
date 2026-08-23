@@ -86,7 +86,7 @@ export const requireSupabaseAuth = createMiddleware({
       context: {
         supabase,
         userId,
-        claims: { sub: userId, email: "demo@medora.app" },
+        claims: { sub: userId, email: "demo@medora.app" } as any,
       },
     });
   }

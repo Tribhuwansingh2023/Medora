@@ -477,10 +477,10 @@ export const Auth3DHeroVisual: React.FC<{
 
         {/* 3D Interactive Telemetry Hologram Card with live SVG ECG Pulse */}
         <motion.div
-          style={{ transform: "translateZ(60px)" }}
           whileHover={{ translateY: -4, scale: 1.01 }}
           className="relative overflow-hidden rounded-2xl border border-white/25 bg-gradient-to-r from-white/[0.12] to-white/[0.04] p-4.5 shadow-[0_15px_35px_rgba(0,0,0,0.3)] backdrop-blur-2xl"
           style={{
+            transform: "translateZ(60px)",
             boxShadow:
               "inset 0 1px 2px rgba(255, 255, 255, 0.4), 0 20px 40px rgba(0,0,0,0.35)",
           }}

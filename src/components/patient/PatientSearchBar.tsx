@@ -19,12 +19,12 @@ import { Badge } from "@/components/ui/badge";
 import { StatusPill } from "@/components/workspace/parts";
 import { useStore } from "@/lib/store";
 import { useWorkspaceData } from "@/services/workspace";
-import type { DoctorPatientRecord } from "@/lib/domain";
+import type { DoctorPatient } from "@/lib/domain";
 import { cn } from "@/lib/utils";
 
 interface PatientSearchBarProps {
-  onSelectPatient?: (patient: DoctorPatientRecord) => void;
-  className?: string;
+  onSelectPatient?: ((patient: DoctorPatient) => void) | undefined;
+  className?: string | undefined;
 }
 
 export function PatientSearchBar({
@@ -37,7 +37,7 @@ export function PatientSearchBar({
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isOpen, setIsOpen] = useState(false);
 
-  const patients = patientsQuery.data ?? [];
+  const patients: DoctorPatient[] = patientsQuery.data ?? [];
 
   const filteredPatients = useMemo(() => {
     if (!query.trim() && statusFilter === "all") return patients;
@@ -69,7 +69,7 @@ export function PatientSearchBar({
     }
   };
 
-  const handleSelect = (patient: DoctorPatientRecord) => {
+  const handleSelect = (patient: DoctorPatient) => {
     setIsOpen(false);
     if (onSelectPatient) {
       onSelectPatient(patient);
@@ -184,11 +184,13 @@ export function PatientSearchBar({
             <div className="space-y-1.5">
               {filteredPatients.map((patient) => {
                 const statusTone =
-                  patient.status === "active"
+                  patient.status === "in_consult"
                     ? "positive"
-                    : patient.status === "scheduled"
-                      ? "info"
-                      : "neutral";
+                    : patient.status === "waiting"
+                      ? "warning"
+                      : patient.status === "review"
+                        ? "info"
+                        : "neutral";
 
                 return (
                   <div

@@ -131,7 +131,7 @@ export function WeeklyWorkflowChart({
     (acc, curr) => acc + curr.prescriptions,
     0,
   );
-  const peakDay = [...data].sort((a, b) => b.total - a.total)[0];
+  const peakDay = [...data].sort((a, b) => b.total - a.total)[0] ?? data[0] ?? { day: "Mon", total: 0 };
 
   return (
     <figure

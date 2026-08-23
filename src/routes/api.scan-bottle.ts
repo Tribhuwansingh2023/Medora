@@ -31,7 +31,7 @@ const findBestCatalogMatch = (ocrText: string) => {
       q.includes(m.genericName.toLowerCase()) ||
       m.activeIngredients.some((a) => q.includes(a.name.toLowerCase())),
   );
-  return match ?? demoMedicines[0];
+  return match ?? demoMedicines[0]!;
 };
 
 export const Route = createFileRoute("/api/scan-bottle")({
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/api/scan-bottle")({
             hintText?: string;
           };
 
-          const apiKey = process.env.GEMINI_API_KEY;
+          const apiKey = process.env["GEMINI_API_KEY"];
 
           // If Gemini API key is configured, perform multimodal vision extraction
           if (apiKey && body.image) {

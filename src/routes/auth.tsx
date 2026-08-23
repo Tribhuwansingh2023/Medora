@@ -314,7 +314,7 @@ function AuthPage() {
       email,
       password,
       fullName: computedName,
-      role: selectedRole,
+      role: selectedRole === "admin" ? "patient" : selectedRole,
       city: city || undefined,
       rememberMe,
     });

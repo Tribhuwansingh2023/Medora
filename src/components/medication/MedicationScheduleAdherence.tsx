@@ -194,11 +194,15 @@ export function MedicationScheduleAdherence() {
     }
 
     addReminder({
+      id: `rem-${Date.now()}`,
       medicineName: draft.medicineName.trim(),
       strength: draft.strength.trim() || "Standard",
-      time: draft.time,
+      times: [draft.time],
+      startDate: today,
+      endDate: "2026-12-31",
       instruction: `${draft.frequency} · ${draft.instruction}`.trim(),
-      enabled: true,
+      active: true,
+      log: [],
     });
 
     setOpen(false);
@@ -224,14 +228,18 @@ export function MedicationScheduleAdherence() {
     };
 
     state.reminders.forEach((r) => {
-      const timeStr = (r as { time?: string; times?: string[] }).time || (r.times && r.times[0]) || "08:00";
+      const timeStr = r.times[0] || "08:00";
       const hour = parseInt(timeStr.split(":")[0] || "8", 10);
-      if (hour >= 6 && hour < 12) buckets["Morning (06:00 – 11:59)"].push(r);
-      else if (hour >= 12 && hour < 17)
-        buckets["Afternoon (12:00 – 16:59)"].push(r);
-      else if (hour >= 17 && hour < 21)
-        buckets["Evening (17:00 – 20:59)"].push(r);
-      else buckets["Night (21:00 – 05:59)"].push(r);
+      const morning = buckets["Morning (06:00 – 11:59)"];
+      const afternoon = buckets["Afternoon (12:00 – 16:59)"];
+      const evening = buckets["Evening (17:00 – 20:59)"];
+      const night = buckets["Night (21:00 – 05:59)"];
+      if (hour >= 6 && hour < 12 && morning) morning.push(r);
+      else if (hour >= 12 && hour < 17 && afternoon)
+        afternoon.push(r);
+      else if (hour >= 17 && hour < 21 && evening)
+        evening.push(r);
+      else if (night) night.push(r);
     });
 
     return buckets;
@@ -415,17 +423,16 @@ export function MedicationScheduleAdherence() {
         <StatTile
           label="Overall 14-Day Adherence"
           value={`${currentAdherence ?? 94}%`}
-          change="+6% vs last week"
-          hint="Calculated from logged doses"
+          hint="Calculated from logged doses (+6% vs last week)"
         />
         <StatTile
           label="Active Prescriptions"
-          value={state.reminders.length}
+          value={String(state.reminders.length)}
           hint="Across all daily time slots"
         />
         <StatTile
           label="Logged Doses"
-          value={totalLoggedDoses || 28}
+          value={String(totalLoggedDoses || 28)}
           hint="Confirmed on-device records"
         />
         <StatTile
@@ -485,7 +492,7 @@ export function MedicationScheduleAdherence() {
                       <div className="grid gap-3 md:grid-cols-2">
                         {bucketReminders.map((reminder) => {
                           const isTakenToday = reminder.log.some(
-                            (l) => l.date === today && l.taken,
+                            (l) => l.date === today && l.state === "taken",
                           );
 
                           return (
@@ -517,7 +524,7 @@ export function MedicationScheduleAdherence() {
                                       <p className="text-xs font-medium text-muted-foreground">
                                         {reminder.strength} · Scheduled at{" "}
                                         <strong className="text-ink">
-                                          {reminder.time}
+                                          {reminder.times.join(", ") || "08:00"}
                                         </strong>
                                       </p>
                                     </div>
@@ -549,16 +556,16 @@ export function MedicationScheduleAdherence() {
                               <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
                                 <div className="flex items-center gap-2">
                                   <Switch
-                                    checked={reminder.enabled}
+                                    checked={reminder.active}
                                     onCheckedChange={(checked) =>
                                       updateReminder(reminder.id, {
-                                        enabled: checked,
+                                        active: checked,
                                       })
                                     }
                                     aria-label="Toggle reminder alert"
                                   />
                                   <span className="text-[11px] text-muted-foreground">
-                                    {reminder.enabled ? "Alert On" : "Muted"}
+                                    {reminder.active ? "Alert On" : "Muted"}
                                   </span>
                                 </div>
 
@@ -572,8 +579,8 @@ export function MedicationScheduleAdherence() {
                                     onClick={() => {
                                       logDose(
                                         reminder.id,
-                                        today,
-                                        !isTakenToday,
+                                        reminder.times[0] || "08:00",
+                                        isTakenToday ? "skipped" : "taken",
                                       );
                                       if (!isTakenToday) {
                                         toast.success(

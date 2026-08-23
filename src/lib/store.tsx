@@ -343,6 +343,7 @@ interface StoreValue {
   savePrescription: (rx: Prescription) => void;
   addReminder: (r: Reminder) => void;
   updateReminder: (id: string, patch: Partial<Reminder>) => void;
+  deleteReminder: (id: string) => void;
   logDose: (id: string, time: string, state: "taken" | "skipped") => void;
   saveComparison: (record: ComparisonRecord) => void;
   markNotification: (id: string, read: boolean) => void;
@@ -510,6 +511,12 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           });
           return { ...p, reminders: updatedReminders };
         });
+      },
+      deleteReminder: (id) => {
+        setState((p) => ({
+          ...p,
+          reminders: p.reminders.filter((r) => r.id !== id),
+        }));
       },
       logDose: (id, time, doseState) => {
         setState((p) => {

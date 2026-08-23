@@ -62,7 +62,7 @@ export function TrendAreaChart({
 }) {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
-  const chartData = useMemo(() => {
+  const chartData = useMemo<Record<string, any>[]>(() => {
     if (data && data.length >= 2) return data;
     return SAMPLE_TREND;
   }, [data]);
@@ -88,10 +88,13 @@ export function TrendAreaChart({
   // Build smooth cubic bezier SVG curve
   const pathD = useMemo(() => {
     if (points.length === 0) return "";
-    let d = `M ${points[0].x} ${points[0].y}`;
+    const pFirst = points[0];
+    if (!pFirst) return "";
+    let d = `M ${pFirst.x} ${pFirst.y}`;
     for (let i = 0; i < points.length - 1; i++) {
       const p0 = points[i];
       const p1 = points[i + 1];
+      if (!p0 || !p1) continue;
       const cpX = (p0.x + p1.x) / 2;
       d += ` C ${cpX} ${p0.y}, ${cpX} ${p1.y}, ${p1.x} ${p1.y}`;
     }
@@ -102,6 +105,7 @@ export function TrendAreaChart({
     if (!pathD || points.length === 0) return "";
     const first = points[0];
     const last = points[points.length - 1];
+    if (!first || !last) return "";
     const bottom = height - paddingY;
     return `${pathD} L ${last.x} ${bottom} L ${first.x} ${bottom} Z`;
   }, [pathD, points, height, paddingY]);
@@ -254,7 +258,7 @@ export function SimpleBarChart({
 }) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
-  const chartData = useMemo(() => {
+  const chartData = useMemo<Record<string, any>[]>(() => {
     if (data && data.length >= 2) return data;
     return SAMPLE_TREND;
   }, [data]);

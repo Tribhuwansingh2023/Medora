@@ -133,8 +133,9 @@ export async function loadGoogleIdentityScript(): Promise<boolean> {
 export function decodeGoogleJwt(credential: string): GoogleUserProfile | null {
   try {
     const parts = credential.split(".");
-    if (parts.length < 2) return null;
-    const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const part1 = parts[1];
+    if (!part1) return null;
+    const payload = part1.replace(/-/g, "+").replace(/_/g, "/");
     const json = decodeURIComponent(
       atob(payload)
         .split("")

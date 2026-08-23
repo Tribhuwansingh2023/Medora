@@ -81,10 +81,12 @@ export function WorkspaceSection({
 
 export function StatusPill({
   label,
-  tone,
+  children,
+  tone = "neutral",
 }: {
-  label: string;
-  tone: "neutral" | "positive" | "warning" | "danger" | "info";
+  label?: string | undefined;
+  children?: ReactNode;
+  tone?: "neutral" | "positive" | "warning" | "danger" | "info" | undefined;
 }) {
   const map = {
     neutral: "border-border bg-secondary text-muted-foreground",
@@ -100,7 +102,7 @@ export function StatusPill({
         map[tone],
       )}
     >
-      {label}
+      {label ?? children}
     </span>
   );
 }

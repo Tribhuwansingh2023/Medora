@@ -68,18 +68,18 @@ export const Route = createFileRoute("/admin/audit")({
 const categoryConfig = {
   prescription: { label: "Prescription", tone: "info" as const },
   clinical: { label: "Clinical / Triage", tone: "warning" as const },
-  security: { label: "Security & RLS", tone: "critical" as const },
+  security: { label: "Security & RLS", tone: "danger" as const },
   catalog: { label: "Catalog Sync", tone: "neutral" as const },
   pharmacy: { label: "Pharmacy Gov", tone: "info" as const },
-  compliance: { label: "DPDP / Legal", tone: "success" as const },
+  compliance: { label: "DPDP / Legal", tone: "positive" as const },
 };
 
 const roleConfig = {
-  admin: { label: "Admin", tone: "critical" as const },
+  admin: { label: "Admin", tone: "danger" as const },
   doctor: { label: "Doctor", tone: "info" as const },
   pharmacy: { label: "Pharmacist", tone: "warning" as const },
   patient: { label: "Patient", tone: "neutral" as const },
-  system: { label: "System Daemon", tone: "success" as const },
+  system: { label: "System Daemon", tone: "positive" as const },
 };
 
 function AuditLogPage() {

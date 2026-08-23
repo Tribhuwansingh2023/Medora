@@ -20,9 +20,9 @@ import { isOpenNow } from "@/services/medicines";
 
 interface LeafletPharmacyMapProps {
   pharmacies: Pharmacy[];
-  selectedPharmacyId?: string | null;
-  onSelectPharmacy?: (pharmacy: Pharmacy) => void;
-  userCoords?: { lat: number; lng: number };
+  selectedPharmacyId?: string | null | undefined;
+  onSelectPharmacy?: ((pharmacy: Pharmacy) => void) | undefined;
+  userCoords?: { lat: number; lng: number } | null | undefined;
 }
 
 const TILE_LAYERS = {
@@ -50,8 +50,9 @@ export function LeafletPharmacyMap({
   pharmacies,
   selectedPharmacyId,
   onSelectPharmacy,
-  userCoords = { lat: 12.9716, lng: 77.5946 }, // Default Bengaluru Central
+  userCoords: rawUserCoords,
 }: LeafletPharmacyMapProps) {
+  const userCoords = rawUserCoords ?? { lat: 12.9716, lng: 77.5946 };
   const [activePharmacy, setActivePharmacy] = useState<Pharmacy | null>(
     pharmacies.find((p) => p.id === selectedPharmacyId) || pharmacies[0] || null,
   );

@@ -59,7 +59,7 @@ export interface GroundedPharmacyResult {
   stockStatus: "in_stock" | "low_stock" | "out_of_stock";
   unitsAvailable: number;
   homeDelivery: boolean;
-  deliveryTimeEstimate?: string;
+  deliveryTimeEstimate?: string | undefined;
   verifiedAt: string;
   groundingSource: string;
   groundingQuery: string;
@@ -68,6 +68,7 @@ export interface GroundedPharmacyResult {
 
 export function PharmacySearchGrounding() {
   const { state, addToCart } = useStore();
+  const placesLib = typeof window !== "undefined" ? ((window as any).google?.maps?.places as any) : null;
   const [medicineQuery, setMedicineQuery] = useState("Paracetamol");
   const [locationQuery, setLocationQuery] = useState(
     state.profile.city || "Eastwick",
@@ -175,7 +176,6 @@ export function PharmacySearchGrounding() {
           maxResultCount: 10,
         };
         // Use real Places API
-        // @ts-expect-error Missing places typings
         const { places } = await placesLib.Place.searchByText(req);
 
         const medTerm = medicineQuery.toLowerCase();

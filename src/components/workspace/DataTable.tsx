@@ -25,10 +25,10 @@ export interface DataColumn<T> {
   header: string;
   render: (row: T) => ReactNode;
   sortValue?: (row: T) => string | number;
-  align?: "left" | "right";
+  align?: "left" | "right" | "center" | undefined;
   /** Hide below the lg breakpoint to keep tables readable on small screens. */
-  hideBelow?: "sm" | "md" | "lg";
-  width?: string;
+  hideBelow?: "sm" | "md" | "lg" | undefined;
+  width?: string | undefined;
 }
 
 export interface DataFilter<T> {
@@ -243,6 +243,7 @@ export function DataTable<T>({
                     style={column.width ? { width: column.width } : undefined}
                     className={cn(
                       column.align === "right" && "text-right",
+                      column.align === "center" && "text-center",
                       column.hideBelow && hideClass[column.hideBelow],
                     )}
                   >
@@ -338,6 +339,7 @@ export function DataTable<T>({
                         key={column.key}
                         className={cn(
                           column.align === "right" && "text-right",
+                          column.align === "center" && "text-center",
                           column.hideBelow && hideClass[column.hideBelow],
                         )}
                       >

@@ -76,8 +76,8 @@ export interface SignUpInput {
   password: string;
   fullName: string;
   role: Exclude<AccountRole, "admin">;
-  city?: string;
-  rememberMe?: boolean;
+  city?: string | undefined;
+  rememberMe?: boolean | undefined;
 }
 
 interface AuthValue {
@@ -480,12 +480,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // If no pre-selected account passed, trigger live Google OAuth popup
         if (!email) {
           try {
-            const tokenRes = await requestGoogleOAuthToken();
-            if (tokenRes.error) {
-              return { error: tokenRes.error };
-            }
-            if (tokenRes.accessToken) {
-              const userInfo = await fetchGoogleUserInfo(tokenRes.accessToken);
+            const accessToken = await requestGoogleOAuthToken();
+            if (accessToken) {
+              const userInfo = await fetchGoogleUserInfo(accessToken);
               if (userInfo?.email) {
                 email = userInfo.email.trim().toLowerCase();
                 fullName = userInfo.name || email.split("@")[0];

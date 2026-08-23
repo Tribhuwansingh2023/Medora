@@ -8,17 +8,17 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      "react/jsx-dev-runtime": "react/jsx-runtime",
-    },
-  },
   ssrErrorLogger: false,
   serverFnErrorLogger: false,
   nitro: {
     preset: "node-server",
   },
   vite: {
+    resolve: {
+      alias: {
+        "react/jsx-dev-runtime": "react/jsx-runtime",
+      },
+    },
     plugins: process.platform === "win32" ? [] : [mcpPlugin()],
   },
 });

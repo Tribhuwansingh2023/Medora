@@ -306,6 +306,15 @@ export interface ClinicalNote {
   content: string;
   category: "consult" | "decision" | "prescription" | "general";
   timestamp: string;
+  doctorName?: string | undefined;
+  doctorRole?: string | undefined;
+  chiefComplaint?: string | undefined;
+  diagnosis?: string | undefined;
+  clinicalAssessment?: string | undefined;
+  treatmentPlan?: string | undefined;
+  prescribedMeds?: string[] | undefined;
+  followUpDays?: number | undefined;
+  status?: string | undefined;
 }
 
 export interface AuditEvent {

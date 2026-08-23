@@ -16,7 +16,7 @@ export class LiveMedicineProvider implements IMedicineProvider {
     }
 
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("medicines")
         .select("id")
         .limit(1);
@@ -46,7 +46,7 @@ export class LiveMedicineProvider implements IMedicineProvider {
     if (isSupabaseConfigured) {
       try {
         const q = query.trim().toLowerCase();
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from("medicines")
           .select("*")
           .or(`brand_name.ilike.%${q}%,generic_name.ilike.%${q}%,composition_key.ilike.%${q}%`)
@@ -70,7 +70,7 @@ export class LiveMedicineProvider implements IMedicineProvider {
             provenance: {
               source: "Supabase PostgreSQL Database",
               updatedAt: d.created_at ? new Date(d.created_at).toISOString().slice(0, 10) : "2026-08-23",
-              licensed: true,
+              verified: true,
             },
           }));
         }
@@ -91,7 +91,7 @@ export class LiveMedicineProvider implements IMedicineProvider {
   async getMedicine(id: string): Promise<Medicine | undefined> {
     if (isSupabaseConfigured) {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from("medicines")
           .select("*")
           .eq("id", id)
@@ -115,7 +115,7 @@ export class LiveMedicineProvider implements IMedicineProvider {
             provenance: {
               source: "Supabase PostgreSQL Database",
               updatedAt: data.created_at ? new Date(data.created_at).toISOString().slice(0, 10) : "2026-08-23",
-              licensed: true,
+              verified: true,
             },
           };
         }
@@ -130,7 +130,7 @@ export class LiveMedicineProvider implements IMedicineProvider {
   async getEquivalents(medicine: Medicine): Promise<Medicine[]> {
     if (isSupabaseConfigured) {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from("medicines")
           .select("*")
           .eq("composition_key", medicine.compositionKey)
@@ -155,7 +155,7 @@ export class LiveMedicineProvider implements IMedicineProvider {
             provenance: {
               source: "Supabase PostgreSQL Database",
               updatedAt: d.created_at ? new Date(d.created_at).toISOString().slice(0, 10) : "2026-08-23",
-              licensed: true,
+              verified: true,
             },
           }));
         }
@@ -173,7 +173,7 @@ export class LiveMedicineProvider implements IMedicineProvider {
   async getPharmacies(): Promise<Pharmacy[]> {
     if (isSupabaseConfigured) {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await (supabase as any)
           .from("pharmacies")
           .select("*")
           .limit(20);
@@ -200,7 +200,7 @@ export class LiveMedicineProvider implements IMedicineProvider {
             provenance: {
               source: "Supabase Verified Registry",
               updatedAt: p.created_at ? new Date(p.created_at).toISOString().slice(0, 10) : "2026-08-23",
-              licensed: true,
+              verified: true,
             },
           }));
         }
@@ -290,5 +290,41 @@ export class LiveMedicineProvider implements IMedicineProvider {
     }
 
     return demoPrices.filter((p) => medicineIds.includes(p.medicineId));
+  }
+
+  async getPharmacyStock(pharmacyId: string): Promise<PriceListing[]> {
+    if (isSupabaseConfigured && pharmacyId) {
+      try {
+        const { data, error } = await (supabase as any)
+          .from("price_listings")
+          .select("*, pharmacies(*)")
+          .eq("pharmacy_id", pharmacyId);
+
+        if (!error && data && data.length > 0) {
+          return data.map((pl: any) => ({
+            id: pl.id,
+            medicineId: pl.medicine_id,
+            pharmacyId: pl.pharmacy_id,
+            pharmacyName: pl.pharmacies?.name || "Verified Pharmacy",
+            price: Number(pl.price),
+            currency: pl.currency || "INR",
+            packSize: pl.pack_size,
+            availability: pl.availability,
+            updatedAt: pl.updated_at ? new Date(pl.updated_at).toISOString().slice(0, 10) : "2026-08-23",
+            offersDelivery: pl.pharmacies?.offers_delivery ?? true,
+            offersPickup: pl.pharmacies?.offers_pickup ?? true,
+            provenance: {
+              source: "Supabase Live Price Feed",
+              updatedAt: pl.updated_at ? new Date(pl.updated_at).toISOString().slice(0, 10) : "2026-08-23",
+              verified: true,
+            },
+          }));
+        }
+      } catch (err) {
+        console.warn("Live Supabase getPharmacyStock error:", err);
+      }
+    }
+
+    return demoPrices.filter((p) => p.pharmacyId === pharmacyId);
   }
 }

@@ -225,9 +225,9 @@ class OrderService {
     pharmacyName: string;
     items: OrderItem[];
     fulfilment: "pickup" | "delivery";
-    prescriptionId?: string;
+    prescriptionId?: string | undefined;
     paymentMethod: "upi" | "card" | "netbanking" | "cod";
-    deliveryAddress?: string;
+    deliveryAddress?: string | undefined;
   }): Order {
     const orders = this.loadOrders();
     const orderId = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
