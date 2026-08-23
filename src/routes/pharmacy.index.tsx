@@ -10,6 +10,7 @@ import {
   ClipboardCheck,
   FileText,
   Gauge,
+  IndianRupee,
   Info,
   Package,
   Pill,
@@ -261,7 +262,7 @@ function OverviewPage() {
                           <StatTile
                             label="Revenue (12-day sample)"
                             value={money(periodRevenue)}
-                            icon={Receipt}
+                            icon={IndianRupee}
                             hint="Completed and dispensed orders"
                           />
                         </div>
@@ -270,69 +271,72 @@ function OverviewPage() {
                       {/* Clinical Safety Alerts Section */}
                       <div
                         id="pharmacy-clinical-alerts"
-                        className="surface rise p-5 shadow-soft"
+                        className="surface rise rounded-2xl border border-border/80 bg-card p-5 shadow-soft"
                       >
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-3">
-                          <div className="flex items-center gap-2">
-                            <span className="grid size-7 place-items-center rounded-md bg-destructive-soft text-destructive">
-                              <ShieldAlert className="size-4" />
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-border/80 pb-3.5">
+                          <div className="flex items-center gap-2.5">
+                            <span className="grid size-8 place-items-center rounded-xl bg-destructive/15 text-destructive">
+                              <ShieldAlert className="size-4.5" />
                             </span>
                             <div>
-                              <h3 className="font-display text-sm font-bold text-ink">
+                              <h3 className="font-display text-sm font-bold text-ink flex items-center gap-2">
                                 Recent Clinical Alerts & Safety Notices
                               </h3>
                               <p className="text-xs text-muted-foreground">
-                                Real-time clinical warnings, drug interaction
-                                flags, and storage telemetry.
+                                Real-time clinical warnings, drug interaction flags, and cold-chain telemetry.
                               </p>
                             </div>
                           </div>
                           <Badge
                             variant="outline"
-                            className="w-fit border-destructive/30 bg-destructive-soft/50 text-destructive text-[11px]"
+                            className="w-fit border-destructive/30 bg-destructive-soft/50 text-destructive text-xs font-bold px-2.5 py-0.5 rounded-full"
                           >
-                            {RECENT_CLINICAL_ALERTS.length} Active Safety
-                            Notices
+                            {RECENT_CLINICAL_ALERTS.length} Active Safety Notices
                           </Badge>
                         </div>
 
-                        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+                        <div className="mt-4 grid grid-cols-1 gap-3.5 md:grid-cols-2">
                           {RECENT_CLINICAL_ALERTS.map((alert) => (
                             <div
                               key={alert.id}
                               id={alert.id}
-                              className="rounded-lg border border-border bg-card p-3.5 shadow-xs transition-colors hover:border-primary/40 flex flex-col justify-between"
+                              className={cn(
+                                "group rounded-xl border p-4 shadow-2xs transition-all duration-200 hover:shadow-soft hover:-translate-y-0.5 flex flex-col justify-between",
+                                alert.severity === "high" && "border-destructive/30 bg-gradient-to-br from-destructive/5 via-card to-card hover:border-destructive/50",
+                                alert.severity === "medium" && "border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-card to-card hover:border-amber-500/50",
+                                alert.severity === "low" && "border-primary/30 bg-gradient-to-br from-primary/5 via-card to-card hover:border-primary/50",
+                              )}
                             >
                               <div>
                                 <div className="flex items-start justify-between gap-2">
                                   <div className="flex items-center gap-1.5">
                                     {alert.severity === "high" ? (
-                                      <AlertCircle className="size-3.5 text-destructive shrink-0" />
+                                      <AlertCircle className="size-4 text-destructive shrink-0" />
                                     ) : alert.severity === "medium" ? (
-                                      <AlertTriangle className="size-3.5 text-warning shrink-0" />
+                                      <AlertTriangle className="size-4 text-amber-500 shrink-0" />
                                     ) : (
-                                      <Info className="size-3.5 text-primary shrink-0" />
+                                      <Info className="size-4 text-primary shrink-0" />
                                     )}
                                     <h4 className="font-display text-xs font-bold text-ink">
                                       {alert.title}
                                     </h4>
                                   </div>
-                                  <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                                  <span className="text-[10px] font-mono text-muted-foreground whitespace-nowrap bg-muted/60 px-1.5 py-0.5 rounded">
                                     {alert.timestamp}
                                   </span>
                                 </div>
-                                <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
                                   {alert.description}
                                 </p>
                               </div>
 
-                              <div className="mt-3 pt-2.5 border-t border-border flex items-center justify-between text-xs">
-                                <span className="font-medium text-[11px] text-ink">
-                                  {alert.affectedLine}
+                              <div className="mt-3.5 pt-3 border-t border-border/60 flex items-center justify-between text-xs">
+                                <span className="font-semibold text-[11px] text-ink/80 flex items-center gap-1">
+                                  <Pill className="size-3 text-primary" /> {alert.affectedLine}
                                 </span>
                                 <Link
                                   to={alert.actionUrl}
-                                  className="font-medium text-primary hover:underline"
+                                  className="font-bold text-xs text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 group-hover:translate-x-0.5"
                                 >
                                   {alert.actionLabel} →
                                 </Link>

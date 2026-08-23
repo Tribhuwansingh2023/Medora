@@ -113,27 +113,28 @@ export function SafetyNotice({
     <div
       role={tone === "emergency" ? "alert" : "note"}
       className={cn(
-        "flex gap-3 rounded-lg border p-4 text-sm",
-        tone === "emergency" && "border-destructive/40 bg-destructive-soft",
-        tone === "warning" && "border-warning/40 bg-warning-soft",
-        tone === "info" && "border-border bg-secondary",
+        "flex items-start gap-3.5 rounded-2xl border p-4 text-sm shadow-2xs transition-all",
+        tone === "emergency" && "border-destructive/30 bg-destructive-soft/60 text-destructive-foreground",
+        tone === "warning" && "border-amber-500/30 bg-amber-500/10 text-amber-950 dark:text-amber-100",
+        tone === "info" && "border-primary/20 bg-primary/5 text-foreground",
         className,
       )}
     >
-      <Icon
-        aria-hidden
+      <span
         className={cn(
-          "mt-0.5 size-4 shrink-0",
-          tone === "emergency"
-            ? "text-destructive"
-            : tone === "warning"
-              ? "text-warning"
-              : "text-primary",
+          "grid size-8 shrink-0 place-items-center rounded-xl",
+          tone === "emergency" && "bg-destructive/20 text-destructive",
+          tone === "warning" && "bg-amber-500/20 text-amber-600 dark:text-amber-400",
+          tone === "info" && "bg-primary/20 text-primary",
         )}
-      />
+      >
+        <Icon aria-hidden className="size-4" />
+      </span>
       <div className="space-y-1">
-        <p className="font-semibold text-ink">{title}</p>
-        <div className="text-muted-foreground [&_a]:underline">{children}</div>
+        <p className="font-bold text-ink text-sm tracking-tight">{title}</p>
+        <div className="text-xs leading-relaxed text-muted-foreground [&_a]:underline font-medium">
+          {children}
+        </div>
       </div>
     </div>
   );
@@ -265,23 +266,32 @@ export function StatTile({
   tone?: "default" | "positive" | "attention" | undefined;
 }) {
   return (
-    <div className="surface p-4">
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+    <div className="group relative overflow-hidden rounded-2xl border border-border/80 bg-gradient-to-b from-card via-card to-card/90 p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lift">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
           {label}
         </p>
-        {Icon && <Icon className="size-4 text-muted-foreground" aria-hidden />}
+        {Icon && (
+          <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
+            <Icon className="size-4" aria-hidden />
+          </span>
+        )}
       </div>
       <p
         className={cn(
-          "numeric mt-2 font-display text-2xl font-bold",
-          tone === "positive" && "text-success",
-          tone === "attention" && "text-warning-foreground",
+          "numeric mt-3 font-display text-2xl font-black tracking-tight text-ink",
+          tone === "positive" && "text-emerald-600 dark:text-emerald-400",
+          tone === "attention" && "text-amber-600 dark:text-amber-400",
         )}
       >
         {value}
       </p>
-      {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
+      {hint && (
+        <p className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <span className="size-1.5 rounded-full bg-primary/40" />
+          {hint}
+        </p>
+      )}
     </div>
   );
 }
