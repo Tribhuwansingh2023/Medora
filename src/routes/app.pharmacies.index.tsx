@@ -36,8 +36,6 @@ import { getPharmacies, isOpenNow } from "@/services/medicines";
 import { PharmacySearchGrounding } from "@/components/pharmacy/PharmacySearchGrounding";
 import { GooglePharmacyMap } from "@/components/pharmacy/GooglePharmacyMap";
 
-import { APIProvider } from "@vis.gl/react-google-maps";
-
 export const Route = createFileRoute("/app/pharmacies/")({
   head: () => ({
     meta: [
@@ -235,12 +233,8 @@ function PharmaciesPage() {
     });
 
   return (
-    <APIProvider
-      apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ""}
-      onLoad={() => console.log("Maps API has loaded.")}
-    >
-      <div className="space-y-6">
-        <PageHeader
+    <div className="space-y-6">
+      <PageHeader
           title="Pharmacies & Live Stock Grounding"
           demo
           description="Verify real-time stock availability, dispensary opening hours, and grounded regional pharmacy pricing before you travel."
@@ -358,6 +352,5 @@ function PharmaciesPage() {
           </TabsContent>
         </Tabs>
       </div>
-    </APIProvider>
   );
 }

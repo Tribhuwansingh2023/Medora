@@ -38,7 +38,6 @@ import {
 import { DemoBadge } from "@/components/common/primitives";
 import { useStore } from "@/lib/store";
 import { demoMedicines, demoPharmacies, demoPrices } from "@/data/demo-catalog";
-import { useMapsLibrary } from "@vis.gl/react-google-maps";
 
 export interface GroundedPharmacyResult {
   id: string;
@@ -78,7 +77,6 @@ export function PharmacySearchGrounding() {
   const [openNowOnly, setOpenNowOnly] = useState(false);
   const [deliveryOnly, setDeliveryOnly] = useState(false);
   const [maxDistance, setMaxDistance] = useState<string>("all");
-  const placesLib = useMapsLibrary("places");
   const [results, setResults] = useState<GroundedPharmacyResult[]>([]);
   const [lastQueryTime, setLastQueryTime] = useState<string>(
     new Date().toLocaleTimeString(),
