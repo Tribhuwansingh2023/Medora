@@ -197,18 +197,42 @@ export const pharmacyNav: NavItem[] = [
 ];
 
 export const doctorNav: NavItem[] = [
-  { to: "/doctor", label: "Patients", icon: Users, group: "Clinic" },
+  { to: "/doctor", label: "Patients", icon: Users, group: "Practice" },
   {
     to: "/doctor/prescriptions",
     label: "Prescription review",
     icon: Pill,
-    group: "Clinic",
+    group: "Practice",
   },
   {
     to: "/doctor/schedule",
-    label: "Schedule",
+    label: "Schedule & OPD",
     icon: CalendarClock,
-    group: "Clinic",
+    group: "Practice",
+  },
+  {
+    to: "/doctor/labs",
+    label: "Lab & Diagnostics",
+    icon: FlaskConical,
+    group: "Intelligence",
+  },
+  {
+    to: "/doctor/cdss",
+    label: "CDSS & Interactions",
+    icon: ShieldAlert,
+    group: "Intelligence",
+  },
+  {
+    to: "/doctor/consults",
+    label: "Teleconsult & SOAP",
+    icon: Stethoscope,
+    group: "Intelligence",
+  },
+  {
+    to: "/doctor/analytics",
+    label: "Practice analytics",
+    icon: BarChart3,
+    group: "Insights",
   },
 ];
 

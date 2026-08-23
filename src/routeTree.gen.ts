@@ -49,6 +49,10 @@ import { Route as AppTriageRouteImport } from './routes/app.triage'
 import { Route as AppVerifyRouteImport } from './routes/app.verify'
 import { Route as AppWorkspaceRouteImport } from './routes/app.workspace'
 import { Route as DoctorIndexRouteImport } from './routes/doctor.index'
+import { Route as DoctorAnalyticsRouteImport } from './routes/doctor.analytics'
+import { Route as DoctorCdssRouteImport } from './routes/doctor.cdss'
+import { Route as DoctorConsultsRouteImport } from './routes/doctor.consults'
+import { Route as DoctorLabsRouteImport } from './routes/doctor.labs'
 import { Route as DoctorPrescriptionsRouteImport } from './routes/doctor.prescriptions'
 import { Route as DoctorScheduleRouteImport } from './routes/doctor.schedule'
 import { Route as PharmacyIndexRouteImport } from './routes/pharmacy.index'
@@ -266,6 +270,26 @@ const DoctorIndexRoute = DoctorIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DoctorRoute,
 } as any)
+const DoctorAnalyticsRoute = DoctorAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => DoctorRoute,
+} as any)
+const DoctorCdssRoute = DoctorCdssRouteImport.update({
+  id: '/cdss',
+  path: '/cdss',
+  getParentRoute: () => DoctorRoute,
+} as any)
+const DoctorConsultsRoute = DoctorConsultsRouteImport.update({
+  id: '/consults',
+  path: '/consults',
+  getParentRoute: () => DoctorRoute,
+} as any)
+const DoctorLabsRoute = DoctorLabsRouteImport.update({
+  id: '/labs',
+  path: '/labs',
+  getParentRoute: () => DoctorRoute,
+} as any)
 const DoctorPrescriptionsRoute = DoctorPrescriptionsRouteImport.update({
   id: '/prescriptions',
   path: '/prescriptions',
@@ -376,6 +400,10 @@ export interface FileRoutesByFullPath {
   '/app/triage': typeof AppTriageRoute
   '/app/verify': typeof AppVerifyRoute
   '/app/workspace': typeof AppWorkspaceRoute
+  '/doctor/analytics': typeof DoctorAnalyticsRoute
+  '/doctor/cdss': typeof DoctorCdssRoute
+  '/doctor/consults': typeof DoctorConsultsRoute
+  '/doctor/labs': typeof DoctorLabsRoute
   '/doctor/prescriptions': typeof DoctorPrescriptionsRoute
   '/doctor/schedule': typeof DoctorScheduleRoute
   '/pharmacy/analytics': typeof PharmacyAnalyticsRoute
@@ -427,6 +455,10 @@ export interface FileRoutesByTo {
   '/app/triage': typeof AppTriageRoute
   '/app/verify': typeof AppVerifyRoute
   '/app/workspace': typeof AppWorkspaceRoute
+  '/doctor/analytics': typeof DoctorAnalyticsRoute
+  '/doctor/cdss': typeof DoctorCdssRoute
+  '/doctor/consults': typeof DoctorConsultsRoute
+  '/doctor/labs': typeof DoctorLabsRoute
   '/doctor/prescriptions': typeof DoctorPrescriptionsRoute
   '/doctor/schedule': typeof DoctorScheduleRoute
   '/pharmacy/analytics': typeof PharmacyAnalyticsRoute
@@ -484,6 +516,10 @@ export interface FileRoutesById {
   '/app/triage': typeof AppTriageRoute
   '/app/verify': typeof AppVerifyRoute
   '/app/workspace': typeof AppWorkspaceRoute
+  '/doctor/analytics': typeof DoctorAnalyticsRoute
+  '/doctor/cdss': typeof DoctorCdssRoute
+  '/doctor/consults': typeof DoctorConsultsRoute
+  '/doctor/labs': typeof DoctorLabsRoute
   '/doctor/prescriptions': typeof DoctorPrescriptionsRoute
   '/doctor/schedule': typeof DoctorScheduleRoute
   '/pharmacy/analytics': typeof PharmacyAnalyticsRoute
@@ -542,6 +578,10 @@ export interface FileRouteTypes {
     | '/app/triage'
     | '/app/verify'
     | '/app/workspace'
+    | '/doctor/analytics'
+    | '/doctor/cdss'
+    | '/doctor/consults'
+    | '/doctor/labs'
     | '/doctor/prescriptions'
     | '/doctor/schedule'
     | '/pharmacy/analytics'
@@ -593,6 +633,10 @@ export interface FileRouteTypes {
     | '/app/triage'
     | '/app/verify'
     | '/app/workspace'
+    | '/doctor/analytics'
+    | '/doctor/cdss'
+    | '/doctor/consults'
+    | '/doctor/labs'
     | '/doctor/prescriptions'
     | '/doctor/schedule'
     | '/pharmacy/analytics'
@@ -649,6 +693,10 @@ export interface FileRouteTypes {
     | '/app/triage'
     | '/app/verify'
     | '/app/workspace'
+    | '/doctor/analytics'
+    | '/doctor/cdss'
+    | '/doctor/consults'
+    | '/doctor/labs'
     | '/doctor/prescriptions'
     | '/doctor/schedule'
     | '/pharmacy/analytics'
@@ -969,6 +1017,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DoctorIndexRouteImport
       parentRoute: typeof DoctorRoute
     }
+    '/doctor/analytics': {
+      id: '/doctor/analytics'
+      path: '/analytics'
+      fullPath: '/doctor/analytics'
+      preLoaderRoute: typeof DoctorAnalyticsRouteImport
+      parentRoute: typeof DoctorRoute
+    }
+    '/doctor/cdss': {
+      id: '/doctor/cdss'
+      path: '/cdss'
+      fullPath: '/doctor/cdss'
+      preLoaderRoute: typeof DoctorCdssRouteImport
+      parentRoute: typeof DoctorRoute
+    }
+    '/doctor/consults': {
+      id: '/doctor/consults'
+      path: '/consults'
+      fullPath: '/doctor/consults'
+      preLoaderRoute: typeof DoctorConsultsRouteImport
+      parentRoute: typeof DoctorRoute
+    }
+    '/doctor/labs': {
+      id: '/doctor/labs'
+      path: '/labs'
+      fullPath: '/doctor/labs'
+      preLoaderRoute: typeof DoctorLabsRouteImport
+      parentRoute: typeof DoctorRoute
+    }
     '/doctor/prescriptions': {
       id: '/doctor/prescriptions'
       path: '/prescriptions'
@@ -1153,12 +1229,20 @@ const AppRouteChildren: AppRouteChildren = {
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface DoctorRouteChildren {
+  DoctorAnalyticsRoute: typeof DoctorAnalyticsRoute
+  DoctorCdssRoute: typeof DoctorCdssRoute
+  DoctorConsultsRoute: typeof DoctorConsultsRoute
+  DoctorLabsRoute: typeof DoctorLabsRoute
   DoctorPrescriptionsRoute: typeof DoctorPrescriptionsRoute
   DoctorScheduleRoute: typeof DoctorScheduleRoute
   DoctorIndexRoute: typeof DoctorIndexRoute
 }
 
 const DoctorRouteChildren: DoctorRouteChildren = {
+  DoctorAnalyticsRoute: DoctorAnalyticsRoute,
+  DoctorCdssRoute: DoctorCdssRoute,
+  DoctorConsultsRoute: DoctorConsultsRoute,
+  DoctorLabsRoute: DoctorLabsRoute,
   DoctorPrescriptionsRoute: DoctorPrescriptionsRoute,
   DoctorScheduleRoute: DoctorScheduleRoute,
   DoctorIndexRoute: DoctorIndexRoute,
