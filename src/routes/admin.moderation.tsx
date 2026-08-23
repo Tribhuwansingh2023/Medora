@@ -279,6 +279,9 @@ export function AdminModerationPage() {
             <DataTable<ModerationReport>
               rows={filteredReports}
               columns={columns}
+              getId={(r) => r.id}
+              searchText={(r) => `${r.id} ${r.reporter} ${r.subject} ${r.details}`}
+              searchPlaceholder="Search ticket ID, reporter, subject..."
               onRowClick={(r) => setSelectedReport(r)}
             />
           )}

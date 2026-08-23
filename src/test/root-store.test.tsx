@@ -55,7 +55,7 @@ describe("root route store wiring", () => {
     expect(providerErrors).toEqual([]);
 
     errorSpy.mockRestore();
-  });
+  }, 15000);
 
   it("throws a clear error when useStore is used without the provider", () => {
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});

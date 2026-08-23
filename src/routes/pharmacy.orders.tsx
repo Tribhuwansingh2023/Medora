@@ -242,10 +242,11 @@ function OrdersPage() {
         title="Live Dispensing & Fulfillment"
         description="Connected to Medora Real-Time Order Service. Status transitions update the patient tracking app instantly."
       >
-        <DataTable
+        <DataTable<Order>
           columns={columns}
           rows={orders}
-          keyField="id"
+          getId={(r) => r.id}
+          searchText={(r) => `${r.id} ${r.pharmacyName} ${r.items.map((i) => i.name).join(" ")}`}
           searchPlaceholder="Search order ID, patient, drug..."
         />
       </WorkspaceSection>

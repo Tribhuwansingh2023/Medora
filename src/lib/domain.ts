@@ -146,46 +146,46 @@ export type OrderStatus =
 export interface PaymentDetails {
   method: "upi" | "card" | "netbanking" | "cod";
   status: "pending" | "completed" | "failed" | "refunded";
-  transactionId?: string;
-  receiptNumber?: string;
-  paidAt?: string;
+  transactionId?: string | undefined;
+  receiptNumber?: string | undefined;
+  paidAt?: string | undefined;
   amount: number;
   gstBreakdown?: {
     subtotal: number;
     cgst: number;
     sgst: number;
     total: number;
-  };
+  } | undefined;
 }
 
 export interface DeliveryDetails {
   partner: "Dunzo MedExpress" | "Shadowfax Health Logistics" | "Porter Clinical" | "Local Express";
-  riderName?: string;
-  riderPhone?: string;
-  vehicleNumber?: string;
-  trackingNumber?: string;
-  currentLat?: number;
-  currentLng?: number;
-  distanceKm?: number;
-  estimatedMinutes?: number;
-  deliveryAddress?: string;
+  riderName?: string | undefined;
+  riderPhone?: string | undefined;
+  vehicleNumber?: string | undefined;
+  trackingNumber?: string | undefined;
+  currentLat?: number | undefined;
+  currentLng?: number | undefined;
+  distanceKm?: number | undefined;
+  estimatedMinutes?: number | undefined;
+  deliveryAddress?: string | undefined;
 }
 
 export interface PrescriptionVerification {
   status: "not_required" | "pending" | "approved" | "rejected";
-  verifiedByPharmacist?: string;
-  pharmacistLicence?: string;
-  digitalSignature?: string;
-  verifiedAt?: string;
-  verificationNotes?: string;
+  verifiedByPharmacist?: string | undefined;
+  pharmacistLicence?: string | undefined;
+  digitalSignature?: string | undefined;
+  verifiedAt?: string | undefined;
+  verificationNotes?: string | undefined;
 }
 
 export interface CancellationDetails {
-  cancelledAt?: string;
-  reason?: string;
-  refundStatus?: "not_applicable" | "processing" | "refunded";
-  refundAmount?: number;
-  refundTransactionId?: string;
+  cancelledAt?: string | undefined;
+  reason?: string | undefined;
+  refundStatus?: "not_applicable" | "processing" | "refunded" | undefined;
+  refundAmount?: number | undefined;
+  refundTransactionId?: string | undefined;
 }
 
 export interface Order {
@@ -198,10 +198,10 @@ export interface Order {
   fulfilment: "pickup" | "delivery";
   prescriptionId?: string | undefined;
   status: OrderStatus;
-  payment?: PaymentDetails;
-  delivery?: DeliveryDetails;
-  prescriptionVerification?: PrescriptionVerification;
-  cancellation?: CancellationDetails;
+  payment?: PaymentDetails | undefined;
+  delivery?: DeliveryDetails | undefined;
+  prescriptionVerification?: PrescriptionVerification | undefined;
+  cancellation?: CancellationDetails | undefined;
   timeline: { state: OrderStatus; at: string; note: string }[];
 }
 
@@ -246,15 +246,15 @@ export interface NotificationItem {
   at: string;
   kind: "reminder" | "price" | "order" | "safety" | "pharmacy" | "system";
   read: boolean;
-  channels?: ("in_app" | "push" | "email" | "sms")[];
-  actionUrl?: string;
-  actionLabel?: string;
+  channels?: ("in_app" | "push" | "email" | "sms")[] | undefined;
+  actionUrl?: string | undefined;
+  actionLabel?: string | undefined;
   meta?: {
-    orderId?: string;
-    medicineId?: string;
-    severity?: "info" | "warning" | "critical";
-    priceDropPercent?: number;
-  };
+    orderId?: string | undefined;
+    medicineId?: string | undefined;
+    severity?: "info" | "warning" | "critical" | undefined;
+    priceDropPercent?: number | undefined;
+  } | undefined;
 }
 
 export interface InventoryItem {
