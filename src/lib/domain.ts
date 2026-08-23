@@ -244,8 +244,17 @@ export interface NotificationItem {
   title: string;
   body: string;
   at: string;
-  kind: "reminder" | "price" | "order" | "safety" | "system";
+  kind: "reminder" | "price" | "order" | "safety" | "pharmacy" | "system";
   read: boolean;
+  channels?: ("in_app" | "push" | "email" | "sms")[];
+  actionUrl?: string;
+  actionLabel?: string;
+  meta?: {
+    orderId?: string;
+    medicineId?: string;
+    severity?: "info" | "warning" | "critical";
+    priceDropPercent?: number;
+  };
 }
 
 export interface InventoryItem {

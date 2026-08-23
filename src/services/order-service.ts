@@ -21,6 +21,7 @@ import type {
   CancellationDetails,
 } from "@/lib/domain";
 import { demoPharmacies } from "@/data/demo-catalog";
+import { notificationService } from "./notification-service";
 
 const ORDERS_STORAGE_KEY = "medora_orders_v1";
 
@@ -303,6 +304,15 @@ class OrderService {
 
     const next = [newOrder, ...orders];
     this.saveOrders(next);
+
+    // Multi-channel notification triggers
+    notificationService.notifyOrderPlaced(newOrder);
+    notificationService.notifyPharmacyAlert(
+      `New Order Received: ${newOrder.id}`,
+      `${newOrder.pharmacyName} · ${newOrder.items.length} items (₹${newOrder.total.toFixed(2)}) awaiting processing.`,
+      "/pharmacy/orders",
+    );
+
     return newOrder;
   }
 
@@ -347,6 +357,13 @@ class OrderService {
 
     orders[idx] = updated;
     this.saveOrders([...orders]);
+
+    if (nextStatus === "out_for_delivery") {
+      notificationService.notifyOutForDelivery(updated);
+    } else if (nextStatus === "completed") {
+      notificationService.notifyOrderDelivered(updated);
+    }
+
     return updated;
   }
 
@@ -392,6 +409,13 @@ class OrderService {
 
     orders[idx] = updated;
     this.saveOrders([...orders]);
+
+    if (pharmacist.approved) {
+      notificationService.notifyPrescriptionVerified(updated, pharmacist.name);
+    } else {
+      notificationService.notifyOrderCancelled(updated);
+    }
+
     return updated;
   }
 
@@ -438,6 +462,9 @@ class OrderService {
 
     orders[idx] = updated;
     this.saveOrders([...orders]);
+
+    notificationService.notifyOrderCancelled(updated);
+
     return updated;
   }
 }
