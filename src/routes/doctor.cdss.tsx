@@ -199,7 +199,7 @@ function DoctorCdssPage() {
       <PageHeader
         title="Clinical Decision Support (CDSS)"
         description="Verify multi-drug interaction contraindications, calculate renal dosage clearances, and align with ICMR National Treatment Guidelines."
-        badge={<Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary font-bold text-xs">CDSS Knowledgebase v2026.8</Badge>}
+        actions={<Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary font-bold text-xs">CDSS Knowledgebase v2026.8</Badge>}
       />
 
       {/* Main Tabs */}

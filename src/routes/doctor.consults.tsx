@@ -102,7 +102,7 @@ const DEMO_QUEUE: ConsultQueueItem[] = [
 ];
 
 function DoctorConsultsPage() {
-  const [activeConsult, setActiveConsult] = useState<ConsultQueueItem>(DEMO_QUEUE[0]);
+  const [activeConsult, setActiveConsult] = useState<ConsultQueueItem>(DEMO_QUEUE[0]!);
   const [isMicOn, setIsMicOn] = useState(true);
   const [isCamOn, setIsCamOn] = useState(true);
   const [callActive, setCallActive] = useState(true);
@@ -148,7 +148,7 @@ function DoctorConsultsPage() {
       <PageHeader
         title="Teleconsult & Virtual OPD Suite"
         description="Conduct secure video consultations, record structured SOAP clinical notes, and generate digitally signed e-prescriptions."
-        badge={<Badge variant="outline" className="border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold text-xs">WebRTC Telehealth Live</Badge>}
+        actions={<Badge variant="outline" className="border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold text-xs">WebRTC Telehealth Live</Badge>}
       />
 
       {/* Main Consult Split Screen */}

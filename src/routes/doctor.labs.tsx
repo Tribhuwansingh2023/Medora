@@ -231,7 +231,7 @@ function DoctorLabsPage() {
       <PageHeader
         title="Diagnostic & Pathology Intelligence"
         description="Monitor abnormal biomarker alerts, evaluate patient lab results, and adjust prescriptions based on renal and glycemic panels."
-        badge={<Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary font-bold text-xs">Pathology Stream Active</Badge>}
+        actions={<Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary font-bold text-xs">Pathology Stream Active</Badge>}
       />
 
       {/* Critical Biomarker Alert Strip */}
@@ -272,30 +272,30 @@ function DoctorLabsPage() {
         <StatTile
           label="Total Lab Tests"
           value={String(reports.length)}
-          sub="Last 48 hours"
-          icon={<FlaskConical className="size-4" />}
+          hint="Last 48 hours"
+          icon={FlaskConical}
           tone="default"
         />
         <StatTile
           label="Critical Out-of-Range"
           value={String(criticalCount)}
-          sub="Immediate doctor review"
-          icon={<AlertCircle className="size-4 text-destructive" />}
-          tone="critical"
+          hint="Immediate doctor review"
+          icon={AlertCircle}
+          tone="attention"
         />
         <StatTile
           label="Abnormal Biomarkers"
           value={String(abnormalCount)}
-          sub="Medication tuning needed"
-          icon={<AlertTriangle className="size-4 text-amber-500" />}
-          tone="caution"
+          hint="Medication tuning needed"
+          icon={AlertTriangle}
+          tone="attention"
         />
         <StatTile
           label="Within Normal Limits"
           value={String(normalCount)}
-          sub="Stable therapeutic range"
-          icon={<CheckCircle2 className="size-4 text-emerald-500" />}
-          tone="success"
+          hint="Stable therapeutic range"
+          icon={CheckCircle2}
+          tone="positive"
         />
       </div>
 

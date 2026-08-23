@@ -100,29 +100,29 @@ function DoctorAnalyticsPage() {
         <StatTile
           label="Monthly OPD Footfall"
           value="1,248"
-          sub="+14.2% vs last month"
-          icon={<Users className="size-4" />}
+          hint="+14.2% vs last month"
+          icon={Users}
           tone="default"
         />
         <StatTile
           label="Follow-up Adherence"
           value="89.4%"
-          sub="Target: > 85%"
-          icon={<CheckCircle2 className="size-4 text-emerald-500" />}
-          tone="success"
+          hint="Target: > 85%"
+          icon={CheckCircle2}
+          tone="positive"
         />
         <StatTile
           label="Generic Rx Adoption"
           value="92.8%"
-          sub="Indian NLEM aligned"
-          icon={<Pill className="size-4 text-primary" />}
-          tone="success"
+          hint="Indian NLEM aligned"
+          icon={Pill}
+          tone="positive"
         />
         <StatTile
           label="Avg Consult Duration"
           value="13.8 min"
-          sub="Optimal clinical engagement"
-          icon={<Clock className="size-4 text-sky-500" />}
+          hint="Optimal clinical engagement"
+          icon={Clock}
           tone="default"
         />
       </div>
@@ -134,16 +134,12 @@ function DoctorAnalyticsPage() {
           <ChartFrame
             title="Daily OPD Patient Footfall Trend"
             description="14-day rolling clinical consultations and follow-up reviews."
-            action={
-              <Badge variant="outline" className="text-xs font-bold border-primary/30 text-primary">
-                Peak: 78 pts/day
-              </Badge>
-            }
           >
             <TrendAreaChart
-              series={PATIENT_VOLUME_SERIES}
-              color="emerald"
-              formatTooltip={(v) => `${v} Patients`}
+              data={PATIENT_VOLUME_SERIES}
+              xKey="date"
+              yKey="value"
+              label="Patients"
             />
           </ChartFrame>
         </div>
