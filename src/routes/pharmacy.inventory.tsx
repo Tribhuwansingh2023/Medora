@@ -43,7 +43,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PageHeader, SafetyNotice } from "@/components/common/primitives";
+import { PageHeader, SafetyNotice, StatTile } from "@/components/common/primitives";
 import { DataTable, type DataColumn } from "@/components/workspace/DataTable";
 import {
   AsyncSection,
